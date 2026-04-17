@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #cc0000;
+}
+
+.mu-wrap {
+  font-family: 'Barlow', sans-serif;
+  background: #cc0000;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+
+.mu-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.45);
+  position: relative;
+  z-index: 20;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mu-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.mu-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mu-logo-badge {
+  background: #fff;
+  color: #cc0000;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  padding: 3px 10px;
+  letter-spacing: 1px;
+}
+
+.mu-logo-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #fff;
+}
+
+.mu-nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mu-nav-links a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.mu-nav-links a:hover {
+  color: #fff;
+}
+
+.mu-nav-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.mu-btn-solid {
+  background: #fff;
+  border: none;
+  color: #cc0000;
+  padding: 8px 18px;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.mu-btn-solid:hover {
+  opacity: 0.9;
+}
+
+
+.mu-hero {
+  position: relative;
+  min-height: 536px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.mu-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}
+
+.mu-hero-stripe {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: rgba(0, 0, 0, 0.18);
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+
+.mu-player-area {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 55%;
+  display: flex;
+  align-items: stretch;
+}
+
+.mu-player-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  opacity: 0.93;
+}
+
+.mu-player-fade {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 55%;
+  background: linear-gradient(to right, #cc0000 0%, transparent 15%);
+  pointer-events: none;
+}
+
+
+.mu-hero-content {
+  position: relative;
+  z-index: 5;
+  padding: 60px 50px;
+  max-width: 520px;
+}
+
+.mu-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.mu-eyebrow-badge {
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+}
+
+.mu-eyebrow-sub {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.mu-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(64px, 9vw, 96px);
+  line-height: 0.88;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.mu-title-muted {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.mu-subtitle {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.65;
+  margin-bottom: 32px;
+  max-width: 380px;
+}
+
+.mu-actions {
+  display: flex;
+  gap: 14px;
+}
+
+.mu-cta-main {
+  background: #fff;
+  color: #cc0000;
+  border: none;
+  padding: 14px 30px;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.mu-cta-main:hover {
+  opacity: 0.9;
+}
+
+.mu-cta-sec {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  padding: 14px 30px;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.mu-cta-sec:hover {
+  border-color: #fff;
+}
+
+
+.mu-ticker {
+  background: rgba(0, 0, 0, 0.42);
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.mu-ticker-label {
+  background: #cc0000;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 16px;
+  white-space: nowrap;
+  margin: 0 20px;
+  flex-shrink: 0;
+}
+
+.mu-ticker-track {
+  display: flex;
+  gap: 60px;
+  white-space: nowrap;
+}
+
+.mu-ticker-item {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
