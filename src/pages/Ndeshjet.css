@@ -1,0 +1,227 @@
+/* ── Tabs ── */
+.nd-tabs {
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 50px;
+}
+
+.nd-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 18px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nd-tab.active {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+}
+
+/* ── Match list container ── */
+.nd-list {
+  padding: 2.5rem 50px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Month label ── */
+.nd-month {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color:rgba(255, 255, 255, 0.75);
+  margin: 1.5rem 0 12px;
+}
+
+/* ── Stats bar ── */
+.nd-stats {
+  background: rgba(0, 0, 0, 0.35);
+  border-left: 3px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  padding: 28px 40px;
+  margin-bottom: 28px;
+  display: flex;
+  gap: 2rem;
+}
+
+.nd-stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.nd-stat-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.nd-stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color:rgba(255, 255, 255, 0.75);
+  margin-top: 8px;
+}
+
+/* ── Match row ── */
+.nd-match {
+  display: flex;
+  align-items: center;
+  padding: 22px 28px;
+  margin-bottom: 10px;
+  gap: 16px;
+  border-radius: 2px;
+  border-left: 3px solid transparent;
+  background: rgba(0, 0, 0, 0.32);
+  transition: background 0.2s;
+  cursor: default;
+}
+
+.nd-match:hover {
+  background: rgba(0, 0, 0, 0.48);
+}
+
+.nd-match.win      { border-left-color: #22c55e; }
+.nd-match.loss     { border-left-color: #ef4444; }
+.nd-match.draw     { border-left-color: #eab308; }
+.nd-match.upcoming { border-left-color: rgba(255, 255, 255, 0.35); }
+
+/* ── Date column ── */
+.nd-date {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.nd-date-day {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.nd-date-num {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+}
+
+/* ── Competition badge ── */
+.nd-comp {
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.nd-comp-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 12px;
+  border-radius: 2px;
+}
+
+.nd-comp-badge.PL  { background: rgba(56, 0, 60, 0.7);  color: #e81fff; }
+.nd-comp-badge.UCL { background: rgba(0, 30, 90, 0.7);  color: #7eb0ff; }
+.nd-comp-badge.FA  { background: rgba(0, 40, 80, 0.7);  color: #5aaaff; }
+
+/* ── Teams area ── */
+.nd-teams {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nd-team-home,
+.nd-team-away {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nd-team-home { justify-content: flex-end; }
+.nd-team-away { justify-content: flex-start; }
+
+.nd-team-name {
+  font-family: 'Barlow', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.nd-team-name.mu {
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ── Team logo ── */
+.nd-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.nd-logo img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.nd-logo span {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+}
+
+/* ── Score ── */
+.nd-score {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  min-width: 88px;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  flex-shrink: 0;
+  padding: 10px 18px;
+}
+
+.nd-score.result   { font-size: 28px; letter-spacing: 1px; }
+.nd-score.upcoming { font-size: 18px; letter-spacing: 3px; color: rgba(240, 240, 240, 0.4); }
+.nd-score.win      { color: #22c55e; }
+.nd-score.loss     { color: #ef4444; }
+.nd-score.draw     { color: #eab308; }
+
+/* ── Venue ── */
+.nd-venue {
+  width: 110px;
+  text-align: right;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+
+@keyframes ndeshjetTicker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./ManchesterUnitedHome.css";
 
-const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tablela", "Shop"];
+const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tabela", "Shop"];
 
 const TICKER_ITEMS = [
   "Man United  2 – 1  Arsenal · Premier League",
@@ -13,6 +15,7 @@ const TICKER_ITEMS = [
 
 
 export default function ManchesterUnitedHome() {
+  const navigate = useNavigate();
   const [tickerOffset, setTickerOffset] = useState(0);
   const animRef = useRef(null);
   const offsetRef = useRef(0);
@@ -56,13 +59,17 @@ export default function ManchesterUnitedHome() {
           <ul className="mu-nav-links">
             {NAV_LINKS.map((link) => (
               <li key={link}>
-                <a href="#">{link}</a>
+                 {link === "Ndeshjet"
+        ? <Link to="/ndeshjet">{link}</Link>
+        : <a href="#">{link}</a>
+      }
               </li>
             ))}
           </ul>
         </div>
         <div className="mu-nav-right">
-          <button className="mu-btn-solid">Bli Bileta</button>
+          <button className="mu-btn-solid" onClick={() => navigate("/login")}>Kyçu</button>
+         <button className="mu-btn-solid">Bli Bileta</button> 
         </div>
       </nav>
 
