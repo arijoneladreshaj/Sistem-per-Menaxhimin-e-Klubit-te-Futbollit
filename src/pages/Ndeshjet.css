@@ -11,7 +11,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   color: rgba(255, 255, 255, 0.5);
-  font-family: 'Barlow', sans-serif;
+  font-family: "Barlow", sans-serif;
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 1.5px;
@@ -39,7 +39,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color:rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.75);
   margin: 1.5rem 0 12px;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .nd-stat-val {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
   font-size: 56px;
   letter-spacing: 1px;
   line-height: 1;
@@ -71,7 +71,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color:rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.75);
   margin-top: 8px;
 }
 
@@ -93,10 +93,18 @@
   background: rgba(0, 0, 0, 0.48);
 }
 
-.nd-match.win      { border-left-color: #22c55e; }
-.nd-match.loss     { border-left-color: #ef4444; }
-.nd-match.draw     { border-left-color: #eab308; }
-.nd-match.upcoming { border-left-color: rgba(255, 255, 255, 0.35); }
+.nd-match.win {
+  border-left-color: #22c55e;
+}
+.nd-match.loss {
+  border-left-color: #ef4444;
+}
+.nd-match.draw {
+  border-left-color: #eab308;
+}
+.nd-match.upcoming {
+  border-left-color: rgba(255, 255, 255, 0.35);
+}
 
 /* ── Date column ── */
 .nd-date {
@@ -133,9 +141,18 @@
   border-radius: 2px;
 }
 
-.nd-comp-badge.PL  { background: rgba(56, 0, 60, 0.7);  color: #e81fff; }
-.nd-comp-badge.UCL { background: rgba(0, 30, 90, 0.7);  color: #7eb0ff; }
-.nd-comp-badge.FA  { background: rgba(0, 40, 80, 0.7);  color: #5aaaff; }
+.nd-comp-badge.PL {
+  background: rgba(56, 0, 60, 0.7);
+  color: #e81fff;
+}
+.nd-comp-badge.UCL {
+  background: rgba(0, 30, 90, 0.7);
+  color: #7eb0ff;
+}
+.nd-comp-badge.FA {
+  background: rgba(0, 40, 80, 0.7);
+  color: #5aaaff;
+}
 
 /* ── Teams area ── */
 .nd-teams {
@@ -153,11 +170,15 @@
   gap: 12px;
 }
 
-.nd-team-home { justify-content: flex-end; }
-.nd-team-away { justify-content: flex-start; }
+.nd-team-home {
+  justify-content: flex-end;
+}
+.nd-team-away {
+  justify-content: flex-start;
+}
 
 .nd-team-name {
-  font-family: 'Barlow', sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: 17px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.75);
@@ -200,16 +221,29 @@
   border-radius: 2px;
   min-width: 88px;
   text-align: center;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
   flex-shrink: 0;
   padding: 10px 18px;
 }
 
-.nd-score.result   { font-size: 28px; letter-spacing: 1px; }
-.nd-score.upcoming { font-size: 18px; letter-spacing: 3px; color: rgba(240, 240, 240, 0.4); }
-.nd-score.win      { color: #22c55e; }
-.nd-score.loss     { color: #ef4444; }
-.nd-score.draw     { color: #eab308; }
+.nd-score.result {
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+.nd-score.upcoming {
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: rgba(240, 240, 240, 0.4);
+}
+.nd-score.win {
+  color: #22c55e;
+}
+.nd-score.loss {
+  color: #ef4444;
+}
+.nd-score.draw {
+  color: #eab308;
+}
 
 /* ── Venue ── */
 .nd-venue {
@@ -220,8 +254,37 @@
   flex-shrink: 0;
 }
 
+.nd-ticket-action {
+  display: flex;
+  justify-content: flex-end;
+}
+.nd-buy-btn {
+  background: #da020a;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.nd-buy-btn:hover {
+  background: #b50208;
+}
+.nd-sold-out {
+  font-size: 10px;
+  color: #555;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
 @keyframes ndeshjetTicker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
