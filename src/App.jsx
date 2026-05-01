@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Preferences from "./pages/Preferences";
 import SectorPage from "./pages/SectorPage";
+import Dashboard from "./pages/Dashboard";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/preferences" element={<Preferences />} />
         <Route path="/SectorPage/:matchId" element={<SectorPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
