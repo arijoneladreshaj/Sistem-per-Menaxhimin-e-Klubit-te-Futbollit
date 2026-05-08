@@ -9,12 +9,12 @@ function Preferences() {
   const [submitted, setSubmitted] = useState(false)
 
   const options = [
-    { id: "lajme", icon: "📰", label: "Lajmet e fundit", desc: "Transferime, konferenca, deklarata" },
-    { id: "ndeshje", icon: "⚽", label: "Ndeshjet", desc: "Rezultate, statistika, analizë" },
-    { id: "lojtaret", icon: "👟", label: "Lojtarët", desc: "Performanca dhe lajme për lojtarë" },
-    { id: "bileta", icon: "🎟️", label: "Biletat", desc: "Disponueshmëria e biletave" },
-    { id: "merkato", icon: "🔄", label: "Merkato", desc: "Transferime dhe huazime" },
-    { id: "akademia", icon: "🏫", label: "Akademia", desc: "Lojtarët e rinj dhe talentët" },
+    { id: "lajme", label: "Lajmet e fundit", desc: "Transferime, konferenca, deklarata" },
+    { id: "ndeshje", label: "Ndeshjet", desc: "Rezultate, statistika, analizë" },
+    { id: "lojtaret", label: "Lojtarët", desc: "Performanca dhe lajme për lojtarë" },
+    { id: "bileta",  label: "Biletat", desc: "Disponueshmëria e biletave" },
+    { id: "merkato",  label: "Merkato", desc: "Transferime dhe huazime" },
+    { id: "akademia", label: "Akademia", desc: "Lojtarët e rinj dhe talentët" },
   ]
 
   const toggle = (id) => {
@@ -25,7 +25,8 @@ function Preferences() {
 
  const handleSubmit = () => {
   console.log("Preferencat:", selected)
-  navigate("/dashboard")
+  setSubmitted(true);
+  setTimeout(() => navigate("/"), 2000);
 }
 
   if (submitted) {
@@ -43,7 +44,7 @@ function Preferences() {
           <p style={{ color: "#888", fontSize: "14px", marginBottom: "24px" }}>
             Preferencat u ruajtën me sukses!
           </p>
-          <button className="btn-login" onClick={() => navigate("/dashboard")}>
+          <button className="btn-login" onClick={() => navigate("/")}>
   SHKO TE FAQJA KRYESORE →
 </button>
         </div>
@@ -78,7 +79,7 @@ function Preferences() {
               className={`pref-card ${selected.includes(opt.id) ? "pref-selected" : ""}`}
               onClick={() => toggle(opt.id)}
             >
-              <div className="pref-icon">{opt.icon}</div>
+      
               <div className="pref-label">{opt.label}</div>
               <div className="pref-desc">{opt.desc}</div>
               {selected.includes(opt.id) && (
