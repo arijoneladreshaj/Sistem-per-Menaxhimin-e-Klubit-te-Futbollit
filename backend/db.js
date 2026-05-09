@@ -10,15 +10,15 @@ const config = {
   options: {
     trustServerCertificate: true,
     encrypt: false,
-  }
+  },
 };
 
 const poolPromise = new sql.ConnectionPool(config)
   .connect()
-  .then(pool => { 
-    console.log("DB e lidhur!"); 
-    return pool; 
+  .then((pool) => {
+    console.log("DB e lidhur!");
+    return pool;
   })
-  .catch(err => console.error("DB error:", err.message));
+  .catch((err) => console.error("DB error:", err.message));
 
 module.exports = { sql, poolPromise };
