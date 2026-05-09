@@ -1,0 +1,59 @@
+.pref-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pref-card {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.pref-card:hover {
+  border-color: #DA020E;
+  background: #1a0000;
+}
+
+.pref-selected {
+  border-color: #DA020E !important;
+  background: #1a0000 !important;
+  box-shadow: 0 0 12px rgba(218, 2, 14, 0.2);
+}
+
+.pref-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.pref-label {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.pref-desc {
+  color: #666;
+  font-size: 11px;
+}
+
+.pref-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: #DA020E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
