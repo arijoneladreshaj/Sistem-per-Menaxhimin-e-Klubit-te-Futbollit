@@ -1,0 +1,187 @@
+.cf-page {
+  background: #111;
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  color: white;
+  font-family: "Arial Black", Arial, sans-serif;
+}
+
+.cf-empty {
+  background: #111;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: white;
+}
+
+/* SUCCESS BOX */
+.cf-success-box {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.cf-check {
+  width: 70px;
+  height: 70px;
+  border: 3px solid #cc0000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #cc0000;
+  margin: 0 auto 1.2rem;
+}
+.cf-title {
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  margin-bottom: 6px;
+}
+.cf-subtitle {
+  font-size: 13px;
+  color: #888;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
+.cf-date {
+  font-size: 11px;
+  color: #555;
+  font-family: Arial, sans-serif;
+}
+
+/* DETAILS */
+.cf-details {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  margin-bottom: 1.2rem;
+}
+.cf-details-title {
+  background: #cc0000;
+  color: white;
+  padding: 8px 16px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.cf-sector-group {
+  border-bottom: 1px solid #2a2a2a;
+}
+.cf-sector-label {
+  padding: 8px 16px;
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background: #141414;
+  font-family: Arial, sans-serif;
+}
+.cf-seat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-top: 1px solid #222;
+}
+.cf-seat-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+}
+.cf-seat-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+}
+.cf-vip {
+  background: #6a1b9a;
+  color: white;
+  font-size: 9px;
+  padding: 2px 7px;
+  font-weight: 900;
+}
+.cf-passenger {
+  font-size: 12px;
+  color: #888;
+}
+.cf-seat-price {
+  font-size: 14px;
+  font-weight: 900;
+  color: white;
+}
+
+.cf-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 16px;
+  font-size: 18px;
+  font-weight: 900;
+  border-top: 2px solid #333;
+  color: white;
+}
+
+/* PAYMENT NOTICE */
+.cf-payment-notice {
+  background: #1a1200;
+  border: 1px solid #f57f17;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.cf-notice-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.cf-notice-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: #f57f17;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.cf-notice-sub {
+  font-size: 11px;
+  color: #888;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
+
+/* ACTIONS */
+.cf-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cf-btn-main {
+  border-radius: 0 !important;
+  background-color: #cc0000 !important;
+  border-color: #cc0000 !important;
+  font-weight: 900 !important;
+  letter-spacing: 2px !important;
+  padding: 13px !important;
+  font-size: 11px !important;
+}
+.cf-btn-main:hover {
+  background-color: #a50000 !important;
+}
+.cf-btn-sec {
+  border-radius: 0 !important;
+  color: #666 !important;
+  border-color: #333 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+}
+.cf-btn-sec:hover {
+  color: white !important;
+  background: transparent !important;
+}
