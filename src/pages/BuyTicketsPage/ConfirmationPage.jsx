@@ -114,7 +114,9 @@ export default function ConfirmationPage() {
             <div className="cf-actions">
               <button
                 className="btn btn-danger cf-btn-main"
-                onClick={() => navigate("/MyTicketsPage")}
+                onClick={() =>
+                  navigate("/ProfilePage", { state: { tab: "biletat" } })
+                }
               >
                 Shiko Biletat e Mia
               </button>

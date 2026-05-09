@@ -1,0 +1,242 @@
+.pp-page {
+  background: #111;
+  min-height: 100vh;
+  color: white;
+}
+.pp-empty {
+  background: #111;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: white;
+}
+
+/* SIDEBAR */
+.pp-sidebar {
+  background: #1a1a1a;
+  border-right: 1px solid #2a2a2a;
+  padding: 2rem 1.5rem;
+  min-height: calc(100vh - 64px);
+}
+.pp-avatar {
+  width: 72px;
+  height: 72px;
+  background: #6d0000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+.pp-name {
+  font-size: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.pp-email {
+  font-size: 11px;
+  color: #888;
+  margin-top: 3px;
+}
+.pp-divider {
+  border-top: 1px solid #2a2a2a;
+  margin: 1.2rem 0;
+}
+
+.pp-nav-link {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.pp-nav-link:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+}
+.pp-nav-link--active {
+  color: white;
+  border-left-color: #6d0000;
+  background: rgba(204, 0, 0, 0.1);
+}
+
+.pp-badge {
+  background: #6d0000;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  margin-left: auto;
+}
+
+.pp-logout {
+  background: transparent;
+  color: #666;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.15s;
+}
+.pp-logout:hover {
+  color: #6d0000;
+  border-color: #6d0000;
+}
+
+/* CONTENT */
+.pp-content {
+  padding: 2.5rem;
+}
+.pp-section-title {
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #6d0000;
+  padding-bottom: 10px;
+}
+
+.pp-label {
+  font-size: 11px;
+  color: #888;
+  display: block;
+  margin-bottom: 4px;
+}
+.pp-input {
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  color: white !important;
+  border-radius: 0 !important;
+}
+.pp-input:focus {
+  border-color: #6d0000 !important;
+  box-shadow: none !important;
+}
+
+.pp-save-btn {
+  background: #6d0000;
+  color: white;
+  border: none;
+  padding: 11px 28px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pp-save-btn:hover {
+  background: #6d0000;
+}
+.pp-saved {
+  color: #4caf50;
+  font-size: 13px;
+}
+
+/* BILETAT */
+.pp-no-tickets {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  padding: 3rem;
+  text-align: center;
+  color: #666;
+}
+.pp-no-icon {
+  font-size: 48px;
+  margin-bottom: 1rem;
+}
+.pp-buy-btn {
+  border-radius: 0 !important;
+  margin-top: 1rem;
+}
+
+.pp-orders {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.pp-order {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+}
+.pp-order-header {
+  background: #6d0000;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pp-order-id {
+  font-size: 12px;
+  font-weight: 900;
+  display: block;
+}
+.pp-order-date {
+  font-size: 10px;
+  opacity: 0.8;
+}
+.pp-order-total {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.pp-seat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #222;
+}
+.pp-seat-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pp-seat-num {
+  font-size: 13px;
+  font-weight: 700;
+}
+.pp-seat-sector {
+  font-size: 11px;
+  color: #888;
+}
+.pp-vip {
+  background: #6a1b9a;
+  color: white;
+  font-size: 9px;
+  padding: 2px 7px;
+  font-weight: 900;
+}
+.pp-passenger {
+  font-size: 11px;
+  color: #888;
+}
+.pp-seat-price {
+  font-size: 14px;
+  font-weight: 900;
+}
+.pp-order-footer {
+  padding: 8px 16px;
+  font-size: 11px;
+  color: #888;
+  background: #141414;
+}

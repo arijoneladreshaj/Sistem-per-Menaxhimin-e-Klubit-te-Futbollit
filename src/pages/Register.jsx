@@ -1,54 +1,80 @@
-import { Link, useNavigate } from "react-router-dom"
-import { useState } from "react"
-import "./Login.css"
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import "./Login.css";
 
 function Register() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     emri: "",
     mbiemri: "",
     datelindja: "",
     email: "",
     password: "",
-    confirmPassword: ""
-  })
-  const [errors, setErrors] = useState({})
+    confirmPassword: "",
+  });
+  const [errors, setErrors] = useState({});
 
   const validate = () => {
-    const newErrors = {}
-    if (!formData.emri.trim()) newErrors.emri = "Emri është i detyrueshëm!"
-    if (!formData.mbiemri.trim()) newErrors.mbiemri = "Mbiemri është i detyrueshëm!"
-    if (!formData.datelindja) newErrors.datelindja = "Datëlindja është e detyrueshme!"
-    if (!formData.email.trim()) newErrors.email = "Email-i është i detyrueshëm!"
-    if (!formData.password.trim()) newErrors.password = "Fjalëkalimi është i detyrueshëm!"
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Fjalëkalimet nuk përputhen!"
-    return newErrors
-  }
+    const newErrors = {};
+    if (!formData.emri.trim()) newErrors.emri = "Emri është i detyrueshëm!";
+    if (!formData.mbiemri.trim())
+      newErrors.mbiemri = "Mbiemri është i detyrueshëm!";
+    if (!formData.datelindja)
+      newErrors.datelindja = "Datëlindja është e detyrueshme!";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email-i është i detyrueshëm!";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email-i nuk është i vlefshëm!";
+    }
+    if (!formData.password.trim())
+      newErrors.password = "Fjalëkalimi është i detyrueshëm!";
+    if (formData.password !== formData.confirmPassword)
+      newErrors.confirmPassword = "Fjalëkalimet nuk përputhen!";
+    return newErrors;
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    setErrors(prev => ({ ...prev, [name]: "" }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
 
   const handleRegister = (e) => {
-    e.preventDefault()
-    const newErrors = validate()
+    e.preventDefault();
+    const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
-    setErrors({})
-    navigate("/preferences")
-  }
+    setErrors({});
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        emri: formData.emri,
+        mbiemri: formData.mbiemri,
+        datelindja: formData.datelindja,
+        email: formData.email,
+        password: formData.password,
+      }),
+    );
+
+    navigate("/login");
+  };
 
   return (
     <div className="page">
       <div className="top-section">
         <div className="logo-circle">
-          <img src="/manchesterlogo.png" alt="MU" style={{ width: "90px", height: "90px", objectFit: "contain" }} />
+          <img
+            src="/manchesterlogo.png"
+            alt="MU"
+            style={{ width: "90px", height: "90px", objectFit: "contain" }}
+          />
         </div>
-        <h1 className="club-title">Manchester <span>United</span> FC</h1>
+        <h1 className="club-title">
+          Manchester <span>United</span> FC
+        </h1>
         <p className="club-subtitle">"United we stand."</p>
       </div>
 
@@ -69,7 +95,7 @@ function Register() {
               onChange={handleChange}
               className={errors.emri ? "input-error" : ""}
             />
-            {errors.emri && <span className="error">{errors.emri}</span>}
+            {errors.emri && <span className="error" style={{ textAlign: "left" }}>{errors.emri}</span>}
           </div>
           <div className="field" style={{ flex: 1 }}>
             <label>Mbiemri</label>
@@ -81,7 +107,7 @@ function Register() {
               onChange={handleChange}
               className={errors.mbiemri ? "input-error" : ""}
             />
-            {errors.mbiemri && <span className="error">{errors.mbiemri}</span>}
+            {errors.mbiemri && <span className="error" style={{ textAlign: "left" }}>{errors.mbiemri}</span>}
           </div>
         </div>
 
@@ -95,7 +121,9 @@ function Register() {
             className={errors.datelindja ? "input-error" : ""}
             style={{ colorScheme: "dark" }}
           />
-          {errors.datelindja && <span className="error">{errors.datelindja}</span>}
+          {errors.datelindja && (
+            <span className="error" style={{ textAlign: "left" }}>{errors.datelindja}</span>
+          )}
         </div>
 
         <div className="field">
@@ -108,7 +136,11 @@ function Register() {
             onChange={handleChange}
             className={errors.email ? "input-error" : ""}
           />
-          {errors.email && <span className="error">{errors.email}</span>}
+          {errors.email && (
+            <span className="error" style={{ textAlign: "left" }}>
+              {errors.email}
+            </span>
+          )}
         </div>
 
         <div className="field">
@@ -121,7 +153,7 @@ function Register() {
             onChange={handleChange}
             className={errors.password ? "input-error" : ""}
           />
-          {errors.password && <span className="error">{errors.password}</span>}
+          {errors.password && <span className="error" style={{ textAlign: "left" }}>{errors.password}</span>}
         </div>
 
         <div className="field">
@@ -134,21 +166,25 @@ function Register() {
             onChange={handleChange}
             className={errors.confirmPassword ? "input-error" : ""}
           />
-          {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
+          {errors.confirmPassword && (
+            <span className="error" style={{ textAlign: "left" }}>{errors.confirmPassword}</span>
+          )}
         </div>
 
         <button className="btn-login" onClick={handleRegister}>
           REGJISTROHU
         </button>
 
-        <div className="divider"><span>ose</span></div>
+        <div className="divider">
+          <span>ose</span>
+        </div>
 
         <div className="footer">
           Ke llogari? <Link to="/login">Kyçu këtu</Link>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;
