@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/players",   require("./routes/players"));
+app.use("/api/staff", require("./routes/Staff"));
 /*app.use("/api/clubs",     require("./routes/clubs"));
 app.use("/api/matches",   require("./routes/matches"));
 app.use("/api/staff",     require("./routes/staff"));
