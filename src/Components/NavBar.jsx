@@ -30,20 +30,14 @@ export default function Navbar() {
         </ul>
       </div>
       <div className="mu-nav-right">
-        {user.emri ? (
-          <div
-            className="mu-avatar"
-            onClick={() => navigate("/ProfilePage")}
-            title={`${user.emri} ${user.mbiemri}`}
-          >
-            {user.emri[0]}
-            {user.mbiemri[0]}
-          </div>
-        ) : (
-          <button className="mu-btn-solid" onClick={() => navigate("/login")}>
-            Kyçu
-          </button>
-        )}
+        <div
+          className="mu-avatar"
+          onClick={() => navigate("/ProfilePage")}
+          title={`${user.emri} ${user.mbiemri}`}
+        >
+          {user.emri[0]}
+          {user.mbiemri[0]}
+        </div>
         <button
           className="mu-btn-solid"
           onClick={() => navigate("/ndeshjet?tab=fixtures")}

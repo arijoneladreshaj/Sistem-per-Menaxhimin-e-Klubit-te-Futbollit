@@ -22,6 +22,13 @@ export default function ManchesterUnitedHome() {
   const tickerRef = useRef(null);
 
   useEffect(() => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  if (!isLoggedIn) {
+    navigate("/login");
+  }
+}, []);
+
+  useEffect(() => {
     const el = tickerRef.current;
     if (!el) return;
     const totalWidth = el.scrollWidth / 2;

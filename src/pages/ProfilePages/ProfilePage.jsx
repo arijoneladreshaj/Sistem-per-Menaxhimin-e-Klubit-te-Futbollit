@@ -18,8 +18,17 @@ export default function ProfilePage() {
     datelindja: storedUser.datelindja || "",
   });
   const [saved, setSaved] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const tickets = JSON.parse(localStorage.getItem("myTickets") || "[]");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+
+  const [showAccModal, setShowAccModal] = useState(false);
+
+  const userEmail = storedUser.email;
+  const [tickets, setTickets] = useState(
+    JSON.parse(localStorage.getItem(`myTickets_${userEmail}`) || "[]"),
+  );
 
   if (!storedUser.emri) {
     return (
@@ -38,16 +47,46 @@ export default function ProfilePage() {
   };
 
   const handleSave = () => {
+    const newErrors = {};
+    if (!formData.emri.trim()) newErrors.emri = "Emri është i detyrueshëm!";
+    if (!formData.mbiemri.trim())
+      newErrors.mbiemri = "Mbiemri është i detyrueshëm!";
+    if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email-i nuk është i vlefshëm!";
+    if (!formData.datelindja)
+      newErrors.datelindja = "Datëlindja është e detyrueshme!";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     localStorage.setItem(
       "user",
       JSON.stringify({ ...storedUser, ...formData }),
     );
     setSaved(true);
+    setErrors({});
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.setItem("isLoggedIn", "false");
     navigate("/login");
+  };
+
+  const handleDeleteOrder = () => {
+    const updated = tickets.filter((o) => o.id !== orderToDelete);
+    localStorage.setItem(`myTickets_${userEmail}`, JSON.stringify(updated));
+    setTickets(updated);
+    setShowDeleteModal(false);
+    setOrderToDelete(null);
+  };
+
+  const handleDeleteAccount = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem(`myTickets_${userEmail}`);
+    navigate("/register");
   };
 
   const initials = `${storedUser.emri?.[0] || ""}${storedUser.mbiemri?.[0] || ""}`;
@@ -93,6 +132,12 @@ export default function ProfilePage() {
               <button className="pp-logout" onClick={handleLogout}>
                 Çkyçu
               </button>
+              <button
+                className="pp-delete-acc"
+                onClick={() => setShowAccModal(true)}
+              >
+                Fshi Llogarinë
+              </button>
             </div>
 
             {/* ── CONTENT ── */}
@@ -112,6 +157,11 @@ export default function ProfilePage() {
                         value={formData.emri}
                         onChange={handleChange}
                       />
+                      {errors.emri && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.emri}
+                        </span>
+                      )}
                     </div>
                     <div className="col-sm-6">
                       <label className="pp-label">Mbiemri</label>
@@ -122,6 +172,11 @@ export default function ProfilePage() {
                         value={formData.mbiemri}
                         onChange={handleChange}
                       />
+                      {errors.mbiemri && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.mbiemri}
+                        </span>
+                      )}
                     </div>
                     <div className="col-sm-6">
                       <label className="pp-label">Email</label>
@@ -132,6 +187,11 @@ export default function ProfilePage() {
                         value={formData.email}
                         onChange={handleChange}
                       />
+                      {errors.email && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.email}
+                        </span>
+                      )}
                     </div>
                     <div className="col-sm-6">
                       <label className="pp-label">Datëlindja</label>
@@ -143,6 +203,11 @@ export default function ProfilePage() {
                         onChange={handleChange}
                         style={{ colorScheme: "dark" }}
                       />
+                      {errors.datelindja && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.datelindja}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -162,7 +227,6 @@ export default function ProfilePage() {
 
                   {tickets.length === 0 ? (
                     <div className="pp-no-tickets">
-                      <div className="pp-no-icon">🎫</div>
                       <p>Nuk ke bileta të blera ende.</p>
                       <button
                         className="btn btn-danger pp-buy-btn"
@@ -187,6 +251,15 @@ export default function ProfilePage() {
                             <span className="pp-order-total">
                               €{order.total}
                             </span>
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => {
+                                setOrderToDelete(order.id);
+                                setShowDeleteModal(true);
+                              }}
+                            >
+                              Anulo
+                            </button>
                           </div>
                           {order.seats.map((seat) => (
                             <div key={seat.id} className="pp-seat-row">
@@ -222,6 +295,90 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+      {/* MODALI i fshirjes se porosise se biletave */}
+      {showDeleteModal && (
+        <div
+          className="modal show d-block"
+          style={{ background: "rgba(0,0,0,0.7)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div
+              className="modal-content"
+              style={{ background: "#1a1a1a", border: "1px solid #333" }}
+            >
+              <div
+                className="modal-header"
+                style={{ borderBottom: "1px solid #333" }}
+              >
+                <h5 className="modal-title" style={{ color: "white" }}>
+                  Anulo Porosinë
+                </h5>
+              </div>
+              <div className="modal-body" style={{ color: "#888" }}>
+                A je i sigurt që dëshiron të anulosh këtë porosi?
+              </div>
+              <div
+                className="modal-footer"
+                style={{ borderTop: "1px solid #333" }}
+              >
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Mbyll
+                </button>
+                <button className="btn btn-danger" onClick={handleDeleteOrder}>
+                  Anulo Porosinë
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALI i fshirjes se account (llogarise) */}
+      {showAccModal && (
+        <div
+          className="modal show d-block"
+          style={{ background: "rgba(0,0,0,0.7)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div
+              className="modal-content"
+              style={{ background: "#1a1a1a", border: "1px solid #333" }}
+            >
+              <div
+                className="modal-header"
+                style={{ borderBottom: "1px solid #333" }}
+              >
+                <h5 className="modal-title" style={{ color: "white" }}>
+                  Fshi Llogarinë
+                </h5>
+              </div>
+              <div className="modal-body" style={{ color: "#888" }}>
+                A je i sigurt? Ky veprim nuk mund të kthehet!
+              </div>
+              <div
+                className="modal-footer"
+                style={{ borderTop: "1px solid #333" }}
+              >
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowAccModal(false)}
+                >
+                  Anulo
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={handleDeleteAccount}
+                >
+                  Fshi
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

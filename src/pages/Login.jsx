@@ -36,7 +36,12 @@ function Login() {
     }
     // Kontrollo nëse email/username përputhet
     if (savedUser.email === username || savedUser.emri === username) {
-      navigate("/");
+      if (savedUser.password === password) {
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/preferences");
+      } else {
+        setErrors({ general: "Email/Username ose fjalëkalim i gabuar!" });
+      }
     } else {
       setErrors({ general: "Email/Username ose fjalëkalim i gabuar!" });
     }

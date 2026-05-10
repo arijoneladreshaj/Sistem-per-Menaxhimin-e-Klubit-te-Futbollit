@@ -31,7 +31,7 @@
   justify-content: center;
   font-size: 24px;
   font-weight: 900;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
 }
 .pp-name {
   font-size: 16px;
@@ -239,4 +239,38 @@
   font-size: 11px;
   color: #888;
   background: #141414;
+}
+
+.btn-outline-danger {
+  border-radius: 0 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  padding: 4px 12px !important;
+  text-transform: uppercase !important;
+  color: white !important;
+  border-color: white !important;
+}
+.btn-outline-danger:hover {
+  background: white !important;
+  color: #6d0000 !important;
+}
+
+.pp-delete-acc {
+  background: transparent;
+  color: #444;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+  transition: all 0.15s;
+}
+.pp-delete-acc:hover {
+  color: #6d0000;
+  border-color: #6d0000;
 }
