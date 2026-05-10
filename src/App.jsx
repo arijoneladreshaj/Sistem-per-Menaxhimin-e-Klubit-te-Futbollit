@@ -10,6 +10,7 @@ import SeatsPage from "./pages/BuyTicketsPage/SeatsPage";
 import CartPage from "./pages/BuyTicketsPage/CartPage";
 import ConfirmationPage from "./pages/BuyTicketsPage/ConfirmationPage";
 import ProfilePage from "./pages/ProfilePages/ProfilePage";
+import Store from "./pages/Store"
 import Dashboard from "./pages/Dashboard";
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/CartPage" element={<CartPage />} />
           <Route path="/ConfirmationPage" element={<ConfirmationPage />} />
           <Route path="/ProfilePage" element={<ProfilePage />} />
+           <Route path="/Store" element={<Store />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>

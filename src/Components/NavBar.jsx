@@ -22,6 +22,8 @@ export default function Navbar() {
             <li key={link}>
               {link === "Ndeshjet" ? (
                 <Link to="/ndeshjet">{link}</Link>
+              ) : link === "Shop" ? (
+                <Link to="/Store">{link}</Link>
               ) : (
                 <a href="#">{link}</a>
               )}
