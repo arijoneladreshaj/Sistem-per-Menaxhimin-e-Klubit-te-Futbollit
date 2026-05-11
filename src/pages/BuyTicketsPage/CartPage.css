@@ -3,7 +3,7 @@
   min-height: 100vh;
   padding: 2rem 1rem 4rem;
   color: white;
-  font-family: "Arial Black", Arial, sans-serif;
+  
 }
 
 /* Empty */
@@ -49,7 +49,7 @@
 
 /* Group */
 .cp-group-header {
-  background: #cc0000;
+  background: #6d0000;
   color: white;
   padding: 8px 16px;
   font-size: 11px;
@@ -100,7 +100,7 @@
   border-radius: 0 !important;
 }
 .cp-input:focus {
-  border-color: #cc0000 !important;
+  border-color: #6d0000 !important;
   box-shadow: none !important;
 }
 .cp-input::placeholder {
@@ -144,13 +144,13 @@
 
 .cp-checkout-btn {
   border-radius: 0 !important;
-  background-color: #cc0000 !important;
-  border-color: #cc0000 !important;
+  background-color: #ad0000 !important;
+  border-color: #ad0000 !important;
   font-weight: 900 !important;
   letter-spacing: 2px !important;
 }
 .cp-checkout-btn:hover:not(:disabled) {
-  background-color: #a50000 !important;
+  background-color: #700101 !important;
 }
 .cp-checkout-btn:disabled {
   background-color: #333 !important;

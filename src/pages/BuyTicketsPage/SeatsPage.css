@@ -11,7 +11,6 @@
   flex-direction: column;
   align-items: center;
   padding: 1.5rem 1rem 6rem;
-  font-family: "Arial Black", Arial, sans-serif;
   color: white;
 }
 
@@ -34,7 +33,6 @@
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.15s;
-  font-family: Arial, sans-serif;
 }
 .sp-back:hover {
   color: white;
@@ -55,7 +53,6 @@
 .sp-seat-count {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.45);
-  font-family: Arial, sans-serif;
   font-weight: 400;
 }
 
@@ -68,7 +65,6 @@
   padding: 7px 60px;
   border-radius: 3px;
   margin-bottom: 1.2rem;
-  font-family: Arial, sans-serif;
 }
 
 /* GRID */
@@ -131,7 +127,6 @@
   font-size: 9px;
   font-weight: 700;
   color: white;
-  font-family: Arial, sans-serif;
   line-height: 1;
 }
 .sp-seat--booked .sp-seat-num {
@@ -155,7 +150,6 @@
   gap: 6px;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.55);
-  font-family: Arial, sans-serif;
   font-weight: 400;
 }
 .sp-dot {
@@ -199,7 +193,6 @@
 .sp-selected-empty {
   font-size: 12px;
   color: #444;
-  font-family: Arial, sans-serif;
 }
 .sp-selected-tags {
   display: flex;
@@ -249,7 +242,6 @@
 .sp-total-count {
   font-size: 11px;
   color: #888;
-  font-family: Arial, sans-serif;
 }
 .sp-total-price {
   font-size: 20px;
@@ -267,7 +259,6 @@
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: not-allowed;
-  font-family: "Arial Black", Arial, sans-serif;
   transition: all 0.15s;
 }
 .sp-proceed--active {

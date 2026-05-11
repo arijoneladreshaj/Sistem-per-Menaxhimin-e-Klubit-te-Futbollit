@@ -1,37 +1,65 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import "./Login.css"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./Login.css";
 
 function Login() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [errors, setErrors] = useState({})
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
   const validate = () => {
-    const newErrors = {}
-    if (!username.trim()) newErrors.username = "Username ose email eshte i detyrueshëm!"
-    if (!password.trim()) newErrors.password = "Fjalëkalimi eshte i detyrueshëm!"
-    return newErrors
-  }
+    const newErrors = {};
+    if (!username.trim())
+      newErrors.username = "Username ose email eshte i detyrueshëm!";
+    if (!password.trim())
+      newErrors.password = "Fjalëkalimi eshte i detyrueshëm!";
+    return newErrors;
+  };
 
   const handleLogin = (e) => {
-    e.preventDefault()
-    const newErrors = validate()
+    e.preventDefault();
+    const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
-    setErrors({})
-    console.log("Login:", username, password)
-  }
+    setErrors({});
+
+    // Merr userin nga localStorage (u ruajt gjatë regjistrimit)
+    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    if (!savedUser.email) {
+      setErrors({
+        general: "Nuk ekziston asnjë llogari. Regjistrohu fillimisht!",
+      });
+      return;
+    }
+    // Kontrollo nëse email/username përputhet
+    if (savedUser.email === username || savedUser.emri === username) {
+      if (savedUser.password === password) {
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/preferences");
+      } else {
+        setErrors({ general: "Email/Username ose fjalëkalim i gabuar!" });
+      }
+    } else {
+      setErrors({ general: "Email/Username ose fjalëkalim i gabuar!" });
+    }
+  };
 
   return (
     <div className="page">
       <div className="top-section">
         <div className="logo-circle">
-          <img src="/manchesterlogo.png" alt="MU" style={{ width: "90px", height: "90px", objectFit: "contain" }} />
+          <img
+            src="/manchesterlogo.png"
+            alt="MU"
+            style={{ width: "90px", height: "90px", objectFit: "contain" }}
+          />
         </div>
-        <h1 className="club-title">Manchester <span>United</span> FC</h1>
+        <h1 className="club-title">
+          Manchester <span>United</span> FC
+        </h1>
         <p className="club-subtitle">"United we stand."</p>
       </div>
 
@@ -48,12 +76,16 @@ function Login() {
             placeholder="Shkruaj username-in..."
             value={username}
             onChange={(e) => {
-              setUsername(e.target.value)
-              setErrors((prev) => ({ ...prev, username: "" }))
+              setUsername(e.target.value);
+              setErrors((prev) => ({ ...prev, username: "" }));
             }}
             className={errors.username ? "input-error" : ""}
           />
-          {errors.username && <span className="error">{errors.username}</span>}
+          {errors.username && (
+            <span className="error" style={{ textAlign: "left" }}>
+              {errors.username}
+            </span>
+          )}
         </div>
 
         <div className="field">
@@ -63,30 +95,37 @@ function Login() {
             placeholder="Shkruaj fjalëkalimin..."
             value={password}
             onChange={(e) => {
-              setPassword(e.target.value)
-              setErrors((prev) => ({ ...prev, password: "" }))
+              setPassword(e.target.value);
+              setErrors((prev) => ({ ...prev, password: "" }));
             }}
             className={errors.password ? "input-error" : ""}
           />
-          {errors.password && <span className="error">{errors.password}</span>}
+          {errors.password && (
+            <span className="error" style={{ textAlign: "left" }}>
+              {errors.password}
+            </span>
+          )}
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <a href="#">Ke harruar fjalëkalimin?</a>
-        </div>
+        </div> */}
 
         <button className="btn-login" onClick={handleLogin}>
           KYÇU
         </button>
+        {errors.general && <span className="error">{errors.general}</span>}
+        <div className="divider">
+          <span>ose</span>
+        </div>
 
-        <div className="divider"><span>ose</span></div>
-
-        <div className="footer">Nuk ke llogari?
-         <Link to="/register"> Krijo një të re</Link>
+        <div className="footer">
+          Nuk ke llogari?
+          <Link to="/register"> Krijo një të re</Link>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

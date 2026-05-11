@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap");
 
 * {
   margin: 0;
@@ -11,12 +11,11 @@ body {
 }
 
 .mu-wrap {
-  font-family: 'Barlow', sans-serif;
+  font-family: "Barlow", sans-serif;
   background: #cc0000;
   min-height: 100vh;
   overflow: hidden;
 }
-
 
 .mu-nav {
   display: flex;
@@ -45,14 +44,14 @@ body {
 .mu-logo-badge {
   background: #fff;
   color: #cc0000;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
   font-size: 13px;
   padding: 3px 10px;
   letter-spacing: 1px;
 }
 
 .mu-logo-name {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
   font-size: 22px;
   letter-spacing: 3px;
   color: #fff;
@@ -91,7 +90,7 @@ body {
   border: none;
   color: #cc0000;
   padding: 8px 18px;
-  font-family: 'Barlow', sans-serif;
+  font-family: "Barlow", sans-serif;
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 1px;
@@ -103,7 +102,6 @@ body {
 .mu-btn-solid:hover {
   opacity: 0.9;
 }
-
 
 .mu-hero {
   position: relative;
@@ -128,7 +126,6 @@ body {
   background: rgba(0, 0, 0, 0.18);
   clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
 }
-
 
 .mu-player-area {
   position: absolute;
@@ -157,7 +154,6 @@ body {
   background: linear-gradient(to right, #cc0000 0%, transparent 15%);
   pointer-events: none;
 }
-
 
 .mu-hero-content {
   position: relative;
@@ -192,7 +188,7 @@ body {
 }
 
 .mu-title {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
   font-size: clamp(64px, 9vw, 96px);
   line-height: 0.88;
   letter-spacing: 1px;
@@ -222,7 +218,7 @@ body {
   color: #cc0000;
   border: none;
   padding: 14px 30px;
-  font-family: 'Barlow', sans-serif;
+  font-family: "Barlow", sans-serif;
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 1.5px;
@@ -240,7 +236,7 @@ body {
   color: #fff;
   border: 1.5px solid rgba(255, 255, 255, 0.45);
   padding: 14px 30px;
-  font-family: 'Barlow', sans-serif;
+  font-family: "Barlow", sans-serif;
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 1.5px;
@@ -252,7 +248,6 @@ body {
 .mu-cta-sec:hover {
   border-color: #fff;
 }
-
 
 .mu-ticker {
   background: rgba(0, 0, 0, 0.42);
@@ -288,4 +283,21 @@ body {
   font-weight: 600;
   letter-spacing: 0.5px;
   white-space: nowrap;
+}
+
+.mu-avatar {
+  width: 36px;
+  height: 36px;
+  background: white;
+  color: #cc0000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.mu-avatar:hover {
+  opacity: 0.9;
 }

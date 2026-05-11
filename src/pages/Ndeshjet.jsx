@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import NavBar from "../Components/NavBar";
 import "./ManchesterUnitedHome.css";
 import "./Ndeshjet.css";
-
-const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tablela", "Shop"];
 
 const LOGOS = {
   "Man United":
@@ -378,51 +377,8 @@ export default function Ndeshjet() {
 
   return (
     <div className="mu-wrap">
-      {}
-      <nav className="mu-nav">
-        <div className="mu-nav-left">
-          <div className="mu-logo">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg"
-              alt="MUFC"
-              style={{ height: 40 }}
-            />
-            <span className="mu-logo-name">Manchester United</span>
-          </div>
-          <ul className="mu-nav-links">
-            {NAV_LINKS.map((link) => (
-              <li key={link}>
-                {link === "Lajmet" ? (
-                  <Link to="/">{link}</Link>
-                ) : (
-                  <a
-                    href="#"
-                    style={
-                      link === "Ndeshjet"
-                        ? {
-                            color: "#fff",
-                            borderBottom: "2px solid #fff",
-                            paddingBottom: 2,
-                          }
-                        : {}
-                    }
-                  >
-                    {link}
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="mu-nav-right">
-          <button className="mu-btn-solid" onClick={() => navigate("/login")}>
-            Kyçu
-          </button>
-          <button className="mu-btn-solid">Bli Bileta</button>
-        </div>
-      </nav>
+      <NavBar />
 
-      {}
       <div
         className="mu-hero"
         style={{ minHeight: 220, alignItems: "flex-end" }}

@@ -121,7 +121,7 @@ export default function CartPage() {
           {/* DJATHTAS — rezymeja */}
           <div className="col-lg-4">
             <div className="cp-summary">
-              <div className="cp-summary-title">Rezymeja</div>
+              <div className="cp-summary-title">Përmbledhja e porosisë</div>
 
               <div className="cp-summary-rows">
                 {cart.map((seat) => (
@@ -142,7 +142,7 @@ export default function CartPage() {
 
               {!allNamed && (
                 <div className="alert alert-warning cp-warning">
-                  ⚠ Plotëso emrat e të gjithë pasagjerëve
+                  ⚠ Plotëso emrat e të gjithë tifozëve
                 </div>
               )}
 

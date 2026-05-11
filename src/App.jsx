@@ -9,6 +9,8 @@ import SectorPage from "./pages/BuyTicketsPage/SectorPage";
 import SeatsPage from "./pages/BuyTicketsPage/SeatsPage";
 import CartPage from "./pages/BuyTicketsPage/CartPage";
 import ConfirmationPage from "./pages/BuyTicketsPage/ConfirmationPage";
+import ProfilePage from "./pages/ProfilePages/ProfilePage";
+import Store from "./pages/Store"
 import Dashboard from "./pages/Dashboard";
 import Staff from "./pages/Staff";
 
@@ -26,9 +28,11 @@ export default function App() {
           <Route path="/SeatsPage/:matchId/:sectorId" element={<SeatsPage />} />
           <Route path="/CartPage" element={<CartPage />} />
           <Route path="/ConfirmationPage" element={<ConfirmationPage />} />
-             <Route path="/staff" element={<Staff />}
-        />
+             <Route path="/staff" element={<Staff />} />
+       
          
+          <Route path="/ProfilePage" element={<ProfilePage />} />
+           <Route path="/Store" element={<Store />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>

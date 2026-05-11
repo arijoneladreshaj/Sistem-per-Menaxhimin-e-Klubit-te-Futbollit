@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./ManchesterUnitedHome.css";
+import Navbar from "../Components/NavBar";
 
 const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tabela", "Shop"];
 
@@ -19,6 +20,13 @@ export default function ManchesterUnitedHome() {
   const animRef = useRef(null);
   const offsetRef = useRef(0);
   const tickerRef = useRef(null);
+
+  useEffect(() => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  if (!isLoggedIn) {
+    navigate("/login");
+  }
+}, []);
 
   useEffect(() => {
     const el = tickerRef.current;
@@ -44,40 +52,7 @@ export default function ManchesterUnitedHome() {
 
   return (
     <div className="mu-wrap">
-      <nav className="mu-nav">
-        <div className="mu-nav-left">
-          <div className="mu-logo">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg"
-              alt="MUFC"
-              style={{ height: "40px" }}
-            />
-            <span className="mu-logo-name">Manchester United</span>
-          </div>
-          <ul className="mu-nav-links">
-            {NAV_LINKS.map((link) => (
-              <li key={link}>
-                {link === "Ndeshjet" ? (
-                  <Link to="/ndeshjet">{link}</Link>
-                ) : (
-                  <a href="#">{link}</a>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="mu-nav-right">
-          <button className="mu-btn-solid" onClick={() => navigate("/login")}>
-            Kyçu
-          </button>
-          <button
-            className="mu-btn-solid"
-            onClick={() => navigate("/ndeshjet?tab=fixtures")}
-          >
-            Bli Bileta
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="mu-hero">
         <div className="mu-hero-bg" />

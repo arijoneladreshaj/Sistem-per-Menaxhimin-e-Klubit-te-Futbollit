@@ -3,7 +3,6 @@
   min-height: 100vh;
   padding: 3rem 1rem;
   color: white;
-  font-family: "Arial Black", Arial, sans-serif;
 }
 
 .cf-empty {
@@ -25,13 +24,13 @@
 .cf-check {
   width: 70px;
   height: 70px;
-  border: 3px solid #cc0000;
+  border: 3px solid #6d0000;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 30px;
-  color: #cc0000;
+  color: #6d0000;
   margin: 0 auto 1.2rem;
 }
 .cf-title {
@@ -45,13 +44,11 @@
 .cf-subtitle {
   font-size: 13px;
   color: #888;
-  font-family: Arial, sans-serif;
   font-weight: 400;
 }
 .cf-date {
   font-size: 11px;
   color: #555;
-  font-family: Arial, sans-serif;
 }
 
 /* DETAILS */
@@ -61,7 +58,7 @@
   margin-bottom: 1.2rem;
 }
 .cf-details-title {
-  background: #cc0000;
+  background: #6d0000;
   color: white;
   padding: 8px 16px;
   font-size: 10px;
@@ -79,7 +76,6 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
   background: #141414;
-  font-family: Arial, sans-serif;
 }
 .cf-seat-row {
   display: flex;
@@ -92,7 +88,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: Arial, sans-serif;
 }
 .cf-seat-num {
   font-size: 13px;
@@ -151,7 +146,6 @@
 .cf-notice-sub {
   font-size: 11px;
   color: #888;
-  font-family: Arial, sans-serif;
   font-weight: 400;
 }
 
@@ -163,15 +157,15 @@
 }
 .cf-btn-main {
   border-radius: 0 !important;
-  background-color: #cc0000 !important;
-  border-color: #cc0000 !important;
+  background-color: #6d0000 !important;
+  border-color: #6d0000 !important;
   font-weight: 900 !important;
   letter-spacing: 2px !important;
   padding: 13px !important;
   font-size: 11px !important;
 }
 .cf-btn-main:hover {
-  background-color: #a50000 !important;
+  background-color: #5c0101 !important;
 }
 .cf-btn-sec {
   border-radius: 0 !important;

@@ -20,14 +20,19 @@ export default function ConfirmationPage() {
       total,
     };
 
-    const existing = JSON.parse(localStorage.getItem("myTickets") || "[]");
-    localStorage.setItem("myTickets", JSON.stringify([...existing, order]));
+    const userEmail = JSON.parse(localStorage.getItem("user") || "{}").email;
+    const key = `myTickets_${userEmail}`;
+    const existing = JSON.parse(localStorage.getItem(key) || "[]");
+    localStorage.setItem(key, JSON.stringify([...existing, order]));
 
     clearCart();
   }, []);
 
   // Merr porosinë e fundit nga localStorage
-  const allOrders = JSON.parse(localStorage.getItem("myTickets") || "[]");
+  const userEmail = JSON.parse(localStorage.getItem("user") || "{}").email;
+  const allOrders = JSON.parse(
+    localStorage.getItem(`myTickets_${userEmail}`) || "[]",
+  );
   const order = allOrders[allOrders.length - 1];
 
   if (!order) {
@@ -114,7 +119,9 @@ export default function ConfirmationPage() {
             <div className="cf-actions">
               <button
                 className="btn btn-danger cf-btn-main"
-                onClick={() => navigate("/MyTicketsPage")}
+                onClick={() =>
+                  navigate("/ProfilePage", { state: { tab: "biletat" } })
+                }
               >
                 Shiko Biletat e Mia
               </button>
