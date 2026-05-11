@@ -9,8 +9,8 @@ import SectorPage from "./pages/BuyTicketsPage/SectorPage";
 import SeatsPage from "./pages/BuyTicketsPage/SeatsPage";
 import CartPage from "./pages/BuyTicketsPage/CartPage";
 import ConfirmationPage from "./pages/BuyTicketsPage/ConfirmationPage";
-import ProfilePage from "./pages/ProfilePages/ProfilePage";
 import Dashboard from "./pages/Dashboard";
+import Staff from "./pages/Staff";
 
 export default function App() {
   return (
@@ -26,7 +26,9 @@ export default function App() {
           <Route path="/SeatsPage/:matchId/:sectorId" element={<SeatsPage />} />
           <Route path="/CartPage" element={<CartPage />} />
           <Route path="/ConfirmationPage" element={<ConfirmationPage />} />
-          <Route path="/ProfilePage" element={<ProfilePage />} />
+             <Route path="/staff" element={<Staff />}
+        />
+         
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>

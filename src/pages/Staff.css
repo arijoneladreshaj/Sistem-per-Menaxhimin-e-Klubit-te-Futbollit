@@ -1,0 +1,247 @@
+/* ===== Man Utd Colors ===== */
+:root {
+  --mu-red: #da291c;
+  --mu-dark: #1a1a1a;
+  --mu-card: #2b2b2b;
+  --mu-border: #444;
+  --mu-text: #e0e0e0;
+  --mu-muted: #888;
+}
+
+/* ===== Container ===== */
+.staff-container {
+  background-color: var(--mu-dark);
+  color: var(--mu-text);
+  min-height: 100vh;
+  padding: 30px;
+}
+
+/* ===== Header ===== */
+.staff-title {
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0;
+}
+
+.staff-subtitle {
+  color: var(--mu-muted);
+}
+
+/* ===== Button Man Utd ===== */
+.btn-mu {
+  background-color: var(--mu-red) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.btn-mu:hover {
+  background-color: #b71c1c !important;
+}
+
+/* ===== Search ===== */
+.search-input {
+  background-color: var(--mu-card) !important;
+  border: 1px solid var(--mu-border) !important;
+  color: #fff !important;
+}
+
+.search-input::placeholder {
+  color: var(--mu-muted);
+}
+
+.staff-count {
+  color: var(--mu-muted);
+}
+
+/* ===== Staff Card ===== */
+.staff-card {
+  background-color: var(--mu-card);
+  border: none;
+  border-top: 3px solid var(--mu-red);
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.staff-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(218, 41, 28, 0.15);
+}
+
+/* ===== Avatar ===== */
+.staff-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--mu-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+/* ===== Name & Role ===== */
+.staff-name {
+  color: #fff;
+  font-weight: 700;
+}
+
+.staff-roli {
+  color: var(--mu-red);
+  font-weight: 600;
+}
+
+/* ===== Info ===== */
+.staff-info {
+  font-size: 13px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.info-label {
+  color: var(--mu-muted);
+}
+
+.info-value {
+  color: var(--mu-text);
+}
+
+/* ===== Action Buttons ===== */
+.btn-edit {
+  background-color: transparent !important;
+  border: 1px solid var(--mu-red) !important;
+  color: var(--mu-red) !important;
+}
+
+.btn-edit:hover {
+  background-color: var(--mu-red) !important;
+  color: #fff !important;
+}
+
+.btn-delete {
+  background-color: transparent !important;
+  border: 1px solid var(--mu-border) !important;
+  color: var(--mu-muted) !important;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b !important;
+  border-color: #c0392b !important;
+  color: #fff !important;
+}
+
+/* ===== Add Card ===== */
+.add-card {
+  background-color: var(--mu-card);
+  border: none;
+  border-radius: 8px;
+  min-height: 250px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.add-card:hover {
+  transform: translateY(-3px);
+}
+
+.add-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px dashed var(--mu-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--mu-red);
+  margin-bottom: 12px;
+}
+
+.add-text {
+  color: var(--mu-muted);
+}
+
+/* ===== Modal Dark ===== */
+.staff-modal .modal-content {
+  background-color: var(--mu-card);
+  border: 1px solid var(--mu-border);
+  color: var(--mu-text);
+}
+
+.staff-modal .modal-header {
+  border-bottom: 1px solid var(--mu-border);
+}
+
+.staff-modal .modal-header .btn-close {
+  filter: invert(1);
+}
+
+.staff-modal .modal-footer {
+  border-top: 1px solid var(--mu-border);
+}
+
+.staff-modal .form-label {
+  font-size: 13px;
+  color: var(--mu-muted);
+}
+
+.staff-modal .form-control,
+.staff-modal .form-select {
+  background-color: var(--mu-dark) !important;
+  border: 1px solid var(--mu-border) !important;
+  color: #fff !important;
+}
+
+.staff-modal .form-control:focus,
+.staff-modal .form-select:focus {
+  border-color: var(--mu-red) !important;
+  box-shadow: 0 0 0 0.2rem rgba(218, 41, 28, 0.25) !important;
+}
+
+.preview-image{
+  width:140px;
+  height:140px;
+  object-fit:cover;
+  border-radius:20px;
+  border:3px solid #DA291C;
+  margin-top:10px;
+}
+.staff-avatar{
+  width:80px;
+  height:80px;
+}
+
+.staff-avatar-img{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #DA291C;
+}
+
+.staff-avatar-placeholder{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:#DA291C;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:28px;
+  font-weight:700;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 576px) {
+  .staff-container {
+    padding: 15px;
+  }
+}
