@@ -24,6 +24,8 @@ export default function Navbar() {
                 <Link to="/ndeshjet">{link}</Link>
               ) : link === "Shop" ? (
                 <Link to="/Store">{link}</Link>
+              ) : link === "Lojtarët" ? (
+                <Link to="/players">{link}</Link>
               ) : (
                 <a href="#">{link}</a>
               )}
@@ -35,10 +37,10 @@ export default function Navbar() {
         <div
           className="mu-avatar"
           onClick={() => navigate("/ProfilePage")}
-          title={`${user.emri} ${user.mbiemri}`}
+          title={`${user.emri ?? ""} ${user.mbiemri ?? ""}`}
         >
-          {user.emri[0]}
-          {user.mbiemri[0]}
+          {user.emri?.[0] ?? ""}
+          {user.mbiemri?.[0] ?? ""}
         </div>
         <button
           className="mu-btn-solid"

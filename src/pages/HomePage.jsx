@@ -1,10 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./ManchesterUnitedHome.css";
 import Navbar from "../Components/NavBar";
-
-const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tabela", "Shop"];
 
 const TICKER_ITEMS = [
   "Man United  2 – 1  Arsenal · Premier League",
@@ -22,11 +19,11 @@ export default function ManchesterUnitedHome() {
   const tickerRef = useRef(null);
 
   useEffect(() => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  if (!isLoggedIn) {
-    navigate("/login");
-  }
-}, []);
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, []);
 
   useEffect(() => {
     const el = tickerRef.current;

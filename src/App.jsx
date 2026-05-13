@@ -10,9 +10,10 @@ import SeatsPage from "./pages/BuyTicketsPage/SeatsPage";
 import CartPage from "./pages/BuyTicketsPage/CartPage";
 import ConfirmationPage from "./pages/BuyTicketsPage/ConfirmationPage";
 import ProfilePage from "./pages/ProfilePages/ProfilePage";
-import Store from "./pages/Store"
+import Store from "./pages/Store";
 import Dashboard from "./pages/Dashboard";
 import Staff from "./pages/Staff";
+import Players from "./Players";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/ndeshjet" element={<Ndeshjet />} />
+          <Route path="/players" element={<Players />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/preferences" element={<Preferences />} />
@@ -28,11 +30,9 @@ export default function App() {
           <Route path="/SeatsPage/:matchId/:sectorId" element={<SeatsPage />} />
           <Route path="/CartPage" element={<CartPage />} />
           <Route path="/ConfirmationPage" element={<ConfirmationPage />} />
-             <Route path="/staff" element={<Staff />} />
-       
-         
+          <Route path="/staff" element={<Staff />} />
           <Route path="/ProfilePage" element={<ProfilePage />} />
-           <Route path="/Store" element={<Store />} />
+          <Route path="/Store" element={<Store />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
