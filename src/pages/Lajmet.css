@@ -1,0 +1,111 @@
+
+.lajmet-page {
+  background-color: #1a1a1a;
+  min-height: 100vh;
+}
+
+.lajmet-hero {
+  background: linear-gradient(135deg, #da291c 0%, #8b0000 60%, #1a1a1a 100%);
+  padding: 60px 0 40px;
+}
+
+.lajmet-hero h1 {
+  font-size: clamp(48px, 8vw, 80px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.lajmet-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 16px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lajmet-tab-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lajmet-tab-btn.active {
+  border-bottom-color: #da291c;
+  color: #fff;
+}
+
+.lajmet-hero-card {
+  height: 420px;
+  cursor: pointer;
+}
+
+.lajmet-hero-card img {
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.lajmet-hero-card:hover img {
+  opacity: 0.65;
+}
+
+.lajmet-overlay {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+}
+
+.badge-transferime { background-color: #e74c3c !important; }
+.badge-ndeshje { background-color: #2ecc71 !important; }
+.badge-lendime { background-color: #f39c12 !important; }
+.badge-klubi { background-color: #3498db !important; }
+.badge-akademia { background-color: #9b59b6 !important; }
+
+.lajmet-card {
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.lajmet-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lajmet-card-img {
+  height: 200px;
+}
+
+.lajmet-card:hover .lajmet-card-img img {
+  transform: scale(1.05);
+}
+
+.lajmet-card-img img {
+  transition: transform 0.3s;
+}
+
+.lajmet-card p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.admin-btn {
+  background: linear-gradient(135deg, #d00000, #ff3b3b);
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(255, 0, 0, 0.25);
+}
+
+.admin-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #ff1f1f, #ff5c5c);
+  box-shadow: 0 10px 22px rgba(255, 0, 0, 0.35);
+}

@@ -26,7 +26,10 @@ export default function Navbar() {
                 <Link to="/Store">{link}</Link>
               ) : link === "Lojtarët" ? (
                 <Link to="/players">{link}</Link>
-              ) : (
+              ): link === "Lajmet" ? (
+                <Link to="/lajmet">{link}</Link>
+              )
+              : (
                 <a href="#">{link}</a>
               )}
             </li>

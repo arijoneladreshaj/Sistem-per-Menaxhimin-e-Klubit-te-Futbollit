@@ -4,11 +4,12 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); 
 
-app.use("/api/players",   require("./routes/players"));
-app.use("/api/staff", require("./routes/Staff"));
+app.use("/api/players",   require("./Routes/Players"));
+app.use("/api/staff", require("./Routes/Staff"));
 app.use("/api/matches",   require("./Routes/Ndeshjet"));
+app.use("/api/lajme", require("./Routes/Lajmet"));
 /*app.use("/api/clubs",     require("./routes/clubs"));
 app.use("/api/matches",   require("./routes/matches"));
 app.use("/api/staff",     require("./routes/staff"));
@@ -19,3 +20,4 @@ app.use("/api/seasons",   require("./routes/seasons"));
 app.use("/api/training",  require("./routes/training"));*/
 
 app.listen(5000, () => console.log("Server ne port 5000"));
+

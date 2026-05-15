@@ -14,6 +14,7 @@ import Store from "./pages/Store";
 import Dashboard from "./pages/Dashboard";
 import Staff from "./pages/Staff";
 import Players from "./Players";
+import Lajmet from "./pages/Lajmet";
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/ProfilePage" element={<ProfilePage />} />
           <Route path="/Store" element={<Store />} />
           <Route path="/dashboard" element={<Dashboard />} />
+           <Route path="/lajmet" element={<Lajmet />} />
         </Routes>
       </BrowserRouter>
     </CartProvider>
