@@ -11,9 +11,12 @@ import CartPage from "./pages/BuyTicketsPage/CartPage";
 import ConfirmationPage from "./pages/BuyTicketsPage/ConfirmationPage";
 import ProfilePage from "./pages/ProfilePages/ProfilePage";
 import Store from "./pages/Store";
-import Dashboard from "./pages/Dashboard";
-import Staff from "./pages/Staff";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Staff from "./pages/Dashboard/Staff";
 import Players from "./Players";
+import DashboardNdeshjet from "./pages/Dashboard/DashboardNdeshjet";
+import DashboardStore from "./pages/Dashboard/DashboardStore";
+import StoreConfirmation from "./pages/StoreConfirmation";
 
 export default function App() {
   return (
@@ -34,6 +37,9 @@ export default function App() {
           <Route path="/ProfilePage" element={<ProfilePage />} />
           <Route path="/Store" element={<Store />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboardNdeshjet" element={<DashboardNdeshjet />}/>
+          <Route path="/StoreConfirmation" element={<StoreConfirmation />} />
+          <Route path="/DashboardStore" element={<DashboardStore/>} />
         </Routes>
       </BrowserRouter>
     </CartProvider>

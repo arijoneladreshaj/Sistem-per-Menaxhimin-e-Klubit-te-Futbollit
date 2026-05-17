@@ -288,3 +288,30 @@
     transform: translateX(-50%);
   }
 }
+.nd-crud-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  padding-left: 16px;
+}
+.nd-crud-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.nd-crud-btn:hover { opacity: 0.85; }
+.nd-crud-edit {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+.nd-crud-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}

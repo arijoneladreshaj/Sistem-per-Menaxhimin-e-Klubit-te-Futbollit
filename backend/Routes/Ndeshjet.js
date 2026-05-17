@@ -86,7 +86,7 @@ router.post("/", async (req, res) => {
       .input("club_id", sql.Int, club_id)
       .input("ekipi_kundershtare", sql.NVarChar, ekipi_kundershtare)
       .input("data_ndeshjes", sql.Date, data_ndeshjes)
-      .input("ora", sql.Time, ora)
+      .input("ora", sql.VarChar, ora || null)
       .input("stadiumi", sql.NVarChar, stadiumi)
       .input("lloji_kompeticionit", sql.NVarChar, lloji_kompeticionit)
       .input("rezultati_shtepia", sql.TinyInt, rezultati_shtepia)

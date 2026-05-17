@@ -29,7 +29,9 @@ export default function ProfilePage() {
   const [tickets, setTickets] = useState(
     JSON.parse(localStorage.getItem(`myTickets_${userEmail}`) || "[]"),
   );
-
+  const [orders, setOrders] = useState(
+  JSON.parse(localStorage.getItem(`myOrders_${userEmail}`) || "[]")
+);
   if (!storedUser.emri) {
     return (
       <div className="pp-empty">
@@ -126,6 +128,15 @@ export default function ProfilePage() {
                   </span>
                 )}
               </div>
+              <div
+  className={`pp-nav-link ${activeTab === "porosite" ? "pp-nav-link--active" : ""}`}
+  onClick={() => setActiveTab("porosite")}
+>
+  Blerjet e Mia
+  {orders.length > 0 && (
+    <span className="pp-badge">{orders.length}</span>
+  )}
+</div>
 
               <div className="pp-divider" />
 
@@ -291,6 +302,82 @@ export default function ProfilePage() {
                   )}
                 </div>
               )}
+              {activeTab === "porosite" && (
+  <div className="pp-section">
+    <h2 className="pp-section-title">Blerjet e Mia</h2>
+
+    {orders.length === 0 ? (
+      <div className="pp-no-tickets">
+        <p>Nuk ke blerje ende.</p>
+
+        <button
+          className="btn btn-danger pp-buy-btn"
+          onClick={() => navigate("/store")}
+        >
+          Shko te Dyqani
+        </button>
+      </div>
+    ) : (
+      <div className="pp-orders">
+        {[...orders].reverse().map((order) => (
+          <div key={order.id} className="pp-order">
+           <div className="pp-order-header">
+  <div>
+    <span className="pp-order-id">
+      Porosia #{order.id}
+    </span>
+
+    <span className="pp-order-date">
+      {order.date} · {order.time}
+    </span>
+  </div>
+
+  <span className="pp-order-total">
+    €{order.total.toFixed(2)}
+  </span>
+
+  <button
+    className="btn btn-sm btn-outline-danger"
+    onClick={() => {
+      setOrderToDelete(order.id);
+      setShowDeleteModal(true);
+    }}
+  >
+    Anulo
+  </button>
+</div>
+
+            {order.items.map((item, idx) => (
+              <div key={idx} className="pp-seat-row">
+                <div className="pp-seat-left">
+                  <span className="pp-seat-num">
+                    {item.name}
+                  </span>
+
+                  <span className="pp-seat-sector">
+                    Madhësia: {item.selectedSize}
+                  </span>
+
+                  <span className="pp-passenger">
+                    Sasia: x{item.qty}
+                  </span>
+                </div>
+
+                <span className="pp-seat-price">
+                  €{(item.price * item.qty).toFixed(2)}
+                </span>
+              </div>
+            ))}
+
+            <div className="pp-order-footer">
+              📦 Cash on Delivery
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
             </div>
           </div>
         </div>

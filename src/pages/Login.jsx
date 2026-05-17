@@ -17,35 +17,73 @@ function Login() {
     return newErrors;
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const newErrors = validate();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    setErrors({});
+ const handleLogin = async (e) => {
 
-    // Merr userin nga localStorage (u ruajt gjatë regjistrimit)
-    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
-    if (!savedUser.email) {
-      setErrors({
-        general: "Nuk ekziston asnjë llogari. Regjistrohu fillimisht!",
-      });
-      return;
-    }
-    // Kontrollo nëse email/username përputhet
-    if (savedUser.email === username || savedUser.emri === username) {
-      if (savedUser.password === password) {
-        localStorage.setItem("isLoggedIn", "true");
-        navigate("/preferences");
-      } else {
-        setErrors({ general: "Email/Username ose fjalëkalim i gabuar!" });
-      }
-    } else {
-      setErrors({ general: "Email/Username ose fjalëkalim i gabuar!" });
-    }
-  };
+  e.preventDefault();
+
+  const newErrors = validate();
+
+  if (Object.keys(newErrors).length > 0) {
+
+    setErrors(newErrors);
+
+    return;
+  }
+
+  setErrors({});
+
+   
+   try {
+
+  const res = await fetch("http://localhost:5000/login", {
+
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      username,
+      password,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+
+    setErrors({
+      general: data.message,
+    });
+
+    return;
+  }
+
+  localStorage.setItem("isLoggedIn", "true");
+
+  localStorage.setItem("role", data.role);
+
+  localStorage.setItem("user", JSON.stringify(data));
+
+  if (data.role === "Admin") {
+
+  navigate("/dashboard");
+
+} else {
+
+  navigate("/preferences");
+}
+
+} catch (err) {
+
+  console.log(err);
+
+  setErrors({
+    general: "Server error",
+  });
+}
+ };
 
   return (
     <div className="page">
@@ -111,7 +149,7 @@ function Login() {
           <a href="#">Ke harruar fjalëkalimin?</a>
         </div> */}
 
-        <button className="btn-login" onClick={handleLogin}>
+        <button type="button" className="btn-login" onClick={handleLogin}>
           KYÇU
         </button>
         {errors.general && <span className="error">{errors.general}</span>}

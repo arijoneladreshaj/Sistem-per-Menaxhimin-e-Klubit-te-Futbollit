@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import axios from "axios";
+import React, { useEffect, useState, useMemo } from "react";
+import { Link,useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ShippingModal from './ShippingModal';
 
@@ -9,24 +10,24 @@ const FONT_H = "'Bebas Neue', sans-serif";
 const FONT_B = "'Barlow', sans-serif";
 
 const ALL_PRODUCTS = [
-  { id:1,  name:'Home Kit 25/26',         cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:'I RI',     player:null, num:null, icon:'👕', bg:'rgba(0,0,0,0.25)', sizes:['S','M','L','XL','XXL'] },
-  { id:2,  name:'Away Kit 25/26',          cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:'AWAY',     player:null, num:null, icon:'👕', bg:'rgba(0,0,0,0.4)',  sizes:['S','M','L','XL'] },
-  { id:3,  name:'Third Kit 25/26',         cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:null,       player:null, num:null, icon:'👕', bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL','XXL'] },
-  { id:4,  name:'Home Kit - Fëmijë',       cat:'Fanella',    sub:'Fëmijë',        price:64.99,  oldPrice:null,   badge:'I RI',     player:null, num:null, icon:'👕', bg:'rgba(0,0,0,0.25)', sizes:['3-4','5-6','7-8','9-10','11-12'] },
-  { id:5,  name:'Home Kit - Gra',          cat:'Fanella',    sub:'Gra',           price:79.99,  oldPrice:null,   badge:null,       player:null, num:null, icon:'👕', bg:'rgba(0,0,0,0.2)',  sizes:['XS','S','M','L','XL'] },
-  { id:6,  name:'Rashford #10',            cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'RASHFORD', num:'10', icon:null, bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL','XXL'] },
-  { id:7,  name:'Fernandes #8',            cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'FERNANDES', num:'8',  icon:null, bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL','XXL'] },
-  { id:8,  name:'Mount #7',               cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'MOUNT',     num:'7',  icon:null, bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL'] },
-  { id:9,  name:'Xhaketa Trajnimit',       cat:'Trajnim',    sub:'Burra',         price:54.99,  oldPrice:79.00,  badge:'30% ULJE', player:null, num:null, icon:'🧥', bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL','XXL'] },
-  { id:10, name:'Pantallona Trajnimi',      cat:'Trajnim',    sub:'Burra',         price:44.99,  oldPrice:60.00,  badge:'25% ULJE', player:null, num:null, icon:'👖', bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL'] },
-  { id:11, name:'Komplet Trajnimi',         cat:'Trajnim',    sub:'Burra',         price:94.99,  oldPrice:130.00, badge:'KOMPLETE', player:null, num:null, icon:'🧥', bg:'rgba(0,0,0,0.35)', sizes:['S','M','L','XL','XXL'] },
-  { id:12, name:'Xhaketa Trajnimit - Gra', cat:'Trajnim',    sub:'Gra',           price:54.99,  oldPrice:null,   badge:null,       player:null, num:null, icon:'🧥', bg:'rgba(0,0,0,0.2)',  sizes:['XS','S','M','L','XL'] },
-  { id:13, name:'Kapela MU 2025',           cat:'Aksesore',   sub:'Aksesore',      price:29.99,  oldPrice:null,   badge:null,       player:null, num:null, icon:'🧢', bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
-  { id:14, name:'Shalli MU',               cat:'Aksesore',   sub:'Aksesore',      price:24.99,  oldPrice:null,   badge:null,       player:null, num:null, icon:'🧣', bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
-  { id:15, name:'Çorapet MU',              cat:'Aksesore',   sub:'Aksesore',      price:14.99,  oldPrice:null,   badge:null,       player:null, num:null, icon:'🧦', bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L'] },
-  { id:16, name:'Top Zyrtar MU',           cat:'Aksesore',   sub:'Aksesore',      price:34.99,  oldPrice:49.99,  badge:'30% ULJE', player:null, num:null, icon:'⚽', bg:'rgba(0,0,0,0.25)', sizes:['ONE SIZE'] },
-  { id:17, name:'Mug MU',                  cat:'Memorabilia',sub:'Memorabilia',   price:19.99,  oldPrice:null,   badge:null,       player:null, num:null, icon:'☕', bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
-  { id:18, name:'Foto e Nënshkruar',        cat:'Memorabilia',sub:'Memorabilia',   price:149.99, oldPrice:null,   badge:'EKSKL.',   player:null, num:null, icon:'🖼️', bg:'rgba(0,0,0,0.3)',  sizes:['ONE SIZE'] },
+  { id:1,  name:'Home Kit 25/26',         cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:'I RI',     player:null,        num:null, img:'/Store/HomeKit.png',             bg:'rgba(0,0,0,0.25)', sizes:['S','M','L','XL','XXL'] },
+  { id:2,  name:'Away Kit 25/26',          cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:'AWAY',     player:null,        num:null, img:'/Store/AwayKit.png',             bg:'rgba(0,0,0,0.4)',  sizes:['S','M','L','XL'] },
+  { id:3,  name:'Third Kit 25/26',         cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/ThirdKit.png',            bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL','XXL'] },
+  { id:4,  name:'Home Kit - Fëmijë',       cat:'Fanella',    sub:'Fëmijë',        price:64.99,  oldPrice:null,   badge:'I RI',     player:null,        num:null, img:'/Store/HomeKitKids.png',         bg:'rgba(0,0,0,0.25)', sizes:['3-4','5-6','7-8','9-10','11-12'] },
+  { id:5,  name:'Home Kit - Gra',          cat:'Fanella',    sub:'Gra',           price:79.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/HomeKitWomen.png',        bg:'rgba(0,0,0,0.2)',  sizes:['XS','S','M','L','XL'] },
+  { id:6,  name:'Rashford #10',            cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'RASHFORD',  num:'10', img:'/Store/Rashford.png',            bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL','XXL'] },
+  { id:7,  name:'Fernandes #8',            cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'FERNANDES', num:'8',  img:'/Store/Fernandes.png',           bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL','XXL'] },
+  { id:8,  name:'Mount #7',               cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'MOUNT',     num:'7',  img:'/Store/Mount.png',               bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL'] },
+  { id:9,  name:'Xhaketa Trajnimit',       cat:'Trajnim',    sub:'Burra',         price:54.99,  oldPrice:79.00,  badge:'30% ULJE', player:null,        num:null, img:'/Store/TrainingJacket.png',      bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL','XXL'] },
+  { id:10, name:'Pantallona Trajnimi',      cat:'Trajnim',    sub:'Burra',         price:44.99,  oldPrice:60.00,  badge:'25% ULJE', player:null,        num:null, img:'/Store/TrainingPants.png',       bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL'] },
+  { id:11, name:'Komplet Trajnimi',         cat:'Trajnim',    sub:'Burra',         price:94.99,  oldPrice:130.00, badge:'KOMPLETE', player:null,        num:null, img:'/Store/TrainingSuit.png',        bg:'rgba(0,0,0,0.35)', sizes:['S','M','L','XL','XXL'] },
+  { id:12, name:'Xhaketa Trajnimit - Gra', cat:'Trajnim',    sub:'Gra',           price:54.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/TrainingJacketWomen.png', bg:'rgba(0,0,0,0.2)',  sizes:['XS','S','M','L','XL'] },
+  { id:13, name:'Kapela MU 2025',           cat:'Aksesore',   sub:'Aksesore',      price:29.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/hat.png',                 bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
+  { id:14, name:'Shalli MU',               cat:'Aksesore',   sub:'Aksesore',      price:24.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/scarf.png',               bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
+  { id:15, name:'Çorapet MU',              cat:'Aksesore',   sub:'Aksesore',      price:14.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/socks.png',               bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L'] },
+  { id:16, name:'Top Zyrtar MU',           cat:'Aksesore',   sub:'Aksesore',      price:34.99,  oldPrice:49.99,  badge:'30% ULJE', player:null,        num:null, img:'/Store/ball.png',                bg:'rgba(0,0,0,0.25)', sizes:['ONE SIZE'] },
+  { id:17, name:'Mug MU',                  cat:'Memorabilia',sub:'Memorabilia',   price:19.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/mug.png',                 bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
+  { id:18, name:'Foto e Nënshkruar',        cat:'Memorabilia',sub:'Memorabilia',   price:149.99, oldPrice:null,   badge:'EKSKL.',   player:null,        num:null, img:'/Store/signedPhoto.jpg',         bg:'rgba(0,0,0,0.3)',  sizes:['ONE SIZE'] },
 ];
 
 const CATEGORIES    = ['Të gjitha','Fanella','Trajnim','Aksesore','Memorabilia'];
@@ -48,7 +49,7 @@ if (!document.getElementById('mu-store-fonts')) {
 }
 
 // ── CART SIDEBAR ──────────────────────────────────────────────────────────────
-function CartSidebar({ cart, onClose, onRemove, onClear }) {
+function CartSidebar({ cart, onClose, onRemove, onClear, onCheckout }) {
   const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
   return (
     <>
@@ -74,12 +75,15 @@ function CartSidebar({ cart, onClose, onRemove, onClear }) {
           ) : cart.map(item => (
             <div key={item.cartId} className="d-flex align-items-center gap-3 py-3" style={{borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
               <div className="d-flex align-items-center justify-content-center rounded-2 flex-shrink-0" style={{width:60,height:60,background:'rgba(255,255,255,0.08)'}}>
-                {item.player
-                  ? <div className="text-center" style={{lineHeight:1}}>
-                      <div style={{fontSize:7,fontFamily:FONT_B,letterSpacing:1,color:'rgba(255,255,255,0.45)',textTransform:'uppercase'}}>{item.player}</div>
-                      <div style={{fontSize:18,fontFamily:FONT_H,color:'#fff',letterSpacing:0.5}}>#{item.num}</div>
-                    </div>
-                  : <span style={{fontSize:26}}>{item.icon}</span>}
+               {item.img
+  ? <img src={item.img} alt={item.name}
+      style={{ width:48, height:48, objectFit:'contain' }} />
+  : item.player
+    ? <div className="text-center" style={{lineHeight:1}}>
+        <div style={{fontSize:7,fontFamily:FONT_B,letterSpacing:1,color:'rgba(255,255,255,0.45)',textTransform:'uppercase'}}>{item.player}</div>
+        <div style={{fontSize:18,fontFamily:FONT_H,color:'#fff',letterSpacing:0.5}}>#{item.num}</div>
+      </div>
+    : <span style={{fontSize:26}}>{item.icon}</span>}
               </div>
               <div className="flex-fill">
                 <div style={{fontFamily:FONT_H,fontSize:15,color:'#fff',letterSpacing:0.5}}>{item.name}</div>
@@ -114,9 +118,9 @@ function CartSidebar({ cart, onClose, onRemove, onClear }) {
                 </div>
               </div>
             )}
-            <button className="btn w-100 fw-bold mb-2" style={{background:'#fff',color:RED,fontFamily:FONT_H,fontSize:16,letterSpacing:2,padding:13,border:'none',borderRadius:0}}>
-              <i className="bi bi-lock me-2"></i>VAZHDO · €{(total+(total>=75?0:4.99)).toFixed(2)}
-            </button>
+           <button onClick={onCheckout} className="btn w-100 fw-bold mb-2" style={{background:'#fff',color:RED,fontFamily:FONT_H,fontSize:16,letterSpacing:2,padding:13,border:'none',borderRadius:0}}>
+  <i className="bi bi-lock me-2"></i>VAZHDO · €{(total+(total>=75?0:4.99)).toFixed(2)}
+</button>
             <button onClick={onClear} className="btn w-100" style={{border:'1px solid rgba(255,255,255,0.2)',color:'rgba(255,255,255,0.5)',fontFamily:FONT_B,fontWeight:600,fontSize:12,borderRadius:0,background:'transparent'}}>
               Pastro shportën
             </button>
@@ -169,7 +173,14 @@ function SizeModal({ product, onConfirm, onClose }) {
 }
 
 // ── PRODUCT CARD ──────────────────────────────────────────────────────────────
-function ProductCard({ product, onAdd, onWishlist, wishlisted }) {
+function ProductCard({   
+  product,
+  onAdd,
+  onWishlist,
+  wishlisted,
+  role,
+  navigate,
+  handleDelete }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div className="col">
@@ -187,12 +198,15 @@ function ProductCard({ product, onAdd, onWishlist, wishlisted }) {
       >
         <div className="d-flex align-items-center justify-content-center position-relative"
           style={{height:200,background:product.bg,overflow:'hidden'}}>
-          {product.player
-            ? <div className="text-center">
-                <div style={{fontFamily:FONT_B,fontSize:11,fontWeight:700,letterSpacing:2,color:'rgba(255,255,255,0.45)',textTransform:'uppercase'}}>{product.player}</div>
-                <div style={{fontFamily:FONT_H,fontSize:62,color:'#fff',lineHeight:1}}>#{product.num}</div>
-              </div>
-            : <span style={{fontSize:60}}>{product.icon}</span>}
+  {product.img
+  ? <img src={product.img} alt={product.name}
+      style={{ width:'75%', height:'75%', objectFit:'contain' }} />
+  : product.player
+    ? <div className="text-center">
+        <div style={{fontFamily:FONT_B,fontSize:11,fontWeight:700,letterSpacing:2,color:'rgba(255,255,255,0.45)',textTransform:'uppercase'}}>{product.player}</div>
+        <div style={{fontFamily:FONT_H,fontSize:62,color:'#fff',lineHeight:1}}>#{product.num}</div>
+      </div>
+    : <span style={{fontSize:60}}>{product.icon}</span>}
           {product.badge && (
             <span className="position-absolute top-0 start-0 m-2"
               style={{background:'#fff',color:RED,fontSize:9,fontFamily:FONT_B,fontWeight:700,letterSpacing:1,padding:'3px 8px'}}>
@@ -213,6 +227,7 @@ function ProductCard({ product, onAdd, onWishlist, wishlisted }) {
             }}>
             SHTO NË SHPORTË
           </button>
+          
         </div>
         <div className="p-3">
           <div style={{fontSize:10,color:'rgba(255,255,255,0.38)',letterSpacing:1.5,fontFamily:FONT_B,fontWeight:600,textTransform:'uppercase',marginBottom:4}}>{product.cat} · {product.sub}</div>
@@ -234,6 +249,8 @@ function ProductCard({ product, onAdd, onWishlist, wishlisted }) {
 
 // ── STORE PAGE ────────────────────────────────────────────────────────────────
 export default function Store() {
+  const role = localStorage.getItem("role");
+  const [products, setProducts] = useState([]);
   const [activeCat, setActiveCat]       = useState('Të gjitha');
   const [activeSubs, setActiveSubs]     = useState([]);
   const [sortBy, setSortBy]             = useState('default');
@@ -245,6 +262,37 @@ export default function Store() {
   const [sizeProduct, setSizeProduct]   = useState(null);
   const [toast, setToast]               = useState(null);
   const [shippingOpen, setShippingOpen] = useState(false);
+
+  useEffect(() => {
+
+  axios
+    .get("http://localhost:5000/store")
+
+    .then((res) => {
+
+      const formatted = res.data.map((p) => ({
+
+        ...p,
+
+        cat: p.category,
+
+        sub: p.subcategory,
+
+        img: p.imageUrl,
+
+        oldPrice: p.oldPrice,
+
+        sizes: p.sizes.split(",")
+
+      }));
+
+      setProducts(formatted);
+
+    })
+
+    .catch((err) => console.log(err));
+
+}, []);
 
   const showToast = msg => { setToast(msg); setTimeout(()=>setToast(null),2500); };
   const handleAdd = p => setSizeProduct(p);
@@ -262,8 +310,42 @@ export default function Store() {
   const toggleWishlist = id => setWishlist(prev => prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
   const toggleSub      = sub => setActiveSubs(prev => prev.includes(sub)?prev.filter(x=>x!==sub):[...prev,sub]);
 
+  const navigate = useNavigate();
+
+const handleCheckout = () => {
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const shipping = subtotal >= 75 ? 0 : 4.99;
+  navigate("/StoreConfirmation", {
+    state: {
+      order: {
+        items: cart,
+        subtotal,
+        shipping,
+        total: subtotal + shipping,
+      },
+    },
+  });
+  setCart([]);
+  setCartOpen(false);
+};
+const handleDelete = async (id) => {
+
+  try {
+
+    await axios.delete(`http://localhost:5000/store/${id}`);
+
+    setProducts(prev => prev.filter(p => p.id !== id));
+
+    showToast("Produkti u fshi");
+
+  } catch (err) {
+
+    console.log(err);
+  }
+};
+
   const filtered = useMemo(() => {
-    let list = ALL_PRODUCTS;
+    let list = products.length > 0 ? products : ALL_PRODUCTS;
     if (activeCat!=='Të gjitha') list = list.filter(p => p.cat===activeCat);
     if (activeSubs.length>0)    list = list.filter(p => activeSubs.includes(p.sub));
     if (search.trim())           list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
@@ -435,7 +517,13 @@ export default function Store() {
           ) : (
             <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3">
               {filtered.map(p=>(
-                <ProductCard key={p.id} product={p} onAdd={handleAdd} onWishlist={toggleWishlist} wishlisted={wishlist.includes(p.id)} />
+           <ProductCard
+           key={p.id}
+           product={p}
+           onAdd={handleAdd}
+           onWishlist={toggleWishlist}
+           wishlisted={wishlist.includes(p.id)}
+          />
               ))}
             </div>
           )}
@@ -454,7 +542,10 @@ export default function Store() {
 
       {/* MODALS */}
       {shippingOpen&&<ShippingModal onClose={()=>setShippingOpen(false)} />}
-      {cartOpen&&<CartSidebar cart={cart} onClose={()=>setCartOpen(false)} onRemove={id=>setCart(prev=>prev.filter(i=>i.cartId!==id))} onClear={()=>setCart([])} />}
+      {cartOpen && <CartSidebar cart={cart} onClose={()=>setCartOpen(false)}
+  onRemove={id=>setCart(prev=>prev.filter(i=>i.cartId!==id))}
+  onClear={()=>setCart([])}
+  onCheckout={handleCheckout} />}
       {sizeProduct&&<SizeModal product={sizeProduct} onConfirm={confirmAdd} onClose={()=>setSizeProduct(null)} />}
 
       {/* TOAST */}
