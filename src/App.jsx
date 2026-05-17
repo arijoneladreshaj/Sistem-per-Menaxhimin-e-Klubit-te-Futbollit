@@ -17,6 +17,8 @@ import Players from "./Players";
 import DashboardNdeshjet from "./pages/Dashboard/DashboardNdeshjet";
 import DashboardStore from "./pages/Dashboard/DashboardStore";
 import StoreConfirmation from "./pages/StoreConfirmation";
+import Lajmet from "./pages/Lajmet";
+
 
 export default function App() {
   return (
@@ -37,9 +39,12 @@ export default function App() {
           <Route path="/ProfilePage" element={<ProfilePage />} />
           <Route path="/Store" element={<Store />} />
           <Route path="/dashboard" element={<Dashboard />} />
+
           <Route path="/dashboardNdeshjet" element={<DashboardNdeshjet />}/>
           <Route path="/StoreConfirmation" element={<StoreConfirmation />} />
           <Route path="/DashboardStore" element={<DashboardStore/>} />
+           <Route path="/lajmet" element={<Lajmet />} />
+
         </Routes>
       </BrowserRouter>
     </CartProvider>
