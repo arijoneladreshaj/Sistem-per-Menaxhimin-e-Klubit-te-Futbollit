@@ -6,6 +6,15 @@ import "./pages/ManchesterUnitedHome.css";
 
 const LOCAL = (name) => `/players/${name}.png`;
 
+function slugPhoto(first, last) {
+  const norm = s => s.toLowerCase()
+    .replace(/[ıİ]/g, "i").replace(/[áàäâ]/g, "a").replace(/[éèëê]/g, "e")
+    .replace(/[íìïî]/g, "i").replace(/[óòöô]/g, "o").replace(/[úùüû]/g, "u")
+    .replace(/ñ/g, "n").replace(/ç/g, "c").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  const f = (first || "").trim(), l = (last || "").trim();
+  return `/players/${!f || f === l ? norm(l) : `${norm(f)}-${norm(l)}`}.png`;
+}
+
 // ── DB → UI mapper ────────────────────────────────────────────────────────────
 const POZ_MAP = {
   Portier:   { pos: "GK",  cat: "GK"  },
@@ -46,7 +55,7 @@ function mapPlayer(p) {
     rating:      70,
     captain:     false,
     onLoan:      p.statusi === "I transferuar",
-    photo:       null,
+    photo:       p.foto_url || slugPhoto(p.emri, p.mbiemri),
     bio:         `${p.emri} ${p.mbiemri} · ${p.pozicioni}${p.kombesia ? " · " + p.kombesia : ""}`,
     vlera:       p.vlera_tregut,
     statusi:     p.statusi,

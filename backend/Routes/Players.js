@@ -1,6 +1,28 @@
 const express = require("express");
-const router = express.Router();
+const router  = express.Router();
+const path    = require("path");
+const fs      = require("fs");
+const multer  = require("multer");
 const { sql, poolPromise } = require("../db");
+
+const UPLOAD_DIR = path.join(__dirname, "../../public/players");
+if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => cb(null, UPLOAD_DIR),
+  filename:    (_, file, cb) => {
+    const ext = path.extname(file.originalname) || ".jpg";
+    cb(null, `upload-${Date.now()}${ext}`);
+  },
+});
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_, file, cb) => {
+    if (file.mimetype.startsWith("image/")) cb(null, true);
+    else cb(new Error("Vetëm imazhe lejohen"));
+  },
+});
 
 const POZICIONET_VALID = ["Portier", "Mbrojtës", "Mesfushor", "Sulmues"];
 const STATUSET_VALID   = ["Aktiv", "Lenduar", "I transferuar", "I pensionuar"];
@@ -63,7 +85,7 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: `Statusi duhet të jetë: ${STATUSET_VALID.join(", ")}` });
 
     const pool = await poolPromise;
-    await pool.request()
+    const result = await pool.request()
       .input("club_id",       sql.Int,          club_id || 1)
       .input("emri",          sql.NVarChar(100), emri)
       .input("mbiemri",       sql.NVarChar(100), mbiemri)
@@ -79,11 +101,13 @@ router.post("/", async (req, res) => {
         INSERT INTO Players
           (club_id, emri, mbiemri, data_lindjes, kombesia,
            pozicioni, numri_faneles, pesha, gjatesia, statusi, vlera_tregut)
+        OUTPUT INSERTED.id
         VALUES
           (@club_id, @emri, @mbiemri, @data_lindjes, @kombesia,
            @pozicioni, @numri_faneles, @pesha, @gjatesia, @statusi, @vlera_tregut)
       `);
-    res.status(201).json({ success: true, message: "Lojtari u shtua" });
+    const newId = result.recordset[0].id;
+    res.status(201).json({ success: true, message: "Lojtari u shtua", id: newId });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -132,6 +156,56 @@ router.put("/:id", async (req, res) => {
         WHERE id = @id
       `);
     res.json({ success: true, message: "Lojtari u përditësua" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST photo upload
+router.post("/:id/photo", upload.single("foto"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "Nuk u dërgua asnjë file" });
+
+    const fotoUrl = `/players/${req.file.filename}`;
+    const pool = await poolPromise;
+
+    // delete old uploaded photo (not static ones)
+    const old = await pool.request()
+      .input("id", sql.Int, req.params.id)
+      .query("SELECT foto_url FROM Players WHERE id = @id");
+    const oldUrl = old.recordset[0]?.foto_url;
+    if (oldUrl && oldUrl.includes("upload-")) {
+      const oldPath = path.join(UPLOAD_DIR, path.basename(oldUrl));
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+
+    await pool.request()
+      .input("id",       sql.Int,           req.params.id)
+      .input("foto_url", sql.NVarChar(255),  fotoUrl)
+      .query("UPDATE Players SET foto_url = @foto_url WHERE id = @id");
+
+    res.json({ success: true, foto_url: fotoUrl });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE photo
+router.delete("/:id/photo", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const row = await pool.request()
+      .input("id", sql.Int, req.params.id)
+      .query("SELECT foto_url FROM Players WHERE id = @id");
+    const url = row.recordset[0]?.foto_url;
+    if (url && url.includes("upload-")) {
+      const filePath = path.join(UPLOAD_DIR, path.basename(url));
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    }
+    await pool.request()
+      .input("id", sql.Int, req.params.id)
+      .query("UPDATE Players SET foto_url = NULL WHERE id = @id");
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -192,11 +192,22 @@ const EMPTY = { club_id: 1, emri: "", mbiemri: "", data_lindjes: "", kombesia: "
 
 function PlayerModal({ player, onSave, onClose, saving }) {
   const isEdit = !!player?.id;
-  const [form, setForm]   = useState(player ? { ...player } : { ...EMPTY });
+  const [form, setForm]     = useState(player ? { ...player } : { ...EMPTY });
   const [errors, setErrors] = useState({});
+  const [photoFile, setPhotoFile]     = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(player?.foto_url || null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const fileInputRef = React.useRef();
   const age = calcAge(form.data_lindjes);
 
   const set = (k, v) => { setForm(f => ({ ...f, [k]: v })); setErrors(e => ({ ...e, [k]: undefined })); };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
 
   const validate = () => {
     const e = {};
@@ -217,7 +228,10 @@ function PlayerModal({ player, onSave, onClose, saving }) {
 
   const submit = () => {
     if (!validate()) return;
-    onSave({ ...form, numri_faneles: form.numri_faneles ? +form.numri_faneles : null, pesha: form.pesha ? +form.pesha : null, gjatesia: form.gjatesia ? +form.gjatesia : null, vlera_tregut: form.vlera_tregut ? +form.vlera_tregut : null });
+    onSave(
+      { ...form, numri_faneles: form.numri_faneles ? +form.numri_faneles : null, pesha: form.pesha ? +form.pesha : null, gjatesia: form.gjatesia ? +form.gjatesia : null, vlera_tregut: form.vlera_tregut ? +form.vlera_tregut : null },
+      photoFile
+    );
   };
 
   return (
@@ -293,6 +307,36 @@ function PlayerModal({ player, onSave, onClose, saving }) {
               <input type="number" step="0.1" className="form-control" style={INPUT(errors.gjatesia)} value={form.gjatesia || ""} onChange={e => set("gjatesia", e.target.value)} placeholder="181" />
               {errors.gjatesia && <small style={{ color: "#ff4d4d", fontSize: 11 }}>{errors.gjatesia}</small>}
             </div>
+          </div>
+
+          {/* Foto */}
+          <div className="mb-3">
+            <label style={LABEL}>Foto e Lojtarit</label>
+            <div className="d-flex align-items-center gap-3">
+              <div onClick={() => fileInputRef.current.click()} style={{
+                width: 80, height: 80, borderRadius: 6, overflow: "hidden", flexShrink: 0, cursor: "pointer",
+                background: "rgba(255,255,255,0.06)", border: "2px dashed rgba(255,255,255,0.2)",
+                display: "flex", alignItems: "center", justifyContent: "center", position: "relative",
+              }}>
+                {photoPreview
+                  ? <img src={photoPreview} alt="foto" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  : <i className="bi bi-camera" style={{ fontSize: 24, color: "rgba(255,255,255,0.3)" }} />}
+                <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0, transition: "opacity 0.2s" }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                  onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                  <i className="bi bi-pencil" style={{ color: "#fff", fontSize: 16 }} />
+                </div>
+              </div>
+              <div>
+                <button type="button" onClick={() => fileInputRef.current.click()} className="btn btn-sm d-block mb-1"
+                  style={{ background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", fontFamily: FONT_B, fontWeight: 700, fontSize: 11, letterSpacing: 1, borderRadius: 0 }}>
+                  <i className="bi bi-upload me-1" />{photoPreview ? "NDRYSHO FOTON" : "NGARKO FOTON"}
+                </button>
+                {uploadingPhoto && <small style={{ color: "#60a5fa", fontSize: 11 }}>Duke ngarkuar...</small>}
+                {photoPreview && !uploadingPhoto && <small style={{ color: "rgba(255,255,255,0.3)", fontSize: 11 }}>PNG, JPG, WebP · max 5MB</small>}
+              </div>
+            </div>
+            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePhotoChange} />
           </div>
 
           {/* Statusi + Vlera */}
@@ -397,15 +441,29 @@ export default function DashboardPlayers() {
   useEffect(() => { fetchPlayers(); }, []);
 
   /* ── CRUD ── */
-  const handleCreate = async (data) => {
+  const uploadPhoto = async (id, file) => {
+    const fd = new FormData();
+    fd.append("foto", file);
+    await axios.post(`${API}/${id}/photo`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+  };
+
+  const handleCreate = async (data, photoFile) => {
     setSaving(true);
-    try { await axios.post(API, data); showToast("Lojtari u shtua!"); setModalPlayer(null); fetchPlayers(); }
+    try {
+      const res = await axios.post(API, data);
+      if (photoFile) await uploadPhoto(res.data.id, photoFile);
+      showToast("Lojtari u shtua!"); setModalPlayer(null); fetchPlayers();
+    }
     catch (err) { showToast(err.response?.data?.error || "Gabim gjatë shtimit", "error"); }
     finally { setSaving(false); }
   };
-  const handleUpdate = async (data) => {
+  const handleUpdate = async (data, photoFile) => {
     setSaving(true);
-    try { await axios.put(`${API}/${data.id}`, data); showToast("Lojtari u përditësua!"); setModalPlayer(null); fetchPlayers(); }
+    try {
+      await axios.put(`${API}/${data.id}`, data);
+      if (photoFile) await uploadPhoto(data.id, photoFile);
+      showToast("Lojtari u përditësua!"); setModalPlayer(null); fetchPlayers();
+    }
     catch (err) { showToast(err.response?.data?.error || "Gabim gjatë përditësimit", "error"); }
     finally { setSaving(false); }
   };
