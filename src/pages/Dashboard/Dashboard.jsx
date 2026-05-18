@@ -63,7 +63,7 @@ const tickerItems = [
 
 const navLinks = [
   { section: "Kryesor",   items: [{ label: "Dashboard",    path: "/dashboard" }] },
-  { section: "Menaxhim",  items: [{ label: "Lojtarët",     path: "/players",   badge: 6  },
+  { section: "Menaxhim",  items: [{ label: "Lojtarët",     path: "/DashboardPlayers",   badge: 6  },
                                   { label: "Store", path: "/DashboardStore", badge: 18 },
                                    { label: "Stafi",        path: "/staff",     badge: 4  },
                                    { label: "Ndeshjet",     path: "/dashboardNdeshjet",   badge: 5  },

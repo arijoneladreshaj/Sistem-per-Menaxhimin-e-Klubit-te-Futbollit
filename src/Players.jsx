@@ -1,13 +1,60 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Navbar from "./Components/NavBar";
 import "./pages/ManchesterUnitedHome.css";
 
-// ── FOTO helper ───────────────────────────────────────────────────────────────
-const LOCAL = (slug) => `/players/${slug}.png`;
+const LOCAL = (name) => `/players/${name}.png`;
 
-// ── FULL SQUAD 2025/26 ───────────────────────────────────────────────────────
-const players = [
+// ── DB → UI mapper ────────────────────────────────────────────────────────────
+const POZ_MAP = {
+  Portier:   { pos: "GK",  cat: "GK"  },
+  Mbrojtës:  { pos: "CB",  cat: "DEF" },
+  Mesfushor: { pos: "CM",  cat: "MID" },
+  Sulmues:   { pos: "ST",  cat: "FWD" },
+};
+
+function mapPlayer(p) {
+  const { pos, cat } = POZ_MAP[p.pozicioni] || { pos: "CM", cat: "MID" };
+  const age = p.data_lindjes
+    ? Math.floor((Date.now() - new Date(p.data_lindjes)) / (1000 * 60 * 60 * 24 * 365.25))
+    : null;
+  const born = p.data_lindjes
+    ? new Date(p.data_lindjes).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : null;
+  return {
+    id:          p.id,
+    number:      p.numri_faneles ?? 0,
+    name:        p.emri,
+    surname:     p.mbiemri,
+    pos,
+    cat,
+    country:     p.kombesia ?? "",
+    flag:        "",
+    born,
+    age,
+    height:      p.gjatesia ? `${p.gjatesia} cm` : null,
+    weight:      p.pesha    ? `${p.pesha} kg`    : null,
+    foot:        null,
+    joined:      null,
+    contract:    null,
+    apps:        0,
+    goals:       0,
+    assists:     0,
+    saves:       0,
+    cleanSheets: 0,
+    rating:      70,
+    captain:     false,
+    onLoan:      p.statusi === "I transferuar",
+    photo:       null,
+    bio:         `${p.emri} ${p.mbiemri} · ${p.pozicioni}${p.kombesia ? " · " + p.kombesia : ""}`,
+    vlera:       p.vlera_tregut,
+    statusi:     p.statusi,
+  };
+}
+
+// ── (placeholder — do not delete) ─────────────────────────────────────────────
+const _staticPlayers = [
   // GOALKEEPERS
   {
     id: 1, number: 1, name: "Altay", surname: "Bayındır",
@@ -795,7 +842,8 @@ function CarouselRow({ players: rowP, onSelect }) {
 }
 
 // ── SEASON HIGHLIGHTS ─────────────────────────────────────────────────────────
-function SeasonHighlights() {
+function SeasonHighlights({ players }) {
+  if (!players.length) return null;
   const topScorer  = players.reduce((a, b) => b.goals   > a.goals   ? b : a);
   const topAssists = players.reduce((a, b) => b.assists > a.assists ? b : a);
   const topRating  = players.reduce((a, b) => b.rating  > a.rating  ? b : a);
@@ -867,9 +915,16 @@ function SectionHeader({ title, count, num }) {
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 export default function Players() {
+  const [players, setPlayers] = useState(_staticPlayers);
   const [filter, setFilter]   = useState("ALL");
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    axios.get("http://localhost:5001/players")
+      .then(r => { if (r.data.length) setPlayers(r.data.map(mapPlayer)); })
+      .catch(() => {});
+  }, []);
 
   const modalIdx = selected ? players.findIndex(p => p.id === selected.id) : -1;
   const sections = filter === "ALL" ? SECTION_MAP : SECTION_MAP.filter(s => s.cat === filter);
@@ -956,7 +1011,7 @@ export default function Players() {
         </div>
       </div>
 
-      <SeasonHighlights />
+      <SeasonHighlights players={players} />
 
       {/* SECTIONS */}
       {sections.map(sec => {
