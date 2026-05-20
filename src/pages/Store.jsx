@@ -266,7 +266,7 @@ export default function Store() {
   useEffect(() => {
 
   axios
-    .get("http://localhost:5000/store")
+    .get("http://localhost:5001/store")
 
     .then((res) => {
 
@@ -332,7 +332,7 @@ const handleDelete = async (id) => {
 
   try {
 
-    await axios.delete(`http://localhost:5000/store/${id}`);
+    await axios.delete(`http://localhost:5001/store/${id}`);
 
     setProducts(prev => prev.filter(p => p.id !== id));
 

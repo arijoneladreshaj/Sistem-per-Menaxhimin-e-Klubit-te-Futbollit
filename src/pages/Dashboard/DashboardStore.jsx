@@ -3,7 +3,7 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const API = "http://localhost:5000/store";
+const API = "http://localhost:5001/store";
 
 const RED = "#cc0000";
 const DARK = "#1a0000";

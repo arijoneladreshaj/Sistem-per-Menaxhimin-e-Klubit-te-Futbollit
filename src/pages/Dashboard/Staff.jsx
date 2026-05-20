@@ -5,7 +5,7 @@ import {
 } from "react-bootstrap";
 import "./Staff.css";
 
-const API = "http://localhost:5000/api/staff";
+const API = "http://localhost:5001/api/staff";
 
 const ROLET = [
   "Trajner Kryesor", "Asistent Trajner", "Trajner Portierësh",

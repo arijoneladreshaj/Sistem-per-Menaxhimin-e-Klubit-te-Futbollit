@@ -6,7 +6,7 @@ import { Modal, Form, Row, Col } from "react-bootstrap";
 import "./Dashboard.css";
 
 
-const API = "http://localhost:5000/api/ndeshjet";
+const API = "http://localhost:5001/api/ndeshjet";
 
 const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tablela", "Shop"];
 
