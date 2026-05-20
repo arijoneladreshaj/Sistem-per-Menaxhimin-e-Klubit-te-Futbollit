@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 import "./Login.css";
 import "./Preferences.css";
+
+const API = "http://localhost:5000/api/preferences";
 
 function Preferences() {
   const navigate = useNavigate();
@@ -35,9 +38,19 @@ function Preferences() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     localStorage.setItem("preferences", JSON.stringify(selected));
     localStorage.setItem("isLoggedIn", "true");
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user.id) {
+      try {
+        await axios.put(`${API}/${user.id}`, { topics: selected });
+      } catch (err) {
+        console.error("Preferences save error:", err);
+      }
+    }
+
     setSubmitted(true);
     setTimeout(() => navigate("/"), 2000);
   };

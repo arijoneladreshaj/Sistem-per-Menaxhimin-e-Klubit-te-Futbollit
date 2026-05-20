@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import axios from "axios";
 import "./ManchesterUnitedHome.css";
 import "./Ndeshjet.css";
+
+const API = "http://localhost:5000/api/ndeshjet";
 
 const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tablela", "Shop"];
 
@@ -23,208 +26,6 @@ const RESULT_COLOR_CLASS = {
   upcoming: "upcoming",
 };
 
-const RESULTS = [
-  {
-    month: "Prill 2026",
-    matches: [
-      {
-        day: "E Shtunë",
-        date: "12 Prill",
-        comp: "PL",
-        home: "Man United",
-        away: "Tottenham",
-        score: "3 – 1",
-        result: "win",
-        venue: "Old Trafford",
-      },
-      {
-        day: "E Martë",
-        date: "8 Prill",
-        comp: "UCL",
-        home: "Man United",
-        away: "PSG",
-        score: "1 – 1",
-        result: "draw",
-        venue: "Old Trafford",
-      },
-      {
-        day: "E Shtunë",
-        date: "5 Prill",
-        comp: "PL",
-        home: "Bournemouth",
-        away: "Man United",
-        score: "0 – 2",
-        result: "win",
-        venue: "Vitality",
-      },
-    ],
-  },
-  {
-    month: "Mars 2026",
-    matches: [
-      {
-        day: "E Martë",
-        date: "18 Mars",
-        comp: "UCL",
-        home: "PSG",
-        away: "Man United",
-        score: "2 – 1",
-        result: "loss",
-        venue: "Parc des Princes",
-      },
-      {
-        day: "E Shtunë",
-        date: "15 Mars",
-        comp: "PL",
-        home: "Man United",
-        away: "Arsenal",
-        score: "2 – 1",
-        result: "win",
-        venue: "Old Trafford",
-      },
-      {
-        day: "E Diel",
-        date: "9 Mars",
-        comp: "FA",
-        home: "Man United",
-        away: "Leicester",
-        score: "4 – 0",
-        result: "win",
-        venue: "Old Trafford",
-      },
-      {
-        day: "E Shtunë",
-        date: "1 Mars",
-        comp: "PL",
-        home: "Chelsea",
-        away: "Man United",
-        score: "2 – 2",
-        result: "draw",
-        venue: "Stamford Bridge",
-      },
-    ],
-  },
-  {
-    month: "Shkurt 2026",
-    matches: [
-      {
-        day: "E Shtunë",
-        date: "22 Shkurt",
-        comp: "PL",
-        home: "Man United",
-        away: "Liverpool",
-        score: "1 – 3",
-        result: "loss",
-        venue: "Old Trafford",
-      },
-      {
-        day: "E Martë",
-        date: "18 Shkurt",
-        comp: "UCL",
-        home: "Man United",
-        away: "Dortmund",
-        score: "2 – 0",
-        result: "win",
-        venue: "Old Trafford",
-      },
-      {
-        day: "E Shtunë",
-        date: "8 Shkurt",
-        comp: "PL",
-        home: "Man United",
-        away: "Everton",
-        score: "3 – 0",
-        result: "win",
-        venue: "Old Trafford",
-      },
-    ],
-  },
-];
-
-const FIXTURES = [
-  {
-    month: "Prill 2026",
-    matches: [
-      {
-        id: 1,
-        day: "E Shtunë",
-        date: "19 Prill",
-        comp: "PL",
-        home: "Chelsea",
-        away: "Man United",
-        score: "20:00",
-        result: "upcoming",
-        venue: "Stamford Bridge",
-        ticketsAvailable: true,
-      },
-      {
-        id: 2,
-        day: "E Mërkurë",
-        date: "23 Prill",
-        comp: "UCL",
-        home: "Man United",
-        away: "PSG",
-        score: "21:00",
-        result: "upcoming",
-        venue: "Old Trafford",
-        ticketsAvailable: true,
-      },
-    ],
-  },
-  {
-    month: "Maj 2026",
-    matches: [
-      {
-        id: 3,
-        day: "E Shtunë",
-        date: "3 Maj",
-        comp: "PL",
-        home: "Man United",
-        away: "Newcastle",
-        score: "15:00",
-        result: "upcoming",
-        venue: "Old Trafford",
-        ticketsAvailable: true,
-      },
-      {
-        id: 4,
-        day: "E Shtunë",
-        date: "10 Maj",
-        comp: "PL",
-        home: "Wolves",
-        away: "Man United",
-        score: "15:00",
-        result: "upcoming",
-        venue: "Molineux",
-        ticketsAvailable: true,
-      },
-      {
-        id: 5,
-        day: "E Diel",
-        date: "18 Maj",
-        comp: "PL",
-        home: "Man United",
-        away: "Aston Villa",
-        score: "16:00",
-        result: "upcoming",
-        venue: "Old Trafford",
-        ticketsAvailable: true,
-      },
-      {
-        id: 6,
-        day: "E Diel",
-        date: "25 Maj",
-        comp: "PL",
-        home: "Brighton",
-        away: "Man United",
-        score: "16:00",
-        result: "upcoming",
-        venue: "Falmer",
-        ticketsAvailable: true,
-      },
-    ],
-  },
-];
 
 const TICKER_ITEMS = [
   "Man United  2 – 1  Arsenal · Premier League",
@@ -235,23 +36,13 @@ const TICKER_ITEMS = [
 ];
 
 /* ── Team Logo ── */
-function TeamLogo({ name }) {
-  const src = LOGOS[name];
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 3);
+function TeamLogo({ name, logoUrl }) {
+  const src = logoUrl || LOGOS[name];
+  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 3);
   return (
     <div className="nd-logo">
       {src ? (
-        <img
-          src={src}
-          alt={name}
-          onError={(e) => {
-            e.target.style.display = "none";
-          }}
-        />
+        <img src={src} alt={name} onError={(e) => { e.target.style.display = "none"; }} />
       ) : (
         <span>{initials}</span>
       )}
@@ -263,6 +54,8 @@ function TeamLogo({ name }) {
 function MatchRow({ match, onBuyTicket }) {
   const isUpcoming = match.result === "upcoming";
   const resultClass = RESULT_COLOR_CLASS[match.result];
+  const awayLogo = match.home === "Man United" ? match.logo_kundershtarit : null;
+  const homeLogo = match.away === "Man United" ? match.logo_kundershtarit : null;
 
   return (
     <div className={`nd-match ${resultClass}`}>
@@ -286,7 +79,7 @@ function MatchRow({ match, onBuyTicket }) {
           >
             {match.home}
           </span>
-          <TeamLogo name={match.home} />
+          <TeamLogo name={match.home} logoUrl={homeLogo} />
         </div>
 
         {/* Score */}
@@ -298,7 +91,7 @@ function MatchRow({ match, onBuyTicket }) {
 
         {}
         <div className="nd-team-away">
-          <TeamLogo name={match.away} />
+          <TeamLogo name={match.away} logoUrl={awayLogo} />
           <span
             className={`nd-team-name ${match.away === "Man United" ? "mu" : ""}`}
           >
@@ -328,8 +121,8 @@ function MatchRow({ match, onBuyTicket }) {
   );
 }
 
-function StatsBar() {
-  const all = RESULTS.flatMap((g) => g.matches);
+function StatsBar({ matches }) {
+  const all = matches.flatMap((g) => g.matches);
   const stats = [
     {
       val: all.filter((m) => m.result === "win").length,
@@ -363,18 +156,68 @@ function StatsBar() {
   );
 }
 
+const dayNames = ["E Diel", "E Hënë", "E Martë", "E Mërkurë", "E Enjte", "E Premte", "E Shtunë"];
+const monthNames = ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"];
+
+const COMP_SHORT = { Ligë: "PL", Kupë: "FA", Miqësore: "FR", Europiane: "UCL" };
+
+function convertApiMatch(m) {
+  const dateObj = m.data_ndeshjes ? new Date(m.data_ndeshjes) : null;
+  const isPlayed = m.statusi === "Luajtur";
+  const h = Number(m.rezultati_shtepia ?? 0);
+  const a = Number(m.rezultati_jashte ?? 0);
+  let result = "upcoming";
+  if (isPlayed) {
+    if (h > a) result = "win";
+    else if (h < a) result = "loss";
+    else result = "draw";
+  }
+  return {
+    id: m.id,
+    day: dateObj ? dayNames[dateObj.getDay()] : "",
+    date: dateObj ? `${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}` : "",
+    comp: COMP_SHORT[m.lloji_kompeticionit] || "PL",
+    home: "Man United",
+    away: m.ekipi_kundershtare,
+    logo_kundershtarit: m.logo_kundershtarit || null,
+    score: isPlayed ? `${h} – ${a}` : (m.ora ? String(m.ora).slice(0, 5) : "TBD"),
+    result,
+    venue: m.stadiumi || "",
+    ticketsAvailable: !isPlayed,
+  };
+}
+
+function groupByMonth(list) {
+  const groups = {};
+  list.forEach((m) => {
+    const d = m.date ? m.date : "";
+    const key = d || "Pa datë";
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(m);
+  });
+  return Object.entries(groups).map(([month, matches]) => ({ month, matches }));
+}
+
 export default function Ndeshjet() {
   const [tab, setTab] = useState("rezultate");
+  const [apiMatches, setApiMatches] = useState([]);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get("tab") === "fixtures") {
-      setTab("fixtures");
-    }
+    if (searchParams.get("tab") === "fixtures") setTab("fixtures");
   }, [searchParams]);
 
-  const data = tab === "rezultate" ? RESULTS : FIXTURES;
+  useEffect(() => {
+    axios.get(API)
+      .then(res => setApiMatches(res.data))
+      .catch(err => console.error(err));
+  }, []);
+
+  const converted = apiMatches.map(convertApiMatch);
+  const results  = converted.filter(m => m.result !== "upcoming");
+  const fixtures = converted.filter(m => m.result === "upcoming");
+  const data = tab === "rezultate" ? groupByMonth(results) : groupByMonth(fixtures);
 
   return (
     <div className="mu-wrap">
@@ -461,7 +304,7 @@ export default function Ndeshjet() {
 
       {}
       <div className="nd-list">
-        {tab === "rezultate" && <StatsBar />}
+        {tab === "rezultate" && <StatsBar matches={data} />}
         {data.map((group) => (
           <div key={group.month}>
             <div className="nd-month">{group.month}</div>

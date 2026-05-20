@@ -60,20 +60,17 @@ function Login() {
     return;
   }
 
-  localStorage.setItem("isLoggedIn", "true");
+  localStorage.setItem("accessToken",  data.accessToken);
+  localStorage.setItem("refreshToken", data.refreshToken);
+  localStorage.setItem("isLoggedIn",   "true");
+  localStorage.setItem("role",         data.user.role);
+  localStorage.setItem("user",         JSON.stringify(data.user));
 
-  localStorage.setItem("role", data.role);
-
-  localStorage.setItem("user", JSON.stringify(data));
-
-  if (data.role === "Admin") {
-
-  navigate("/dashboard");
-
-} else {
-
-  navigate("/preferences");
-}
+  if (data.user.role === "Admin") {
+    navigate("/dashboard");
+  } else {
+    navigate("/preferences");
+  }
 
 } catch (err) {
 

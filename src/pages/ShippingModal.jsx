@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+
+const API = 'http://localhost:5000/api/shipping';
 
 const COUNTRIES = [
   'Albania', 'Austria', 'Belgium', 'Bosnia and Herzegovina',
@@ -43,7 +46,27 @@ export default function ShippingModal({ onClose }) {
   const [language, setLanguage] = useState('sq');
   const [saved, setSaved]       = useState(false);
 
-  const handleSave = () => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  useEffect(() => {
+    if (!user.id) return;
+    axios.get(`${API}/${user.id}`)
+      .then(res => {
+        if (res.data.country)  setCountry(res.data.country);
+        if (res.data.currency) setCurrency(res.data.currency);
+        if (res.data.language) setLanguage(res.data.language);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      if (user.id) {
+        await axios.put(`${API}/${user.id}`, { country, currency, language });
+      }
+    } catch (err) {
+      console.error('Preferences error:', err);
+    }
     setSaved(true);
     setTimeout(() => { setSaved(false); if (onClose) onClose(); }, 1200);
   };
@@ -72,21 +95,21 @@ export default function ShippingModal({ onClose }) {
 
           {/* Logo */}
           <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
-            <span className="fw-bold fs-5" style={{ fontFamily: 'Oswald,sans-serif', letterSpacing: 1 }}>
+            <span className="fw-bold fs-5" style={{ fontFamily: 'Oswald,sans-serif', letterSpacing: 1, color: '#000000' }}>
               UNITED
             </span>
             <div
-              className="rounded-circle d-flex align-items-center justify-content-center"
-              style={{ width: 44, height: 44, background: MU_RED, fontSize: 20 }}
+              className="rounded-circle d-flex align-items-center justify-content-center overflow-hidden"
+              style={{ width: 44, height: 44, background: MU_RED }}
             >
-              ⚽
+              <img src="/ManUnited.png" alt="Manchester United" style={{ width: 36, height: 36, objectFit: 'contain' }} />
             </div>
-            <span className="fw-bold fs-5" style={{ fontFamily: 'Oswald,sans-serif', letterSpacing: 1 }}>
+            <span className="fw-bold fs-5" style={{ fontFamily: 'Oswald,sans-serif', letterSpacing: 1, color: '#000000' }}>
               STORE
             </span>
           </div>
 
-          <h5 className="fw-bold mb-1" style={{ fontFamily: 'Oswald,sans-serif', fontSize: 22 }}>
+          <h5 className="fw-bold mb-1" style={{ fontFamily: 'Oswald,sans-serif', fontSize: 22, color: '#000000' }}>
             Shteti i Dërgimit
           </h5>
           <p className="text-muted mb-0 small">
@@ -99,7 +122,7 @@ export default function ShippingModal({ onClose }) {
 
           {/* Country */}
           <div className="mb-3">
-            <label className="form-label fw-semibold small">
+            <label className="form-label small text-muted">
               Ndryshoni shtetin e dërgimit
             </label>
             <select
@@ -115,7 +138,7 @@ export default function ShippingModal({ onClose }) {
 
           {/* Currency */}
           <div className="mb-3">
-            <label className="form-label fw-semibold small">
+            <label className="form-label small text-muted">
               Ndryshoni monedhën
             </label>
             <select
@@ -131,7 +154,7 @@ export default function ShippingModal({ onClose }) {
 
           {/* Language */}
           <div className="mb-4">
-            <label className="form-label fw-semibold small">
+            <label className="form-label small text-muted">
               Zgjidhni gjuhën
             </label>
             <select

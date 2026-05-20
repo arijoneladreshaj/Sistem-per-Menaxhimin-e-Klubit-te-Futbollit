@@ -50,7 +50,7 @@ const COMP_SHORT = {
 };
 
 const emptyForm = {
-  club_id: 1,
+  club_id: 2,
   ekipi_kundershtare: "",
   data_ndeshjes: "",
   ora: "20:00",
@@ -60,6 +60,7 @@ const emptyForm = {
   rezultati_jashte: 0,
   statusi: "Planifikuar",
   season_id: null,
+  logo_kundershtarit: "",
 };
 
 const TICKER_ITEMS = [
@@ -71,8 +72,8 @@ const TICKER_ITEMS = [
 ];
 
 /* ── Team Logo ── */
-function TeamLogo({ name }) {
-  const src = LOGOS[name];
+function TeamLogo({ name, logoUrl }) {
+  const src = logoUrl || LOGOS[name];
   const initials = name
     .split(" ")
     .map((w) => w[0])
@@ -99,6 +100,8 @@ function TeamLogo({ name }) {
 function MatchRow({ match, onBuyTicket, onEdit, onDelete }) {
   const isUpcoming = match.result === "upcoming";
   const resultClass = RESULT_COLOR_CLASS[match.result];
+  const awayLogo = match.home === "Man United" ? match.logo_kundershtarit : null;
+  const homeLogo = match.away === "Man United" ? match.logo_kundershtarit : null;
 
   return (
     <div className={`nd-match ${resultClass}`}>
@@ -121,7 +124,7 @@ function MatchRow({ match, onBuyTicket, onEdit, onDelete }) {
           >
             {match.home}
           </span>
-          <TeamLogo name={match.home} />
+          <TeamLogo name={match.home} logoUrl={homeLogo} />
         </div>
 
         <div
@@ -131,7 +134,7 @@ function MatchRow({ match, onBuyTicket, onEdit, onDelete }) {
         </div>
 
         <div className="nd-team-away">
-          <TeamLogo name={match.away} />
+          <TeamLogo name={match.away} logoUrl={awayLogo} />
           <span
             className={`nd-team-name ${match.away === "Man United" ? "mu" : ""}`}
           >
@@ -291,6 +294,7 @@ export default function DashboardNdeshjet() {
       comp: COMP_SHORT[m.lloji_kompeticionit] || "PL",
       home: "Man United",
       away: m.ekipi_kundershtare,
+      logo_kundershtarit: m.logo_kundershtarit || null,
       score: isPlayed ? `${h} – ${a}` : (m.ora ? String(m.ora).slice(0, 5) : "TBD"),
       result,
       venue: m.stadiumi || "",
@@ -340,6 +344,7 @@ export default function DashboardNdeshjet() {
         rezultati_jashte: raw.rezultati_jashte ?? 0,
         statusi: raw.statusi || "Planifikuar",
         season_id: raw.season_id || null,
+        logo_kundershtarit: raw.logo_kundershtarit || "",
       });
     } else {
       setEditId(match.id);
@@ -366,6 +371,7 @@ export default function DashboardNdeshjet() {
         rezultati_jashte: form.statusi === "Luajtur" ? Number(form.rezultati_jashte) : null,
         statusi: form.statusi,
         season_id: form.season_id || null,
+        logo_kundershtarit: form.logo_kundershtarit || null,
       };
       if (editId) await axios.put(`${API}/${editId}`, payload);
       else await axios.post(API, payload);
@@ -651,6 +657,18 @@ export default function DashboardNdeshjet() {
                   <option value="Anuluar">Anuluar</option>
                   <option value="Shtyrë">Shtyrë</option>
                 </Form.Select>
+              </Col>
+              <Col md={12}>
+                <Form.Label>Logo e Klubit Kundërshtar (URL)</Form.Label>
+                <Form.Control
+                  name="logo_kundershtarit"
+                  value={form.logo_kundershtarit}
+                  onChange={handleChange}
+                  placeholder="https://..."
+                />
+                {form.logo_kundershtarit && (
+                  <img src={form.logo_kundershtarit} alt="logo" style={{ height: 40, marginTop: 8 }} />
+                )}
               </Col>
             </Row>
           </Modal.Body>

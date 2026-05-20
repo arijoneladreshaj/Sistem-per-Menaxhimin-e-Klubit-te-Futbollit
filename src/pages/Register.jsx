@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./Login.css";
+import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ function Register() {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
@@ -48,18 +49,20 @@ function Register() {
     }
     setErrors({});
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
+    try {
+      await axios.post("http://localhost:5000/register", {
         emri: formData.emri,
         mbiemri: formData.mbiemri,
         datelindja: formData.datelindja,
         email: formData.email,
         password: formData.password,
-      }),
-    );
+      });
 
-    navigate("/login");
+      navigate("/login");
+    } catch (err) {
+      const msg = err.response?.data?.message || "Gabim gjatë regjistrimit";
+      setErrors({ general: msg });
+    }
   };
 
   return (
@@ -174,6 +177,7 @@ function Register() {
         <button className="btn-login" onClick={handleRegister}>
           REGJISTROHU
         </button>
+        {errors.general && <span className="error">{errors.general}</span>}
 
         <div className="divider">
           <span>ose</span>

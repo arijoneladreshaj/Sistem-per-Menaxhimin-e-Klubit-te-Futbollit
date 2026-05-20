@@ -15,11 +15,14 @@ app.use("/api/staff", require("./routes/Staff"));
 app.use("/api/ndeshjet",   require("./routes/Ndeshjet"));
 app.use("/store", storeRoutes);
 app.use("/", loginRoutes);
+app.use("/", require("./Routes/Register"));
 
 app.use("/api/players",   require("./routes/Players"));
 app.use("/api/staff", require("./routes/Staff"));
 app.use("/api/matches",   require("./routes/Ndeshjet"));
 app.use("/api/lajme", require("./routes/Lajmet"));
+app.use("/api/preferences", require("./Routes/Preferences"));
+app.use("/api/shipping", require("./Routes/ShippingModal"));
 
 /*app.use("/api/clubs",     require("./routes/clubs"));
 app.use("/api/matches",   require("./routes/matches"));

@@ -70,7 +70,8 @@ router.post("/", async (req, res) => {
       rezultati_shtepia,
       rezultati_jashte,
       statusi,
-      season_id
+      season_id,
+      logo_kundershtarit
     } = req.body;
 
     // VALIDATION
@@ -93,6 +94,7 @@ router.post("/", async (req, res) => {
       .input("rezultati_jashte", sql.TinyInt, rezultati_jashte)
       .input("statusi", sql.NVarChar, statusi)
       .input("season_id", sql.Int, season_id)
+      .input("logo_kundershtarit", sql.NVarChar, logo_kundershtarit || null)
 
       .query(`
         INSERT INTO Matches
@@ -106,7 +108,8 @@ router.post("/", async (req, res) => {
           rezultati_shtepia,
           rezultati_jashte,
           statusi,
-          season_id
+          season_id,
+          logo_kundershtarit
         )
         VALUES
         (
@@ -119,7 +122,8 @@ router.post("/", async (req, res) => {
           @rezultati_shtepia,
           @rezultati_jashte,
           @statusi,
-          @season_id
+          @season_id,
+          @logo_kundershtarit
         )
       `);
 
