@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Training.css";
+import "./Dashboard.css";
+import SideBar from "../../Components/SideBar";
 
 const formatTime = (t) => {
   if (!t) return "—";
@@ -75,7 +77,10 @@ function Training() {
   };
 
   return (
-    <div className="trn-page">
+    <div className="shell">
+      <SideBar active="/training" />
+
+      <div className="main trn-page">
 
       {/* Top Bar */}
       <div className="trn-topbar">
@@ -159,6 +164,7 @@ function Training() {
         </div>
       )}
 
+      </div>
     </div>
   );
 }
