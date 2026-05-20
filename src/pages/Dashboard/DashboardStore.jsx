@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import SideBar from "../../Components/SideBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "./Dashboard.css";
 
 const API = "http://localhost:5001/store";
 
@@ -625,6 +627,11 @@ export default function DashboardStore() {
   ];
 
   return (
+    <div className="shell">
+  <SideBar active="/DashboardStore" />
+  <div className="main">
+  
+  
     <div
       style={{
         background: `linear-gradient(135deg, ${DARK} 0%, #2d0000 50%, ${DARK} 100%)`,
@@ -1173,6 +1180,8 @@ export default function DashboardStore() {
           </span>
         </div>
       )}
+    </div>
+      </div>
     </div>
   );
 }

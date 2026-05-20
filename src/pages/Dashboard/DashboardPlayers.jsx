@@ -1,25 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import SideBar from "../../Components/SideBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Dashboard.css";
 
 const API = "http://localhost:5001/players";
 
-const navLinks = [
-  { section: "Kryesor",   items: [{ label: "Dashboard",    path: "/dashboard" }] },
-  { section: "Menaxhim",  items: [{ label: "Lojtarët",     path: "/DashboardPlayers",  badge: 6  },
-                                   { label: "Store",        path: "/DashboardStore",    badge: 18 },
-                                   { label: "Stafi",        path: "/staff",             badge: 4  },
-                                   { label: "Ndeshjet",     path: "/dashboardNdeshjet", badge: 5  },
-                                   { label: "Stërvitjet",   path: "/training",          badge: 4  }] },
-  { section: "Financa",   items: [{ label: "Transferimet", path: "/transfers",         badge: 3  },
-                                   { label: "Kontratat",    path: "/contracts",         badge: 4  }] },
-  { section: "Analitikë", items: [{ label: "Dëmtimet",     path: "/injuries",          badge: 4  },
-                                   { label: "Sezonet",      path: "/seasons",           badge: 3  },
-                                   { label: "Klubet",       path: "/clubs",             badge: 3  }] },
-];
 const RED    = "#cc0000";
 const DARK   = "#1a0000";
 const FONT_H = "'Bebas Neue', sans-serif";
@@ -236,6 +224,7 @@ function PlayerModal({ player, onSave, onClose, saving }) {
 
   return (
     <>
+    
       <div onClick={onClose} className="position-fixed top-0 start-0 w-100 h-100" style={{ background: "rgba(0,0,0,0.75)", zIndex: 1000 }} />
       <div className="position-fixed d-flex flex-column" style={{ top: "50%", left: "50%", transform: "translate(-50%,-50%)", zIndex: 1001, width: "95%", maxWidth: 600, maxHeight: "92vh", background: DARK, border: "1px solid rgba(255,255,255,0.12)", overflow: "hidden" }}>
 
@@ -521,39 +510,10 @@ export default function DashboardPlayers() {
   return (
     <div className="shell">
 
-      {/* ===== SIDEBAR ===== */}
-      <aside className="sidebar">
-        <div className="logo-area">
-          <div className="crest">MU</div>
-          <div className="club-name">Manchester<span>United FC</span></div>
-        </div>
-        <nav className="flex-grow-1 overflow-auto py-2">
-          {navLinks.map((group) => (
-            <React.Fragment key={group.section}>
-              <div className="nav-section">{group.section}</div>
-              {group.items.map((item) => (
-                <div
-                  key={item.path}
-                  className={`nav-item${item.path === "/DashboardPlayers" ? " active" : ""}`}
-                  onClick={() => navigate(item.path)}
-                >
-                  <div className="nav-dot" />
-                  {item.label}
-                  {item.badge && (
-                    <span className="badge ms-auto" style={{ background: "#DA291C" }}>{item.badge}</span>
-                  )}
-                </div>
-              ))}
-            </React.Fragment>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <span className="badge fw-bold" style={{ background: "#FBE122", color: "#000" }}>2025/26</span>
-          <span style={{ fontSize: 11, color: "#888" }}>Premier League</span>
-        </div>
-      </aside>
+      
+<SideBar active="/DashboardPlayers" />
 
-      {/* ===== MAIN ===== */}
+      
       <div className="main">
 
         {/* Topbar */}

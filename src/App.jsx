@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./Context/CartContext";
+import Navbar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
 import Ndeshjet from "./pages/Ndeshjet";
 import Login from "./pages/Login";
@@ -20,11 +21,15 @@ import DashboardPlayers from "./pages/Dashboard/DashboardPlayers";
 import StoreConfirmation from "./pages/StoreConfirmation";
 import Lajmet from "./pages/Lajmet";
 import Training from "./pages/Dashboard/Trainings";
+import DashboardDemtimet from "./pages/Dashboard/DashboardDemtimet";
+
+
 
 export default function App() {
   return (
     <CartProvider>
       <BrowserRouter>
+     
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/ndeshjet" element={<Ndeshjet />} />
@@ -47,6 +52,7 @@ export default function App() {
           <Route path="/DashboardPlayers" element={<DashboardPlayers />} />
            <Route path="/lajmet" element={<Lajmet />} />
            <Route path="/training" element={<Training />} />
+          <Route path="/injuries" element={<DashboardDemtimet />} />
 
         </Routes>
       </BrowserRouter>

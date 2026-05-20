@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import SideBar from "../../Components/SideBar";
 import {
   Container, Row, Col, Card, Button, Modal, Form, Badge, Alert
 } from "react-bootstrap";
@@ -102,7 +103,13 @@ export default function StaffPage() {
   );
 
   return (
-    <Container fluid className="staff-container">
+    <div className="shell">
+
+    <SideBar active="/staff" />
+
+    <div className="main">
+
+      <Container fluid className="staff-container">
       {/* Header */}
       <Row className="align-items-center mb-3">
         <Col>
@@ -295,5 +302,7 @@ export default function StaffPage() {
         </Form>
       </Modal>
     </Container>
+      </div>
+  </div>
   );
 }

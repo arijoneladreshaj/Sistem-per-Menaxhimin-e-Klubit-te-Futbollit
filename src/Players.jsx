@@ -942,23 +942,23 @@ export default function Players() {
   const avgRating = Math.round(players.reduce((s, p) => s + p.rating, 0) / players.length);
 
   return (
-    <div style={{
-      background: `
-        radial-gradient(ellipse at 85% 10%, rgba(204,0,0,0.45) 0%, transparent 40%),
-        radial-gradient(ellipse at 15% 80%, rgba(140,0,0,0.3) 0%, transparent 40%),
-        linear-gradient(160deg, #3a0000 0%, #1c0000 50%, #0d0000 100%)
-      `,
-      minHeight: "100vh", color: "white", fontFamily: "Arial, sans-serif", position: "relative", overflowX: "hidden",
-    }}>
+    <div className="mu-wrap">
+      <Navbar />
+      <div style={{
+        background: `
+          radial-gradient(ellipse at 85% 10%, rgba(204,0,0,0.45) 0%, transparent 40%),
+          radial-gradient(ellipse at 15% 80%, rgba(140,0,0,0.3) 0%, transparent 40%),
+          linear-gradient(160deg, #3a0000 0%, #1c0000 50%, #0d0000 100%)
+        `,
+        minHeight: "100vh", color: "white", fontFamily: "Arial, sans-serif", position: "relative", overflowX: "hidden",
+      }}>
 
-      {/* Decorative circles */}
-      <div style={{ position: "absolute", top: -180, right: -180, width: 650, height: 650, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.12)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", top: -80, right: -80, width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.08)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: 100, left: -200, width: 700, height: 700, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.07)", pointerEvents: "none" }} />
+        {/* Decorative circles */}
+        <div style={{ position: "absolute", top: -180, right: -180, width: 650, height: 650, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.12)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, right: -80, width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.08)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: 100, left: -200, width: 700, height: 700, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.07)", pointerEvents: "none" }} />
 
-      <div style={{ background: "#cc0000" }}>
-        <Navbar />
-      </div>
+  
 
       {/* HEADER */}
       <div style={{
@@ -1031,6 +1031,7 @@ export default function Players() {
         );
         if (!group.length) return null;
         return (
+          
           <div key={sec.cat} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
             <SectionHeader title={sec.title} count={group.length} num={sec.num} />
             <CarouselRow players={group} onSelect={setSelected} />
@@ -1047,6 +1048,7 @@ export default function Players() {
           onNext={() => setSelected(players[(modalIdx + 1) % players.length])}
         />
       )}
+      </div>
     </div>
   );
 }

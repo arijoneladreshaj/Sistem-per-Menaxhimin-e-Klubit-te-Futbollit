@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import SideBar from "../../Components/SideBar";
 import axios from "axios";
 import { Modal, Form, Row, Col } from "react-bootstrap";
 
@@ -8,21 +9,6 @@ import "./Dashboard.css";
 
 const API = "http://localhost:5001/api/ndeshjet";
 
-const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tablela", "Shop"];
-
-const navLinks = [
-  { section: "Kryesor",   items: [{ label: "Dashboard",    path: "/dashboard" }] },
-  { section: "Menaxhim",  items: [{ label: "Lojtarët",     path: "/players",            badge: 6 },
-                                   { label: "Store", path: "/Store", badge: 18 },
-                                   { label: "Stafi",        path: "/staff",              badge: 4 },
-                                   { label: "Ndeshjet",     path: "/dashboardNdeshjet",  badge: 5 },
-                                   { label: "Stërvitjet",   path: "/training",           badge: 4 }] },
-  { section: "Financa",   items: [{ label: "Transferimet", path: "/transfers", badge: 3 },
-                                   { label: "Kontratat",    path: "/contracts", badge: 4 }] },
-  { section: "Analitikë", items: [{ label: "Dëmtimet",     path: "/injuries", badge: 4 },
-                                   { label: "Sezonet",      path: "/seasons",  badge: 3 },
-                                   { label: "Klubet",       path: "/clubs",    badge: 3 }] },
-];
 
 const LOGOS = {
   "Man United":
@@ -215,6 +201,7 @@ function StatsBar({ matches }) {
 
   return (
     <div className="nd-stats">
+    
       {stats.map(({ val, label, color }) => (
         <div key={label} className="nd-stat-item">
           <div className="nd-stat-val" style={{ color }}>
@@ -397,55 +384,23 @@ export default function DashboardNdeshjet() {
   return (
     <div className="shell">
 
-      {/* ===== SIDEBAR (si Dashboard.jsx) ===== */}
-      <aside className="sidebar">
-        <div className="logo-area">
-          <div className="crest">MU</div>
-          <div className="club-name">Manchester<span>United FC</span></div>
-        </div>
-        <nav className="flex-grow-1 overflow-auto py-2">
-          {navLinks.map((group) => (
-            <React.Fragment key={group.section}>
-              <div className="nav-section">{group.section}</div>
-              {group.items.map((item) => (
-                <div
-                  key={item.path}
-                  className={`nav-item${item.path === "/dashboardNdeshjet" ? " active" : ""}`}
-                  onClick={() => navigate(item.path)}
-                >
-                  <div className="nav-dot" />
-                  {item.label}
-                  {item.badge && (
-                    <span className="badge ms-auto" style={{ background: "#DA291C" }}>
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </React.Fragment>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <span className="badge fw-bold" style={{ background: "#FBE122", color: "#000" }}>2025/26</span>
-          <span style={{ fontSize: 11, color: "#888" }}>Premier League</span>
-        </div>
-      </aside>
+    <SideBar active="/dashboardNdeshjet" />
 
-      {/* ===== MAIN ===== */}
       <div className="main">
 
-        {/* ── Topbar (si Dashboard.jsx) ── */}
+      
         <div className="topbar">
           <div className="topbar-title">Menaxhimi i Ndeshjeve</div>
           <div className="d-flex align-items-center gap-2">
             <button className="btn btn-mu" onClick={openAdd}>+ Shto Ndeshje</button>
             <div className="avatar">{user?.emri?.[0] || "A"}{user?.mbiemri?.[0] || "K"}</div>
           </div>
+       
         </div>
 
         <div className="content" style={{ padding: 0 }}>
 
-          {/* ── Hero — identik me Ndeshjet.jsx ── */}
+         
           <div
             className="mu-hero"
             style={{ minHeight: 220, alignItems: "flex-end" }}
@@ -512,8 +467,7 @@ export default function DashboardNdeshjet() {
             ))}
           </div>
 
-          {/* ── Match list — identik me Ndeshjet.jsx + CRUD buttons ── */}
-          <div className="nd-list">
+         
             {tab === "rezultate" && <StatsBar matches={data} />}
 
             {data.length === 0 && (
@@ -552,9 +506,6 @@ export default function DashboardNdeshjet() {
               ))}
             </div>
           </div>
-
-        </div>
-      </div>
 
       {/* ===== MODAL — Add / Edit ===== */}
       <Modal
@@ -687,6 +638,7 @@ export default function DashboardNdeshjet() {
           </Modal.Footer>
         </Form>
       </Modal>
+      </div>
     </div>
   );
 }
