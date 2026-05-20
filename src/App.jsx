@@ -19,7 +19,7 @@ import DashboardStore from "./pages/Dashboard/DashboardStore";
 import DashboardPlayers from "./pages/Dashboard/DashboardPlayers";
 import StoreConfirmation from "./pages/StoreConfirmation";
 import Lajmet from "./pages/Lajmet";
-
+import Training from "./pages/Dashboard/Trainings";
 
 export default function App() {
   return (
@@ -46,6 +46,7 @@ export default function App() {
           <Route path="/DashboardStore" element={<DashboardStore/>} />
           <Route path="/DashboardPlayers" element={<DashboardPlayers />} />
            <Route path="/lajmet" element={<Lajmet />} />
+           <Route path="/training" element={<Training />} />
 
         </Routes>
       </BrowserRouter>

@@ -1,0 +1,254 @@
+.trn-page {
+  min-height: 100vh;
+  background: #0d0d0d;
+  color: #ddd;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Top Bar */
+.trn-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #222;
+}
+
+.trn-topbar h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.trn-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trn-btn-add {
+  background: #da291c;
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trn-btn-add:hover {
+  background: #b71c1c;
+}
+
+/* Hero Section */
+.trn-hero {
+  padding: 40px 28px 30px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.trn-season {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.trn-title {
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+/* Content */
+.trn-content {
+  padding: 28px;
+}
+
+/* Form Modal/Overlay */
+.trn-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.trn-form-card {
+  background: #151515;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 28px;
+  width: 90%;
+  max-width: 550px;
+}
+
+.trn-form-card h3 {
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.trn-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.trn-full {
+  grid-column: 1 / -1;
+}
+
+.trn-form-card label {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.trn-form-card input,
+.trn-form-card textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 5px;
+  color: #ddd;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.trn-form-card input:focus,
+.trn-form-card textarea:focus {
+  border-color: #da291c;
+}
+
+.trn-form-card textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.trn-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.trn-btn-cancel {
+  padding: 9px 18px;
+  background: none;
+  color: #888;
+  border: 1px solid #333;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.trn-btn-cancel:hover {
+  color: #ccc;
+  border-color: #555;
+}
+
+/* Cards */
+.trn-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.trn-card {
+  background: #131313;
+  border: 1px solid #1e1e1e;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.trn-card:hover {
+  border-color: #333;
+}
+
+.trn-card h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.trn-card .desc {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.trn-card .meta {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.trn-card .meta span {
+  color: #bbb;
+}
+
+.trn-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #1e1e1e;
+}
+
+.trn-btn-edit {
+  flex: 1;
+  padding: 7px;
+  background: rgba(255, 179, 0, 0.1);
+  color: #ffb300;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trn-btn-edit:hover {
+  background: rgba(255, 179, 0, 0.2);
+}
+
+.trn-btn-delete {
+  flex: 1;
+  padding: 7px;
+  background: rgba(218, 41, 28, 0.1);
+  color: #da291c;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trn-btn-delete:hover {
+  background: rgba(218, 41, 28, 0.2);
+}
+
+/* Empty */
+.trn-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #444;
+  font-size: 14px;
+}
