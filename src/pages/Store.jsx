@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link,useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ShippingModal from './ShippingModal';
+import Navbar from "../Components/NavBar";
 
 const RED    = '#cc0000';
 const NAV_BG = 'rgba(0,0,0,0.45)';
@@ -362,45 +363,30 @@ const handleDelete = async (id) => {
   return (
     <div style={{background:RED,minHeight:'100vh',fontFamily:FONT_B}}>
 
-      {/* NAVBAR */}
-      <nav style={{background:NAV_BG,borderBottom:'1px solid rgba(255,255,255,0.08)',height:64,zIndex:20,position:'relative'}}
-        className="d-flex align-items-center justify-content-between px-4">
-        <Link to="/" className="d-flex align-items-center gap-3 text-decoration-none">
-          <img src="https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" alt="MUFC" style={{height:38}} />
-          <span style={{fontFamily:FONT_H,fontSize:20,letterSpacing:3,color:'#fff'}} className="d-none d-md-block">MANCHESTER UNITED</span>
-        </Link>
+      <Navbar />
 
-        <ul className="d-none d-lg-flex list-unstyled mb-0 gap-4 align-items-center">
-          {[{l:'LAJMET',to:'#'},{l:'NDESHJET',to:'/ndeshjet'},{l:'LOJTARËT',to:'#'},{l:'TABELA',to:'#'}].map(({l,to}) => (
-            <li key={l}><Link to={to} style={{color:'rgba(255,255,255,0.75)',textDecoration:'none',fontSize:13,fontWeight:600,letterSpacing:1,textTransform:'uppercase'}}>{l}</Link></li>
-          ))}
-          <li><span style={{color:'#fff',fontSize:13,fontWeight:700,letterSpacing:1,textTransform:'uppercase',borderBottom:'2px solid #fff',paddingBottom:2}}>SHOP</span></li>
-        </ul>
-
-        <div className="d-flex align-items-center gap-2">
-          <div className="d-none d-md-flex align-items-center gap-2 px-3 py-1"
-            style={{background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.18)'}}>
-            <i className="bi bi-search" style={{fontSize:13,color:'rgba(255,255,255,0.55)'}}></i>
-            <input type="text" placeholder="Kërko..." value={search} onChange={e=>setSearch(e.target.value)}
-              className="border-0 bg-transparent text-white"
-              style={{outline:'none',fontSize:12,width:130,fontFamily:FONT_B}} />
-          </div>
-          <button onClick={()=>setShippingOpen(true)} className="btn border-0 bg-transparent text-white" style={{opacity:0.7}}>
-            <i className="bi bi-globe2" style={{fontSize:16}}></i>
-          </button>
-          <button className="btn border-0 bg-transparent text-white position-relative" style={{opacity:0.7}}>
-            <i className="bi bi-heart" style={{fontSize:16}}></i>
-            {wishlist.length>0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill" style={{background:'#fff',color:RED,fontSize:9}}>{wishlist.length}</span>}
-          </button>
-          <Link to="/login" className="btn" style={{background:'#fff',color:RED,fontFamily:FONT_B,fontWeight:700,fontSize:12,letterSpacing:1,textTransform:'uppercase',border:'none',borderRadius:0,padding:'8px 18px'}}>
-            KYÇU
-          </Link>
-          <button onClick={()=>setCartOpen(true)} className="btn"
-            style={{background:'transparent',color:'#fff',fontFamily:FONT_B,fontWeight:700,fontSize:12,letterSpacing:1,textTransform:'uppercase',border:'1.5px solid rgba(255,255,255,0.45)',borderRadius:0,padding:'8px 18px'}}>
-            <i className="bi bi-cart3 me-1"></i>SHPORTA {cartCount>0&&`(${cartCount})`}
-          </button>
+      {/* Store action bar */}
+      <div className="d-flex align-items-center justify-content-end gap-2 px-4 py-2"
+        style={{background:'rgba(0,0,0,0.3)',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
+        <div className="d-flex align-items-center gap-2 px-3 py-1"
+          style={{background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.15)'}}>
+          <i className="bi bi-search" style={{fontSize:13,color:'rgba(255,255,255,0.55)'}}></i>
+          <input type="text" placeholder="Kërko..." value={search} onChange={e=>setSearch(e.target.value)}
+            className="border-0 bg-transparent text-white"
+            style={{outline:'none',fontSize:12,width:150,fontFamily:FONT_B}} />
         </div>
-      </nav>
+        <button onClick={()=>setShippingOpen(true)} className="btn border-0 bg-transparent text-white" style={{opacity:0.7}}>
+          <i className="bi bi-globe2" style={{fontSize:16}}></i>
+        </button>
+        <button className="btn border-0 bg-transparent text-white position-relative" style={{opacity:0.7}}>
+          <i className="bi bi-heart" style={{fontSize:16}}></i>
+          {wishlist.length>0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill" style={{background:'#fff',color:RED,fontSize:9}}>{wishlist.length}</span>}
+        </button>
+        <button onClick={()=>setCartOpen(true)} className="btn"
+          style={{background:'transparent',color:'#fff',fontFamily:FONT_B,fontWeight:700,fontSize:12,letterSpacing:1,textTransform:'uppercase',border:'1.5px solid rgba(255,255,255,0.45)',borderRadius:0,padding:'6px 16px'}}>
+          <i className="bi bi-cart3 me-1"></i>SHPORTA {cartCount>0&&`(${cartCount})`}
+        </button>
+      </div>
 
       {/* HERO HEADER */}
       <div style={{background:'rgba(0,0,0,0.18)',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'40px 40px 0'}}>

@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Lajmet.css";
 import { Modal, Form, Button } from "react-bootstrap";
 import axios from "axios";
+import Navbar from "../Components/NavBar";
 
 const API = "http://127.0.0.1:5000/api/lajme";
 
@@ -189,7 +190,12 @@ export default function Lajmet() {
         );
 
   return (
+    
+        <div className="mu-wrap">
+          <Navbar />
     <div className="lajmet-page">
+      
+     
 
    
       <div className="lajmet-hero">
@@ -270,6 +276,7 @@ export default function Lajmet() {
 
           </div>
         )}
+        </div>
 
         {lajmetFiltruara.length > 0 && (
 
@@ -332,6 +339,7 @@ export default function Lajmet() {
     </button>
 
   </div>
+  
 )}
 
                 </div>

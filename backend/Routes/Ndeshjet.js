@@ -143,26 +143,46 @@ router.put("/:id", async (req, res) => {
   try {
 
     const {
+      ekipi_kundershtare,
+      data_ndeshjes,
+      ora,
+      stadiumi,
+      lloji_kompeticionit,
       rezultati_shtepia,
       rezultati_jashte,
-      statusi
+      statusi,
+      season_id,
+      logo_kundershtarit
     } = req.body;
 
     const pool = await poolPromise;
 
     await pool.request()
       .input("id", sql.Int, req.params.id)
-      .input("rezultati_shtepia", sql.TinyInt, rezultati_shtepia)
-      .input("rezultati_jashte", sql.TinyInt, rezultati_jashte)
+      .input("ekipi_kundershtare", sql.NVarChar, ekipi_kundershtare)
+      .input("data_ndeshjes", sql.Date, data_ndeshjes)
+      .input("ora", sql.VarChar, ora || null)
+      .input("stadiumi", sql.NVarChar, stadiumi || null)
+      .input("lloji_kompeticionit", sql.NVarChar, lloji_kompeticionit)
+      .input("rezultati_shtepia", sql.TinyInt, rezultati_shtepia ?? null)
+      .input("rezultati_jashte", sql.TinyInt, rezultati_jashte ?? null)
       .input("statusi", sql.NVarChar, statusi)
-
+      .input("season_id", sql.Int, season_id || null)
+      .input("logo_kundershtarit", sql.NVarChar, logo_kundershtarit || null)
       .query(`
         UPDATE Matches
         SET
-          rezultati_shtepia = @rezultati_shtepia,
-          rezultati_jashte = @rezultati_jashte,
-          statusi = @statusi,
-          updated_at = GETDATE()
+          ekipi_kundershtare  = @ekipi_kundershtare,
+          data_ndeshjes       = @data_ndeshjes,
+          ora                 = @ora,
+          stadiumi            = @stadiumi,
+          lloji_kompeticionit = @lloji_kompeticionit,
+          rezultati_shtepia   = @rezultati_shtepia,
+          rezultati_jashte    = @rezultati_jashte,
+          statusi             = @statusi,
+          season_id           = @season_id,
+          logo_kundershtarit  = @logo_kundershtarit,
+          updated_at          = GETDATE()
         WHERE id = @id
       `);
 
