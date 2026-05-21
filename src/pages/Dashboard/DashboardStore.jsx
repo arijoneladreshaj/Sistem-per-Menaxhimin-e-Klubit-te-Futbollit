@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SideBar from "../../Components/SideBar";
+import api from "../../api/axiosInstance";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Dashboard.css";
@@ -516,7 +517,7 @@ export default function DashboardStore() {
   /* ── FETCH ─────────────────────────────────────────────────────────────── */
   const fetchProducts = () => {
     setLoading(true);
-    axios
+    api
       .get(API)
       .then((res) => {
         const formatted = res.data.map((p) => ({
@@ -540,7 +541,7 @@ export default function DashboardStore() {
   const handleCreate = async (data) => {
     setSaving(true);
     try {
-      await axios.post(API, data);
+      await api.post(API, data);
       showToast("Produkti u shtua me sukses!");
       setModalProduct(null);
       fetchProducts();
@@ -555,7 +556,7 @@ export default function DashboardStore() {
   const handleUpdate = async (data) => {
     setSaving(true);
     try {
-      await axios.put(`${API}/${data.id}`, data);
+      await api.put(`${API}/${data.id}`, data);
       showToast("Produkti u përditësua!");
       setModalProduct(null);
       fetchProducts();
@@ -570,7 +571,7 @@ export default function DashboardStore() {
   const handleDelete = async (id) => {
     setDeleting(true);
     try {
-      await axios.delete(`${API}/${id}`);
+      await api.delete(`${API}/${id}`);
       showToast("Produkti u fshi!");
       setDeleteTarget(null);
       fetchProducts();

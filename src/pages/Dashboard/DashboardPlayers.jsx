@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -425,7 +425,7 @@ export default function DashboardPlayers() {
   /* ── fetch ── */
   const fetchPlayers = () => {
     setLoading(true);
-    axios.get(API).then(r => setPlayers(r.data)).catch(() => showToast("Gabim gjatë marrjes së lojtarëve", "error")).finally(() => setLoading(false));
+    api.get(API).then(r => setPlayers(r.data)).catch(() => showToast("Gabim gjatë marrjes së lojtarëve", "error")).finally(() => setLoading(false));
   };
   useEffect(() => { fetchPlayers(); }, []);
 
@@ -433,13 +433,13 @@ export default function DashboardPlayers() {
   const uploadPhoto = async (id, file) => {
     const fd = new FormData();
     fd.append("foto", file);
-    await axios.post(`${API}/${id}/photo`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+    await api.post(`${API}/${id}/photo`, fd, { headers: { "Content-Type": "multipart/form-data" } });
   };
 
   const handleCreate = async (data, photoFile) => {
     setSaving(true);
     try {
-      const res = await axios.post(API, data);
+      const res = await api.post(API, data);
       if (photoFile) await uploadPhoto(res.data.id, photoFile);
       showToast("Lojtari u shtua!"); setModalPlayer(null); fetchPlayers();
     }
@@ -449,7 +449,7 @@ export default function DashboardPlayers() {
   const handleUpdate = async (data, photoFile) => {
     setSaving(true);
     try {
-      await axios.put(`${API}/${data.id}`, data);
+      await api.put(`${API}/${data.id}`, data);
       if (photoFile) await uploadPhoto(data.id, photoFile);
       showToast("Lojtari u përditësua!"); setModalPlayer(null); fetchPlayers();
     }
@@ -458,7 +458,7 @@ export default function DashboardPlayers() {
   };
   const handleDelete = async (id) => {
     setDeleting(true);
-    try { await axios.delete(`${API}/${id}`); showToast("Lojtari u fshi!"); setDeleteTarget(null); fetchPlayers(); }
+    try { await api.delete(`${API}/${id}`); showToast("Lojtari u fshi!"); setDeleteTarget(null); fetchPlayers(); }
     catch { showToast("Gabim gjatë fshirjes", "error"); }
     finally { setDeleting(false); }
   };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SideBar from "../../Components/SideBar";
+import api from "../../api/axiosInstance";
 import {
   Container, Row, Col, Card, Button, Modal, Form, Badge, Alert
 } from "react-bootstrap";
@@ -46,7 +47,7 @@ export default function StaffPage() {
   useEffect(() => { if (msg) setTimeout(() => setMsg(""), 3000); }, [msg]);
 
   const fetchStaff = async () => {
-    try { const res = await axios.get(API); setStaff(res.data); } catch (e) { console.log(e); }
+    try { const res = await api.get(API); setStaff(res.data); } catch (e) { console.log(e); }
   };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -86,8 +87,8 @@ export default function StaffPage() {
     e.preventDefault();
     try {
          console.log(form);
-      if (editId) await axios.put(`${API}/${editId}`, form);
-      else await axios.post(API, form);
+      if (editId) await api.put(`${API}/${editId}`, form);
+      else await api.post(API, form);
       setShow(false); fetchStaff();
       setMsg(editId ? "U ndryshua me sukses!" : "U shtua me sukses!");
     } catch (e) { console.log(e); }
@@ -95,7 +96,7 @@ export default function StaffPage() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("A je i sigurt?")) return;
-    try { await axios.delete(`${API}/${id}`); fetchStaff(); setMsg("U fshi me sukses!"); } catch (e) { console.log(e); }
+    try { await api.delete(`${API}/${id}`); fetchStaff(); setMsg("U fshi me sukses!"); } catch (e) { console.log(e); }
   };
 
   const filtered = staff.filter((s) =>

@@ -34,8 +34,8 @@ function Login() {
 
    
    try {
-
-  const res = await fetch("http://localhost:5001/login", {
+// a duhet porti 5000 apo5001
+  const res = await fetch("http://localhost:5000/login", {
 
     method: "POST",
 
@@ -67,7 +67,7 @@ function Login() {
   localStorage.setItem("user",         JSON.stringify(data.user));
 
   if (data.user.role === "Admin") {
-    navigate("/dashboard");
+    navigate("/");
   } else {
     navigate("/preferences");
   }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { Modal, Form, Row, Col } from "react-bootstrap";
 import "./Dashboard.css";
 
@@ -211,12 +211,12 @@ export default function DashboardDemtimet() {
   }, [msg]);
 
   const fetchInjuries = async () => {
-    try { const r = await axios.get(API); setInjuries(r.data); } catch (e) { console.error(e); }
+    try { const r = await api.get(API); setInjuries(r.data); } catch (e) { console.error(e); }
   };
 
 const fetchPlayers = async () => {
   try {
-    const r = await axios.get(PLAYERS_API);
+    const r = await api.get(PLAYERS_API);
     setPlayers(r.data);
   } catch (e) {
     console.error(e);
@@ -251,8 +251,8 @@ const fetchPlayers = async () => {
         data_rikthimit: form.data_rikthimit || null,
         statusi:        form.statusi,
       };
-      if (editId) await axios.put(`${API}/${editId}`, payload);
-      else        await axios.post(API, payload);
+      if (editId) await api.put(`${API}/${editId}`, payload);
+      else        await api.post(API, payload);
       setShow(false);
       fetchInjuries();
       setMsg({ text: editId ? "Dëmtimi u ndryshua me sukses!" : "Dëmtimi u shtua me sukses!", type: "success" });
@@ -264,7 +264,7 @@ const fetchPlayers = async () => {
   const handleDelete = async (id) => {
     if (!window.confirm("A je i sigurt që dëshiron ta fshish këtë dëmtim?")) return;
     try {
-      await axios.delete(`${API}/${id}`);
+      await api.delete(`${API}/${id}`);
       fetchInjuries();
       setMsg({ text: "Dëmtimi u fshi me sukses!", type: "success" });
     } catch (e) {

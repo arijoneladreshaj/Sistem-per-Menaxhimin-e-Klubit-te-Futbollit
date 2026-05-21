@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
 import axios from "axios";
+import api from "../../api/axiosInstance";
 import { Modal, Form, Row, Col } from "react-bootstrap";
 
 import "./Dashboard.css";
 
-
 const API = "http://localhost:5001/api/ndeshjet";
-
 
 const LOGOS = {
   "Man United":
@@ -36,7 +35,7 @@ const COMP_SHORT = {
 };
 
 const emptyForm = {
-  club_id: 2,
+  club_id: 1,
   ekipi_kundershtare: "",
   data_ndeshjes: "",
   ora: "20:00",
@@ -86,8 +85,10 @@ function TeamLogo({ name, logoUrl }) {
 function MatchRow({ match, onBuyTicket, onEdit, onDelete }) {
   const isUpcoming = match.result === "upcoming";
   const resultClass = RESULT_COLOR_CLASS[match.result];
-  const awayLogo = match.home === "Man United" ? match.logo_kundershtarit : null;
-  const homeLogo = match.away === "Man United" ? match.logo_kundershtarit : null;
+  const awayLogo =
+    match.home === "Man United" ? match.logo_kundershtarit : null;
+  const homeLogo =
+    match.away === "Man United" ? match.logo_kundershtarit : null;
 
   return (
     <div className={`nd-match ${resultClass}`}>
@@ -153,7 +154,16 @@ function MatchRow({ match, onBuyTicket, onEdit, onDelete }) {
           onClick={() => onEdit(match)}
           title="Edit"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
           </svg>
@@ -164,7 +174,16 @@ function MatchRow({ match, onBuyTicket, onEdit, onDelete }) {
           onClick={() => onDelete(match.id)}
           title="Fshi"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="3 6 5 6 21 6" />
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
             <line x1="10" y1="11" x2="10" y2="17" />
@@ -201,7 +220,6 @@ function StatsBar({ matches }) {
 
   return (
     <div className="nd-stats">
-    
       {stats.map(({ val, label, color }) => (
         <div key={label} className="nd-stat-item">
           <div className="nd-stat-val" style={{ color }}>
@@ -216,7 +234,7 @@ function StatsBar({ matches }) {
 
 /* ════════════════════════════════════════════════════════════ */
 export default function DashboardNdeshjet() {
-  const [tab, setTab] = useState("rezultate");
+  const [tab, setTab] = useState("fixtures");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -250,7 +268,7 @@ export default function DashboardNdeshjet() {
 
   const fetchMatches = async () => {
     try {
-      const res = await axios.get(API);
+      const res = await api.get(API);
       setApiMatches(res.data);
     } catch (e) {
       console.log(e);
@@ -258,8 +276,29 @@ export default function DashboardNdeshjet() {
   };
 
   /* ── Convert API matches to same format as Ndeshjet.jsx ── */
-  const dayNames = ["E Diel", "E Hënë", "E Martë", "E Mërkurë", "E Enjte", "E Premte", "E Shtunë"];
-  const monthNames = ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"];
+  const dayNames = [
+    "E Diel",
+    "E Hënë",
+    "E Martë",
+    "E Mërkurë",
+    "E Enjte",
+    "E Premte",
+    "E Shtunë",
+  ];
+  const monthNames = [
+    "Janar",
+    "Shkurt",
+    "Mars",
+    "Prill",
+    "Maj",
+    "Qershor",
+    "Korrik",
+    "Gusht",
+    "Shtator",
+    "Tetor",
+    "Nëntor",
+    "Dhjetor",
+  ];
 
   const convertApiMatch = (m) => {
     const dateObj = m.data_ndeshjes ? new Date(m.data_ndeshjes) : null;
@@ -277,12 +316,18 @@ export default function DashboardNdeshjet() {
     return {
       id: m.id,
       day: dateObj ? dayNames[dateObj.getDay()] : "",
-      date: dateObj ? `${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}` : "",
+      date: dateObj
+        ? `${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}`
+        : "",
       comp: COMP_SHORT[m.lloji_kompeticionit] || "PL",
       home: "Man United",
       away: m.ekipi_kundershtare,
       logo_kundershtarit: m.logo_kundershtarit || null,
-      score: isPlayed ? `${h} – ${a}` : (m.ora ? String(m.ora).slice(0, 5) : "TBD"),
+      score: isPlayed
+        ? `${h} – ${a}`
+        : m.ora
+          ? String(m.ora).slice(0, 5)
+          : "TBD",
       result,
       venue: m.stadiumi || "",
       ticketsAvailable: !isPlayed,
@@ -295,20 +340,27 @@ export default function DashboardNdeshjet() {
     list.forEach((m) => {
       const raw = m._raw;
       const d = raw?.data_ndeshjes ? new Date(raw.data_ndeshjes) : null;
-      const key = d ? `${monthNames[d.getMonth()]} ${d.getFullYear()}` : "Pa datë";
+      const key = d
+        ? `${monthNames[d.getMonth()]} ${d.getFullYear()}`
+        : "Pa datë";
       if (!groups[key]) groups[key] = [];
       groups[key].push(m);
     });
-    return Object.entries(groups).map(([month, matches]) => ({ month, matches }));
+    return Object.entries(groups).map(([month, matches]) => ({
+      month,
+      matches,
+    }));
   };
 
   const apiConverted = apiMatches.map(convertApiMatch);
   const apiResults = apiConverted.filter((m) => m.result !== "upcoming");
   const apiFixtures = apiConverted.filter((m) => m.result === "upcoming");
-  const data = tab === "rezultate" ? groupByMonth(apiResults) : groupByMonth(apiFixtures);
+  const data =
+    tab === "rezultate" ? groupByMonth(apiResults) : groupByMonth(apiFixtures);
 
   /* ── CRUD handlers ── */
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const openAdd = () => {
     setEditId(null);
@@ -337,7 +389,8 @@ export default function DashboardNdeshjet() {
       setEditId(match.id);
       setForm({
         ...emptyForm,
-        ekipi_kundershtare: match.away === "Man United" ? match.home : match.away,
+        ekipi_kundershtare:
+          match.away === "Man United" ? match.home : match.away,
         stadiumi: match.venue,
       });
     }
@@ -354,26 +407,31 @@ export default function DashboardNdeshjet() {
         ora: form.ora || null,
         stadiumi: form.stadiumi || null,
         lloji_kompeticionit: form.lloji_kompeticionit,
-        rezultati_shtepia: form.statusi === "Luajtur" ? Number(form.rezultati_shtepia) : null,
-        rezultati_jashte: form.statusi === "Luajtur" ? Number(form.rezultati_jashte) : null,
+        rezultati_shtepia:
+          form.statusi === "Luajtur" ? Number(form.rezultati_shtepia) : null,
+        rezultati_jashte:
+          form.statusi === "Luajtur" ? Number(form.rezultati_jashte) : null,
         statusi: form.statusi,
         season_id: form.season_id || null,
         logo_kundershtarit: form.logo_kundershtarit || null,
       };
-      if (editId) await axios.put(`${API}/${editId}`, payload);
-      else await axios.post(API, payload);
+      if (editId) await api.put(`${API}/${editId}`, payload);
+      else await api.post(API, payload);
       setShow(false);
       fetchMatches();
-      setMsg(editId ? "Ndeshja u ndryshua me sukses!" : "Ndeshja u shtua me sukses!");
+      setMsg(
+        editId ? "Ndeshja u ndryshua me sukses!" : "Ndeshja u shtua me sukses!",
+      );
     } catch (e) {
       console.log(e);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("A je i sigurt që dëshiron ta fshish këtë ndeshje?")) return;
+    if (!window.confirm("A je i sigurt që dëshiron ta fshish këtë ndeshje?"))
+      return;
     try {
-      await axios.delete(`${API}/${id}`);
+      await api.delete(`${API}/${id}`);
       fetchMatches();
       setMsg("Ndeshja u fshi me sukses!");
     } catch (e) {
@@ -383,31 +441,33 @@ export default function DashboardNdeshjet() {
 
   return (
     <div className="shell">
-
-    <SideBar active="/dashboardNdeshjet" />
+      <SideBar active="/dashboardNdeshjet" />
 
       <div className="main">
-
-      
         <div className="topbar">
           <div className="topbar-title">Menaxhimi i Ndeshjeve</div>
           <div className="d-flex align-items-center gap-2">
-            <button className="btn btn-mu" onClick={openAdd}>+ Shto Ndeshje</button>
-            <div className="avatar">{user?.emri?.[0] || "A"}{user?.mbiemri?.[0] || "K"}</div>
+            <button className="btn btn-mu" onClick={openAdd}>
+              + Shto Ndeshje
+            </button>
+            <div className="avatar">
+              {user?.emri?.[0] || "A"}
+              {user?.mbiemri?.[0] || "K"}
+            </div>
           </div>
-       
         </div>
 
         <div className="content" style={{ padding: 0 }}>
-
-         
           <div
             className="mu-hero"
             style={{ minHeight: 220, alignItems: "flex-end" }}
           >
             <div className="mu-hero-bg" />
             <div className="mu-hero-stripe" />
-            <div className="mu-hero-content" style={{ padding: "36px 50px 28px" }}>
+            <div
+              className="mu-hero-content"
+              style={{ padding: "36px 50px 28px" }}
+            >
               <div className="mu-eyebrow">
                 <span className="mu-eyebrow-badge">Sezoni 2025/26</span>
                 <span className="mu-eyebrow-sub">All Competitions</span>
@@ -467,177 +527,180 @@ export default function DashboardNdeshjet() {
             ))}
           </div>
 
-         
-            {tab === "rezultate" && <StatsBar matches={data} />}
+          {tab === "rezultate" && <StatsBar matches={data} />}
 
-            {data.length === 0 && (
-              <div style={{ textAlign: "center", padding: 60, color: "#888" }}>
-                Nuk ka ndeshje. Shtyp "+ Shto Ndeshje" për të shtuar.
-              </div>
-            )}
+          {data.length === 0 && (
+            <div style={{ textAlign: "center", padding: 60, color: "#888" }}>
+              Nuk ka ndeshje. Shtyp "+ Shto Ndeshje" për të shtuar.
+            </div>
+          )}
 
-            {data.map((group) => (
-              <div key={group.month}>
-                <div className="nd-month">{group.month}</div>
-                {group.matches.map((match, i) => (
-                  <MatchRow
-                    key={match.id || i}
-                    match={match}
-                    onBuyTicket={(id) => navigate(`/SectorPage/${id}`)}
-                    onEdit={openEdit}
-                    onDelete={handleDelete}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-
-          {/* ── Ticker — identik me Ndeshjet.jsx ── */}
-          <div className="mu-ticker">
-            <span className="mu-ticker-label">Live</span>
-            <div
-              className="mu-ticker-track"
-              style={{ animation: "ndeshjetTicker 30s linear infinite" }}
-            >
-              {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-                <span key={i} className="mu-ticker-item">
-                  {item}
-                </span>
+          {data.map((group) => (
+            <div key={group.month}>
+              <div className="nd-month">{group.month}</div>
+              {group.matches.map((match, i) => (
+                <MatchRow
+                  key={match.id || i}
+                  match={match}
+                  onBuyTicket={(id) => navigate(`/SectorPage/${id}`)}
+                  onEdit={openEdit}
+                  onDelete={handleDelete}
+                />
               ))}
             </div>
+          ))}
+        </div>
+
+        {/* ── Ticker — identik me Ndeshjet.jsx ── */}
+        <div className="mu-ticker">
+          <span className="mu-ticker-label">Live</span>
+          <div
+            className="mu-ticker-track"
+            style={{ animation: "ndeshjetTicker 30s linear infinite" }}
+          >
+            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+              <span key={i} className="mu-ticker-item">
+                {item}
+              </span>
+            ))}
           </div>
+        </div>
 
-      {/* ===== MODAL — Add / Edit ===== */}
-      <Modal
-        show={show}
-        onHide={() => setShow(false)}
-        centered
-        size="lg"
-        className="staff-modal"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {editId ? "Ndrysho Ndeshjen" : "Shto Ndeshje të Re"}
-          </Modal.Title>
-        </Modal.Header>
+        {/* ===== MODAL — Add / Edit ===== */}
+        <Modal
+          show={show}
+          onHide={() => setShow(false)}
+          centered
+          size="lg"
+          className="staff-modal"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              {editId ? "Ndrysho Ndeshjen" : "Shto Ndeshje të Re"}
+            </Modal.Title>
+          </Modal.Header>
 
-        <Form onSubmit={handleSubmit}>
-          <Modal.Body>
-            <Row className="g-3">
-              <Col md={12}>
-                <Form.Label>Ekipi Kundërshtar</Form.Label>
-                <Form.Control
-                  name="ekipi_kundershtare"
-                  value={form.ekipi_kundershtare}
-                  onChange={handleChange}
-                  required
-                  placeholder="p.sh. Arsenal"
-                />
-              </Col>
-              <Col md={6}>
-                <Form.Label>Data e Ndeshjes</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="data_ndeshjes"
-                  value={form.data_ndeshjes}
-                  onChange={handleChange}
-                  required
-                />
-              </Col>
-              <Col md={6}>
-                <Form.Label>Ora</Form.Label>
-                <Form.Control
-                  type="time"
-                  name="ora"
-                  value={form.ora}
-                  onChange={handleChange}
-                />
-              </Col>
-              <Col md={6}>
-                <Form.Label>Stadiumi</Form.Label>
-                <Form.Control
-                  name="stadiumi"
-                  value={form.stadiumi}
-                  onChange={handleChange}
-                  placeholder="p.sh. Old Trafford"
-                />
-              </Col>
-              <Col md={6}>
-                <Form.Label>Lloji i Kompeticionit</Form.Label>
-                <Form.Select
-                  name="lloji_kompeticionit"
-                  value={form.lloji_kompeticionit}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="Ligë">Ligë</option>
-                  <option value="Kupë">Kupë</option>
-                  <option value="Miqësore">Miqësore</option>
-                  <option value="Europiane">Europiane</option>
-                </Form.Select>
-              </Col>
-              <Col md={6}>
-                <Form.Label>Rezultati Home</Form.Label>
-                <Form.Control
-                  type="number"
-                  min="0"
-                  name="rezultati_shtepia"
-                  value={form.rezultati_shtepia}
-                  onChange={handleChange}
-                />
-              </Col>
-              <Col md={6}>
-                <Form.Label>Rezultati Away</Form.Label>
-                <Form.Control
-                  type="number"
-                  min="0"
-                  name="rezultati_jashte"
-                  value={form.rezultati_jashte}
-                  onChange={handleChange}
-                />
-              </Col>
-              <Col md={12}>
-                <Form.Label>Statusi</Form.Label>
-                <Form.Select
-                  name="statusi"
-                  value={form.statusi}
-                  onChange={handleChange}
-                >
-                  <option value="Planifikuar">Planifikuar</option>
-                  <option value="Luajtur">Luajtur</option>
-                  <option value="Anuluar">Anuluar</option>
-                  <option value="Shtyrë">Shtyrë</option>
-                </Form.Select>
-              </Col>
-              <Col md={12}>
-                <Form.Label>Logo e Klubit Kundërshtar (URL)</Form.Label>
-                <Form.Control
-                  name="logo_kundershtarit"
-                  value={form.logo_kundershtarit}
-                  onChange={handleChange}
-                  placeholder="https://..."
-                />
-                {form.logo_kundershtarit && (
-                  <img src={form.logo_kundershtarit} alt="logo" style={{ height: 40, marginTop: 8 }} />
-                )}
-              </Col>
-            </Row>
-          </Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Modal.Body>
+              <Row className="g-3">
+                <Col md={12}>
+                  <Form.Label>Ekipi Kundërshtar</Form.Label>
+                  <Form.Control
+                    name="ekipi_kundershtare"
+                    value={form.ekipi_kundershtare}
+                    onChange={handleChange}
+                    required
+                    placeholder="p.sh. Arsenal"
+                  />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Data e Ndeshjes</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="data_ndeshjes"
+                    value={form.data_ndeshjes}
+                    onChange={handleChange}
+                    required
+                  />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Ora</Form.Label>
+                  <Form.Control
+                    type="time"
+                    name="ora"
+                    value={form.ora}
+                    onChange={handleChange}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Stadiumi</Form.Label>
+                  <Form.Control
+                    name="stadiumi"
+                    value={form.stadiumi}
+                    onChange={handleChange}
+                    placeholder="p.sh. Old Trafford"
+                  />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Lloji i Kompeticionit</Form.Label>
+                  <Form.Select
+                    name="lloji_kompeticionit"
+                    value={form.lloji_kompeticionit}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="Ligë">Ligë</option>
+                    <option value="Kupë">Kupë</option>
+                    <option value="Miqësore">Miqësore</option>
+                    <option value="Europiane">Europiane</option>
+                  </Form.Select>
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Rezultati Home</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min="0"
+                    name="rezultati_shtepia"
+                    value={form.rezultati_shtepia}
+                    onChange={handleChange}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Rezultati Away</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min="0"
+                    name="rezultati_jashte"
+                    value={form.rezultati_jashte}
+                    onChange={handleChange}
+                  />
+                </Col>
+                <Col md={12}>
+                  <Form.Label>Statusi</Form.Label>
+                  <Form.Select
+                    name="statusi"
+                    value={form.statusi}
+                    onChange={handleChange}
+                  >
+                    <option value="Planifikuar">Planifikuar</option>
+                    <option value="Luajtur">Luajtur</option>
+                    <option value="Anuluar">Anuluar</option>
+                    <option value="Shtyrë">Shtyrë</option>
+                  </Form.Select>
+                </Col>
+                <Col md={12}>
+                  <Form.Label>Logo e Klubit Kundërshtar (URL)</Form.Label>
+                  <Form.Control
+                    name="logo_kundershtarit"
+                    value={form.logo_kundershtarit}
+                    onChange={handleChange}
+                    placeholder="https://..."
+                  />
+                  {form.logo_kundershtarit && (
+                    <img
+                      src={form.logo_kundershtarit}
+                      alt="logo"
+                      style={{ height: 40, marginTop: 8 }}
+                    />
+                  )}
+                </Col>
+              </Row>
+            </Modal.Body>
 
-          <Modal.Footer>
-            <button
-              type="button"
-              className="btn btn-delete"
-              onClick={() => setShow(false)}
-            >
-              Anulo
-            </button>
-            <button type="submit" className="btn btn-mu">
-              {editId ? "Ruaj Ndryshimet" : "Shto Ndeshjen"}
-            </button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
+            <Modal.Footer>
+              <button
+                type="button"
+                className="btn btn-delete"
+                onClick={() => setShow(false)}
+              >
+                Anulo
+              </button>
+              <button type="submit" className="btn btn-mu">
+                {editId ? "Ruaj Ndryshimet" : "Shto Ndeshjen"}
+              </button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
       </div>
     </div>
   );

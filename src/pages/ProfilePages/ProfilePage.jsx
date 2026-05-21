@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const [orders, setOrders] = useState(
   JSON.parse(localStorage.getItem(`myOrders_${userEmail}`) || "[]")
 );
-  if (!storedUser.emri) {
+  if (!storedUser.id) {
     return (
       <div className="pp-empty">
         <p>Nuk je i kyçur!</p>

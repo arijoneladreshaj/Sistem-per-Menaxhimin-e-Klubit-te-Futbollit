@@ -1,57 +1,34 @@
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const express = require("express");
-const cors = require("cors");
-const app = express();
+const cors    = require("cors");
+const app     = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/players",   require("./routes/Players"));
-const players = require("./routes/Players");
-const staff = require("./routes/Staff");
-const ndeshjet = require("./routes/Ndeshjet");
-const store = require("./routes/Store");
-const lajmet = require("./routes/Lajmet");
-const login = require("./routes/login");
+const { verifyToken } = require("./middleware/authMiddleware");
 
-// app.use("/store", storeRoutes);
-// app.use("/", loginRoutes);
+// Auth (publike)
+app.use("/", require("./Routes/Login"));
 app.use("/", require("./Routes/Register"));
 
-app.use("/api/players", require("./routes/Players"));
-app.use("/api/staff", require("./routes/Staff"));
-app.use("/api/matches", require("./routes/Ndeshjet"));
-app.use("/api/lajme", require("./routes/Lajmet"));
+// Publike
+app.use("/store",           require("./Routes/Store"));
+app.use("/players",         require("./Routes/Players"));
+app.use("/ndeshjet",        require("./Routes/Ndeshjet"));
+app.use("/api/lajme",       require("./Routes/Lajmet"));
+app.use("/api/ndeshjet",    require("./Routes/Ndeshjet"));
+app.use("/api/matches",     require("./Routes/Ndeshjet"));
 app.use("/api/preferences", require("./Routes/Preferences"));
-app.use("/api/shipping", require("./Routes/ShippingModal"));
-app.use("/api/auth", require("./routes/login"));
-app.use("/api/training", require("./routes/Training"));
+app.use("/api/shipping",    require("./Routes/ShippingModal"));
+app.use("/api/training",    require("./Routes/Training"));
 
+// Te mbrojtura — duhet token
+app.use("/api/players",  verifyToken, require("./Routes/Players"));
+app.use("/api/staff",    verifyToken, require("./Routes/Staff"));
+app.use("/api/injuries", verifyToken, require("./Routes/Injuries"));
+app.use("/staff",        verifyToken, require("./Routes/Staff"));
 
-app.use("/api/injuries", require("./Routes/Injuries"));
-
-/*app.use("/api/clubs",     require("./routes/clubs"));
-app.use("/api/matches",   require("./routes/matches"));
-app.use("/api/staff",     require("./routes/staff"));
-app.use("/api/transfers", require("./routes/transfers"));
-app.use("/api/contracts", require("./routes/contracts"));
-app.use("/api/injuries",  require("./routes/injuries"));
-app.use("/api/seasons",   require("./routes/seasons"));
-app.use("/api/training",  require("./routes/training"));*/
-
+// Dëgjo në të dy portat
 app.listen(5000, () => console.log("Server ne port 5000"));
-app.listen(5001, () => {
-  console.log("Server ne port 5001");
-});
-
-app.use("/players", players);
-app.use("/api/players", players);
-app.use("/staff", staff);
-app.use("/api/staff", staff);
-app.use("/ndeshjet", ndeshjet);
-app.use("/api/ndeshjet", ndeshjet);
-app.use("/store", store);
-app.use("/api/lajme", lajmet);
-app.use("/", login);
-
 app.listen(5001, () => console.log("Server ne port 5001"));

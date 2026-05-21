@@ -5,6 +5,7 @@ const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tabela", "Shop"];
 export default function Navbar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const role = localStorage.getItem("role");
 
   return (
     <nav className="mu-nav">
@@ -26,14 +27,18 @@ export default function Navbar() {
                 <Link to="/Store">{link}</Link>
               ) : link === "Lojtarët" ? (
                 <Link to="/players">{link}</Link>
-              ): link === "Lajmet" ? (
+              ) : link === "Lajmet" ? (
                 <Link to="/lajmet">{link}</Link>
-              )
-              : (
+              ) : (
                 <a href="#">{link}</a>
               )}
             </li>
           ))}
+          {role === "Admin" && (
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          )}
         </ul>
       </div>
       <div className="mu-nav-right">

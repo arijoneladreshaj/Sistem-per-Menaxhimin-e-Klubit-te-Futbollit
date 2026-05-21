@@ -6,7 +6,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: "http://localhost:5000",
 });
 
 // Para çdo kërkese — shto access token automatikisht
