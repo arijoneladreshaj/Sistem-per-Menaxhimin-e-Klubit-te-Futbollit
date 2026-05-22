@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import SideBar from "../../Components/SideBar";
-<<<<<<< Updated upstream
-import api from "../../api/axiosInstance";
-=======
 import TopBar from "../../Components/TopBar";
->>>>>>> Stashed changes
+import api from "../../api/axiosInstance";
 import {
   Container, Row, Col, Card, Button, Modal, Form, Badge, Alert
 } from "react-bootstrap";

@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-<<<<<<< Updated upstream
-import api from "../../api/axiosInstance";
-=======
 import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
-import axios from "axios";
->>>>>>> Stashed changes
+import api from "../../api/axiosInstance";
 import { Modal, Form, Row, Col } from "react-bootstrap";
 import "./Dashboard.css";
 

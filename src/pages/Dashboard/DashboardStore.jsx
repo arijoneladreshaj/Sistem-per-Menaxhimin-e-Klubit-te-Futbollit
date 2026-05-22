@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../../Components/SideBar";
-<<<<<<< Updated upstream
-import api from "../../api/axiosInstance";
-=======
 import TopBar from "../../Components/TopBar";
->>>>>>> Stashed changes
+import api from "../../api/axiosInstance";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Dashboard.css";
