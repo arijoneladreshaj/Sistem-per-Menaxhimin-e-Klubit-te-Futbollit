@@ -16,7 +16,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Pas çdo përgjigje — nëse 401, rifreskо token-in dhe riprovо
+// Pas çdo përgjigje — nëse 401, rifreskotoken-in dhe riprovo
 let isRefreshing = false;
 let failedQueue  = [];
 
@@ -30,7 +30,10 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    if ((error.response?.status === 401 || error.response?.status === 403) && !original._retry) {
+    // Vetëm 401 (token skadoi), jo 403, dhe jo nga endpoint-et publike
+    const publicEndpoints = ["/login", "/register", "/refresh"];
+    const isPublic = publicEndpoints.some((url) => original.url?.includes(url));
+    if (error.response?.status === 401 && !original._retry && !isPublic) {
       original._retry = true;
 
       if (isRefreshing) {
@@ -55,7 +58,8 @@ api.interceptors.response.use(
       }
 
       try {
-        const res = await api.post("/refresh", { refreshToken });
+        // axios direkt (jo api) — kalon interceptorin, shmang deadlock
+        const res = await axios.post("http://localhost:5001/refresh", { refreshToken });
         const newToken = res.data.accessToken;
 
         localStorage.setItem("accessToken", newToken);

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../api/axiosInstance";
 import "./Login.css";
 
 function Login() {
@@ -34,52 +35,24 @@ function Login() {
 
    
    try {
-// a duhet porti 5000 apo5001
-  const res = await fetch("http://localhost:5001/login", {
+    const res = await api.post("/login", { username, password });
+    const data = res.data;
 
-    method: "POST",
+    localStorage.setItem("accessToken",  data.accessToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
+    localStorage.setItem("isLoggedIn",   "true");
+    localStorage.setItem("role",         data.user.role);
+    localStorage.setItem("user",         JSON.stringify(data.user));
 
-    headers: {
-      "Content-Type": "application/json",
-    },
+    if (data.user.role === "Admin") {
+      navigate("/");
+    } else {
+      navigate("/preferences");
+    }
 
-    body: JSON.stringify({
-      username,
-      password,
-    }),
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-
-    setErrors({
-      general: data.message,
-    });
-
-    return;
+  } catch (err) {
+    setErrors({ general: err.response?.data?.message || "Server error" });
   }
-
-  localStorage.setItem("accessToken",  data.accessToken);
-  localStorage.setItem("refreshToken", data.refreshToken);
-  localStorage.setItem("isLoggedIn",   "true");
-  localStorage.setItem("role",         data.user.role);
-  localStorage.setItem("user",         JSON.stringify(data.user));
-
-  if (data.user.role === "Admin") {
-    navigate("/");
-  } else {
-    navigate("/preferences");
-  }
-
-} catch (err) {
-
-  console.log(err);
-
-  setErrors({
-    general: "Server error",
-  });
-}
  };
 
   return (

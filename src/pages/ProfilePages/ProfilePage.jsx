@@ -11,15 +11,22 @@ export default function ProfilePage() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.tab || "profili");
 
-  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const [storedUser, setStoredUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user") || "{}")
+  );
   const [formData, setFormData] = useState({
+    username: (storedUser.username && !storedUser.username.includes("@")) ? storedUser.username : "",
     emri: storedUser.emri || "",
     mbiemri: storedUser.mbiemri || "",
     email: storedUser.email || "",
-    datelindja: storedUser.datelindja || "",
+    datelindja: storedUser.datelindja ? storedUser.datelindja.split("T")[0] : "",
   });
   const [saved, setSaved] = useState(false);
   const [errors, setErrors] = useState({});
+
+  const [passData, setPassData] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  const [passErrors, setPassErrors] = useState({});
+  const [passSaved, setPassSaved] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
@@ -54,27 +61,65 @@ export default function ProfilePage() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const newErrors = {};
+    if (!formData.username.trim()) newErrors.username = "Username është i detyrueshëm!";
+    else if (formData.username.includes("@")) newErrors.username = "Username nuk mund të jetë email adresë!";
     if (!formData.emri.trim()) newErrors.emri = "Emri është i detyrueshëm!";
     if (!formData.mbiemri.trim())
       newErrors.mbiemri = "Mbiemri është i detyrueshëm!";
     if (!/\S+@\S+\.\S+/.test(formData.email))
       newErrors.email = "Email-i nuk është i vlefshëm!";
-    if (!formData.datelindja)
-      newErrors.datelindja = "Datëlindja është e detyrueshme!";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ ...storedUser, ...formData }),
-    );
-    setSaved(true);
-    setErrors({});
+    try {
+      const res = await api.put(`/api/users/${storedUser.id}`, formData);
+      const savedUser = res.data?.user;
+      const newUser = {
+        ...storedUser,
+        ...(savedUser ?? formData),
+        datelindja: savedUser?.datelindja || formData.datelindja || "",
+      };
+      localStorage.setItem("user", JSON.stringify(newUser));
+      setStoredUser(newUser);
+      setSaved(true);
+      setErrors({});
+    } catch (e) {
+      const msg = e.response?.data?.message;
+      if (msg) setErrors({ general: msg });
+      else setErrors({ general: `Gabim: ${e.message || "Provo sërish."}` });
+    }
+  };
+
+  const handlePassChange = (e) => {
+    setPassSaved(false);
+    setPassData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSavePassword = async () => {
+    const errs = {};
+    if (!passData.currentPassword.trim()) errs.currentPassword = "Fjalëkalimi aktual është i detyrueshëm!";
+    if (!passData.newPassword.trim()) errs.newPassword = "Fjalëkalimi i ri është i detyrueshëm!";
+    else if (passData.newPassword.length < 6) errs.newPassword = "Duhet të ketë së paku 6 karaktere!";
+    if (passData.newPassword !== passData.confirmPassword) errs.confirmPassword = "Fjalëkalimet nuk përputhen!";
+
+    if (Object.keys(errs).length > 0) { setPassErrors(errs); return; }
+
+    try {
+      await api.put(`/api/users/${storedUser.id}/password`, {
+        currentPassword: passData.currentPassword,
+        newPassword: passData.newPassword,
+      });
+      setPassData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setPassErrors({});
+      setPassSaved(true);
+    } catch (e) {
+      setPassErrors({ general: e.response?.data?.message || "Gabim gjatë ndryshimit të fjalëkalimit" });
+    }
   };
 
   const handleLogout = () => {
@@ -97,11 +142,15 @@ export default function ProfilePage() {
     setOrderToDelete(null);
   };
 
-  const handleDeleteAccount = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem(`myTickets_${userEmail}`);
-    navigate("/register");
+  const handleDeleteAccount = async () => {
+    try {
+      await api.delete(`/api/users/${storedUser.id}`);
+      localStorage.clear();
+      navigate("/register");
+    } catch (e) {
+      console.error(e);
+      alert("Gabim gjatë fshirjes së llogarisë. Provo sërish.");
+    }
   };
 
   const initials = `${storedUser.emri?.[0] || ""}${storedUser.mbiemri?.[0] || ""}`;
@@ -119,6 +168,9 @@ export default function ProfilePage() {
               <div className="pp-name">
                 {storedUser.emri} {storedUser.mbiemri}
               </div>
+              {storedUser.username && (
+                <div className="pp-email">@{storedUser.username}</div>
+              )}
               <div className="pp-email">{storedUser.email}</div>
 
               <div className="pp-divider" />
@@ -170,6 +222,23 @@ export default function ProfilePage() {
                   <h2 className="pp-section-title">Profili Im</h2>
 
                   <div className="row g-3">
+                    <div className="col-sm-12">
+                      <label className="pp-label">Username</label>
+                      <input
+                        type="text"
+                        name="username"
+                        className="form-control pp-input"
+                        value={formData.username}
+                        onChange={handleChange}
+                        autoComplete="off"
+                        placeholder="Zgjedh username-in tënd..."
+                      />
+                      {errors.username && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.username}
+                        </span>
+                      )}
+                    </div>
                     <div className="col-sm-6">
                       <label className="pp-label">Emri</label>
                       <input
@@ -233,11 +302,73 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
+                  {errors.general && (
+                    <div style={{ color: "red", fontSize: "13px", marginTop: "8px" }}>
+                      {errors.general}
+                    </div>
+                  )}
                   <div className="mt-4 d-flex align-items-center gap-3">
                     <button className="pp-save-btn" onClick={handleSave}>
                       Ruaj Ndryshimet
                     </button>
                     {saved && <span className="pp-saved">✓ U ruajt!</span>}
+                  </div>
+
+                  {/* ── NDRYSHO FJALËKALIMIN ── */}
+                  <hr style={{ borderColor: "#333", margin: "32px 0 24px" }} />
+                  <h5 style={{ color: "#ccc", marginBottom: "16px" }}>Ndrysho Fjalëkalimin</h5>
+                  <div className="row g-3">
+                    <div className="col-sm-12">
+                      <label className="pp-label">Fjalëkalimi Aktual</label>
+                      <input
+                        type="password"
+                        name="currentPassword"
+                        className="form-control pp-input"
+                        value={passData.currentPassword}
+                        onChange={handlePassChange}
+                        placeholder="Shkruaj fjalëkalimin aktual..."
+                      />
+                      {passErrors.currentPassword && (
+                        <span style={{ color: "red", fontSize: "12px" }}>{passErrors.currentPassword}</span>
+                      )}
+                    </div>
+                    <div className="col-sm-6">
+                      <label className="pp-label">Fjalëkalimi i Ri</label>
+                      <input
+                        type="password"
+                        name="newPassword"
+                        className="form-control pp-input"
+                        value={passData.newPassword}
+                        onChange={handlePassChange}
+                        placeholder="Fjalëkalimi i ri..."
+                      />
+                      {passErrors.newPassword && (
+                        <span style={{ color: "red", fontSize: "12px" }}>{passErrors.newPassword}</span>
+                      )}
+                    </div>
+                    <div className="col-sm-6">
+                      <label className="pp-label">Konfirmo Fjalëkalimin</label>
+                      <input
+                        type="password"
+                        name="confirmPassword"
+                        className="form-control pp-input"
+                        value={passData.confirmPassword}
+                        onChange={handlePassChange}
+                        placeholder="Konfirmo fjalëkalimin e ri..."
+                      />
+                      {passErrors.confirmPassword && (
+                        <span style={{ color: "red", fontSize: "12px" }}>{passErrors.confirmPassword}</span>
+                      )}
+                    </div>
+                  </div>
+                  {passErrors.general && (
+                    <div style={{ color: "red", fontSize: "13px", marginTop: "8px" }}>{passErrors.general}</div>
+                  )}
+                  <div className="mt-4 d-flex align-items-center gap-3">
+                    <button className="pp-save-btn" onClick={handleSavePassword}>
+                      Ndrysho Fjalëkalimin
+                    </button>
+                    {passSaved && <span className="pp-saved">✓ Fjalëkalimi u ndryshua!</span>}
                   </div>
                 </div>
               )}

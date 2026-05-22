@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt     = require("jsonwebtoken");
+const bcrypt  = require("bcryptjs");
 const router  = express.Router();
 const { sql, poolPromise } = require("../db");
 
@@ -21,8 +22,10 @@ router.post("/login", async (req, res) => {
       .query("SELECT * FROM Users WHERE email = @username OR username = @username");
 
     const user = result.recordset[0];
-    if (!user)                          return res.status(401).json({ message: "Përdoruesi nuk u gjet" });
-    if (user.password_hash !== password) return res.status(401).json({ message: "Fjalëkalimi është i gabuar" });
+    if (!user) return res.status(401).json({ message: "Përdoruesi nuk u gjet" });
+
+    const passwordValid = await bcrypt.compare(password, user.password_hash);
+    if (!passwordValid) return res.status(401).json({ message: "Fjalëkalimi është i gabuar" });
 
     const { accessToken, refreshToken } = generateTokens(user);
 
@@ -40,7 +43,7 @@ router.post("/login", async (req, res) => {
     res.json({
       accessToken,
       refreshToken,
-      user: { id: user.id, username: user.username, email: user.email, role: user.role, emri: user.emri, mbiemri: user.mbiemri },
+      user: { id: user.id, username: user.username, email: user.email, role: user.role, emri: user.emri, mbiemri: user.mbiemri, datelindja: user.datelindja || "" },
     });
 
   } catch (err) {

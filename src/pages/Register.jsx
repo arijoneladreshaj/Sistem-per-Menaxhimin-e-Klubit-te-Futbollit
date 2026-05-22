@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./Login.css";
-import axios from "axios";
+import api from "../api/axiosInstance";
 
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    username: "",
     emri: "",
     mbiemri: "",
     datelindja: "",
@@ -17,6 +18,8 @@ function Register() {
 
   const validate = () => {
     const newErrors = {};
+    if (!formData.username.trim()) newErrors.username = "Username është i detyrueshëm!";
+    else if (formData.username.includes("@")) newErrors.username = "Username nuk mund të jetë email adresë!";
     if (!formData.emri.trim()) newErrors.emri = "Emri është i detyrueshëm!";
     if (!formData.mbiemri.trim())
       newErrors.mbiemri = "Mbiemri është i detyrueshëm!";
@@ -50,7 +53,8 @@ function Register() {
     setErrors({});
 
     try {
-      await axios.post("http://localhost:5001/register", {
+      await api.post("/register", {
+        username: formData.username,
         emri: formData.emri,
         mbiemri: formData.mbiemri,
         datelindja: formData.datelindja,
@@ -85,6 +89,20 @@ function Register() {
         <div className="card-top">
           <div className="red-bar"></div>
           <div className="welcome">Krijo Llogari!</div>
+        </div>
+
+        <div className="field">
+          <label>Username</label>
+          <input
+            type="text"
+            name="username"
+            placeholder="Zgjedh username-in..."
+            value={formData.username}
+            onChange={handleChange}
+            className={errors.username ? "input-error" : ""}
+            autoComplete="off"
+          />
+          {errors.username && <span className="error" style={{ textAlign: "left" }}>{errors.username}</span>}
         </div>
 
         <div style={{ display: "flex", gap: "12px" }}>

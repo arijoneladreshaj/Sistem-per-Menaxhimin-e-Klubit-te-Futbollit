@@ -181,7 +181,7 @@ const EMPTY = { club_id: 1, emri: "", mbiemri: "", data_lindjes: "", kombesia: "
 
 function PlayerModal({ player, onSave, onClose, saving }) {
   const isEdit = !!player?.id;
-  const [form, setForm]     = useState(player ? { ...player } : { ...EMPTY });
+  const [form, setForm]     = useState(player ? { ...player, data_lindjes: player.data_lindjes?.split("T")[0] || "" } : { ...EMPTY });
   const [errors, setErrors] = useState({});
   const [photoFile, setPhotoFile]     = useState(null);
   const [photoPreview, setPhotoPreview] = useState(player?.foto_url || null);

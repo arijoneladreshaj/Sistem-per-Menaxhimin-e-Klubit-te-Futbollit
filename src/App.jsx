@@ -1,27 +1,29 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CartProvider } from "./Context/CartContext";
-import HomePage from "./pages/HomePage";
-import Ndeshjet from "./pages/Ndeshjet";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Preferences from "./pages/Preferences";
-import SectorPage from "./pages/BuyTicketsPage/SectorPage";
-import SeatsPage from "./pages/BuyTicketsPage/SeatsPage";
-import CartPage from "./pages/BuyTicketsPage/CartPage";
-import ConfirmationPage from "./pages/BuyTicketsPage/ConfirmationPage";
-import ProfilePage from "./pages/ProfilePages/ProfilePage";
-import Store from "./pages/Store";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Staff from "./pages/Dashboard/Staff";
-import Players from "./Players";
-import DashboardNdeshjet from "./pages/Dashboard/DashboardNdeshjet";
-import DashboardStore from "./pages/Dashboard/DashboardStore";
-import DashboardPlayers from "./pages/Dashboard/DashboardPlayers";
-import StoreConfirmation from "./pages/StoreConfirmation";
-import Lajmet from "./pages/Lajmet";
-import Training from "./pages/Dashboard/Trainings";
-import DashboardDemtimet from "./pages/Dashboard/DashboardDemtimet";
-import DashboardBiletat  from "./pages/Dashboard/DashboardBiletat";
+
+const HomePage          = lazy(() => import("./pages/HomePage"));
+const Ndeshjet          = lazy(() => import("./pages/Ndeshjet"));
+const Login             = lazy(() => import("./pages/Login"));
+const Register          = lazy(() => import("./pages/Register"));
+const Preferences       = lazy(() => import("./pages/Preferences"));
+const SectorPage        = lazy(() => import("./pages/BuyTicketsPage/SectorPage"));
+const SeatsPage         = lazy(() => import("./pages/BuyTicketsPage/SeatsPage"));
+const CartPage          = lazy(() => import("./pages/BuyTicketsPage/CartPage"));
+const ConfirmationPage  = lazy(() => import("./pages/BuyTicketsPage/ConfirmationPage"));
+const ProfilePage       = lazy(() => import("./pages/ProfilePages/ProfilePage"));
+const Store             = lazy(() => import("./pages/Store"));
+const Dashboard         = lazy(() => import("./pages/Dashboard/Dashboard"));
+const Staff             = lazy(() => import("./pages/Dashboard/Staff"));
+const Players           = lazy(() => import("./Players"));
+const DashboardNdeshjet = lazy(() => import("./pages/Dashboard/DashboardNdeshjet"));
+const DashboardStore    = lazy(() => import("./pages/Dashboard/DashboardStore"));
+const DashboardPlayers  = lazy(() => import("./pages/Dashboard/DashboardPlayers"));
+const StoreConfirmation = lazy(() => import("./pages/StoreConfirmation"));
+const Lajmet            = lazy(() => import("./pages/Lajmet"));
+const Training          = lazy(() => import("./pages/Dashboard/Trainings"));
+const DashboardDemtimet = lazy(() => import("./pages/Dashboard/DashboardDemtimet"));
+const DashboardBiletat  = lazy(() => import("./pages/Dashboard/DashboardBiletat"));
 
 function PrivateRoute({ children, adminOnly = false }) {
   const token = localStorage.getItem("accessToken");
@@ -35,6 +37,7 @@ export default function App() {
   return (
     <CartProvider>
       <BrowserRouter>
+        <Suspense fallback={<div style={{ display:"flex", justifyContent:"center", alignItems:"center", height:"100vh", background:"#0a0a0a", color:"#fff" }}>Duke ngarkuar...</div>}>
         <Routes>
           <Route path="/login"             element={<Login />} />
           <Route path="/register"          element={<Register />} />
@@ -61,6 +64,7 @@ export default function App() {
           <Route path="/training"          element={<PrivateRoute adminOnly><Training /></PrivateRoute>} />
           <Route path="/DashboardBiletat"  element={<PrivateRoute adminOnly><DashboardBiletat /></PrivateRoute>} />
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </CartProvider>
   );
