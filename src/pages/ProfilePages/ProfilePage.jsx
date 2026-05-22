@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import NavBar from "../../Components/NavBar";
+import api from "../../api/axiosInstance";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ProfilePage.css";
 import "../ManchesterUnitedHome.css";
@@ -26,12 +27,17 @@ export default function ProfilePage() {
   const [showAccModal, setShowAccModal] = useState(false);
 
   const userEmail = storedUser.email;
-  const [tickets, setTickets] = useState(
-    JSON.parse(localStorage.getItem(`myTickets_${userEmail}`) || "[]"),
-  );
+  const [tickets, setTickets] = useState([]);
+
+  useEffect(() => {
+    api
+      .get("/api/tickets/my")
+      .then((res) => setTickets(res.data))
+      .catch(() => setTickets([]));
+  }, []);
   const [orders, setOrders] = useState(
-  JSON.parse(localStorage.getItem(`myOrders_${userEmail}`) || "[]")
-);
+    JSON.parse(localStorage.getItem(`myOrders_${userEmail}`) || "[]"),
+  );
   if (!storedUser.id) {
     return (
       <div className="pp-empty">
@@ -72,14 +78,21 @@ export default function ProfilePage() {
   };
 
   const handleLogout = () => {
-    localStorage.setItem("isLoggedIn", "false");
-    navigate("/login");
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (refreshToken) {
+      api.post("/logout", { refreshToken }).catch(() => {});
+    }
+    localStorage.clear();
+    navigate("/login", { replace: true });
   };
 
-  const handleDeleteOrder = () => {
-    const updated = tickets.filter((o) => o.id !== orderToDelete);
-    localStorage.setItem(`myTickets_${userEmail}`, JSON.stringify(updated));
-    setTickets(updated);
+  const handleDeleteOrder = async () => {
+    try {
+      await api.delete(`/api/tickets/${orderToDelete}`);
+      setTickets((prev) => prev.filter((t) => t.id !== orderToDelete));
+    } catch (e) {
+      console.error(e);
+    }
     setShowDeleteModal(false);
     setOrderToDelete(null);
   };
@@ -123,20 +136,18 @@ export default function ProfilePage() {
               >
                 Biletat e Mia
                 {tickets.length > 0 && (
-                  <span className="pp-badge">
-                    {tickets.reduce((s, o) => s + o.seats.length, 0)}
-                  </span>
+                  <span className="pp-badge">{tickets.length}</span>
                 )}
               </div>
               <div
-  className={`pp-nav-link ${activeTab === "porosite" ? "pp-nav-link--active" : ""}`}
-  onClick={() => setActiveTab("porosite")}
->
-  Blerjet e Mia
-  {orders.length > 0 && (
-    <span className="pp-badge">{orders.length}</span>
-  )}
-</div>
+                className={`pp-nav-link ${activeTab === "porosite" ? "pp-nav-link--active" : ""}`}
+                onClick={() => setActiveTab("porosite")}
+              >
+                Blerjet e Mia
+                {orders.length > 0 && (
+                  <span className="pp-badge">{orders.length}</span>
+                )}
+              </div>
 
               <div className="pp-divider" />
 
@@ -248,51 +259,58 @@ export default function ProfilePage() {
                     </div>
                   ) : (
                     <div className="pp-orders">
-                      {[...tickets].reverse().map((order) => (
-                        <div key={order.id} className="pp-order">
+                      {tickets.map((t) => (
+                        <div key={t.id} className="pp-order">
                           <div className="pp-order-header">
                             <div>
                               <span className="pp-order-id">
-                                Porosia #{order.id}
+                                Man United vs {t.ekipi_kundershtare || "—"}
                               </span>
                               <span className="pp-order-date">
-                                {order.date} · {order.time}
+                                {t.data_ndeshjes
+                                  ? new Date(
+                                      t.data_ndeshjes,
+                                    ).toLocaleDateString("sq-AL")
+                                  : "—"}
+                                {t.stadiumi ? ` · ${t.stadiumi}` : ""}
                               </span>
                             </div>
                             <span className="pp-order-total">
-                              €{order.total}
+                              €{Number(t.cmimi).toFixed(2)}
                             </span>
                             <button
                               className="btn btn-sm btn-outline-danger"
                               onClick={() => {
-                                setOrderToDelete(order.id);
+                                setOrderToDelete(t.id);
                                 setShowDeleteModal(true);
                               }}
                             >
                               Anulo
                             </button>
                           </div>
-                          {order.seats.map((seat) => (
-                            <div key={seat.id} className="pp-seat-row">
-                              <div className="pp-seat-left">
-                                <span className="pp-seat-num">
-                                  Ulëse {seat.seatNumber}
-                                </span>
-                                <span className="pp-seat-sector">
-                                  {seat.sectorName}
-                                </span>
-                                {seat.isVip && (
-                                  <span className="pp-vip">VIP</span>
-                                )}
-                                <span className="pp-passenger">
-                                  {seat.firstName} {seat.lastName}
-                                </span>
-                              </div>
-                              <span className="pp-seat-price">
-                                €{seat.price}
+                          <div className="pp-seat-row">
+                            <div className="pp-seat-left">
+                              <span className="pp-seat-num">
+                                Ulëse {t.numri_uleses}
                               </span>
+                              <span className="pp-seat-sector">
+                                {t.sektori}
+                              </span>
+                              {t.is_vip ? (
+                                <span className="pp-vip">VIP</span>
+                              ) : null}
+                              {(t.emri_bleresit || t.mbiemri_bleresit) && (
+                                <span className="pp-passenger">
+                                  {t.emri_bleresit} {t.mbiemri_bleresit}
+                                </span>
+                              )}
                             </div>
-                          ))}
+                            <span
+                              className={`pp-seat-price ${t.statusi === "E shitur" ? "" : "text-warning"}`}
+                            >
+                              {t.statusi}
+                            </span>
+                          </div>
                           <div className="pp-order-footer">
                             💵 Paguaj në hyrje të stadiumit
                           </div>
@@ -303,81 +321,79 @@ export default function ProfilePage() {
                 </div>
               )}
               {activeTab === "porosite" && (
-  <div className="pp-section">
-    <h2 className="pp-section-title">Blerjet e Mia</h2>
+                <div className="pp-section">
+                  <h2 className="pp-section-title">Blerjet e Mia</h2>
 
-    {orders.length === 0 ? (
-      <div className="pp-no-tickets">
-        <p>Nuk ke blerje ende.</p>
+                  {orders.length === 0 ? (
+                    <div className="pp-no-tickets">
+                      <p>Nuk ke blerje ende.</p>
 
-        <button
-          className="btn btn-danger pp-buy-btn"
-          onClick={() => navigate("/store")}
-        >
-          Shko te Dyqani
-        </button>
-      </div>
-    ) : (
-      <div className="pp-orders">
-        {[...orders].reverse().map((order) => (
-          <div key={order.id} className="pp-order">
-           <div className="pp-order-header">
-  <div>
-    <span className="pp-order-id">
-      Porosia #{order.id}
-    </span>
+                      <button
+                        className="btn btn-danger pp-buy-btn"
+                        onClick={() => navigate("/store")}
+                      >
+                        Shko te Dyqani
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="pp-orders">
+                      {[...orders].reverse().map((order) => (
+                        <div key={order.id} className="pp-order">
+                          <div className="pp-order-header">
+                            <div>
+                              <span className="pp-order-id">
+                                Porosia #{order.id}
+                              </span>
 
-    <span className="pp-order-date">
-      {order.date} · {order.time}
-    </span>
-  </div>
+                              <span className="pp-order-date">
+                                {order.date} · {order.time}
+                              </span>
+                            </div>
 
-  <span className="pp-order-total">
-    €{order.total.toFixed(2)}
-  </span>
+                            <span className="pp-order-total">
+                              €{order.total.toFixed(2)}
+                            </span>
 
-  <button
-    className="btn btn-sm btn-outline-danger"
-    onClick={() => {
-      setOrderToDelete(order.id);
-      setShowDeleteModal(true);
-    }}
-  >
-    Anulo
-  </button>
-</div>
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => {
+                                setOrderToDelete(order.id);
+                                setShowDeleteModal(true);
+                              }}
+                            >
+                              Anulo
+                            </button>
+                          </div>
 
-            {order.items.map((item, idx) => (
-              <div key={idx} className="pp-seat-row">
-                <div className="pp-seat-left">
-                  <span className="pp-seat-num">
-                    {item.name}
-                  </span>
+                          {order.items.map((item, idx) => (
+                            <div key={idx} className="pp-seat-row">
+                              <div className="pp-seat-left">
+                                <span className="pp-seat-num">{item.name}</span>
 
-                  <span className="pp-seat-sector">
-                    Madhësia: {item.selectedSize}
-                  </span>
+                                <span className="pp-seat-sector">
+                                  Madhësia: {item.selectedSize}
+                                </span>
 
-                  <span className="pp-passenger">
-                    Sasia: x{item.qty}
-                  </span>
+                                <span className="pp-passenger">
+                                  Sasia: x{item.qty}
+                                </span>
+                              </div>
+
+                              <span className="pp-seat-price">
+                                €{(item.price * item.qty).toFixed(2)}
+                              </span>
+                            </div>
+                          ))}
+
+                          <div className="pp-order-footer">
+                            📦 Cash on Delivery
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-
-                <span className="pp-seat-price">
-                  €{(item.price * item.qty).toFixed(2)}
-                </span>
-              </div>
-            ))}
-
-            <div className="pp-order-footer">
-              📦 Cash on Delivery
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-)}
+              )}
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../db");
+const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
 
 // Funksioni që përditëson statusin e lojtarit bazuar në dëmtime
 async function updatePlayerStatus(pool, player_id) {
@@ -21,7 +22,7 @@ async function updatePlayerStatus(pool, player_id) {
 }
 
 // GET all injuries with player info
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, requireAdmin, async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request().query(`
@@ -41,7 +42,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET single injury
-router.get("/:id", async (req, res) => {
+router.get("/:id", verifyToken, requireAdmin, async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request()
@@ -55,7 +56,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // CREATE injury
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, requireAdmin, async (req, res) => {
   try {
     const { player_id, lloji_demtimit, pershkrimi, data_demtimit, data_rikthimit, statusi } = req.body;
     if (!player_id || !lloji_demtimit || !data_demtimit) {
@@ -83,7 +84,7 @@ router.post("/", async (req, res) => {
 });
 
 // UPDATE injury
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
   try {
     const { player_id, lloji_demtimit, pershkrimi, data_demtimit, data_rikthimit, statusi } = req.body;
     const pool = await poolPromise;
@@ -115,7 +116,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE injury
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
   try {
     const pool = await poolPromise;
 

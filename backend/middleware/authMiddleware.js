@@ -11,12 +11,12 @@ function verifyToken(req, res, next) {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(403).json({ message: "Token i pavlefshëm ose ka skaduar" });
+    res.status(401).json({ message: "Token i pavlefshëm ose ka skaduar" });
   }
 }
 
 function requireAdmin(req, res, next) {
-  if (req.user?.role !== "admin") {
+  if (req.user?.role?.toLowerCase() !== "admin") {
     return res.status(403).json({ message: "Vetëm admini ka akses" });
   }
   next();

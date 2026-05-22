@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const { sql, poolPromise } = require("../db");
+const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
 
 router.get("/", async (req, res) => {
 
@@ -48,7 +49,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 
@@ -138,7 +139,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 
@@ -220,7 +221,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 

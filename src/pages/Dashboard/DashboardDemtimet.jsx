@@ -4,8 +4,8 @@ import api from "../../api/axiosInstance";
 import { Modal, Form, Row, Col } from "react-bootstrap";
 import "./Dashboard.css";
 
-const API         = "http://localhost:5000/api/injuries";
-const PLAYERS_API = "http://localhost:5000/api/players";
+const API         = "http://localhost:5001/api/injuries";
+const PLAYERS_API = "http://localhost:5001/api/players";
 
 
 const navLinks = [

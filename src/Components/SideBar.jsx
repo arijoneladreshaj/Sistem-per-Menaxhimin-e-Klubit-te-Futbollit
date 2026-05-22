@@ -16,7 +16,8 @@ const navLinks = [
       { label: "Store", path: "/DashboardStore", badge: 18 },
       { label: "Stafi", path: "/staff", badge: 4 },
       { label: "Ndeshjet", path: "/dashboardNdeshjet", badge: 5 },
-      { label: "Stërvitjet", path: "/training", badge: 4 },
+      { label: "Stërvitjet", path: "/training",         badge: 4 },
+      { label: "Biletat",    path: "/DashboardBiletat",  badge: null },
     ],
   },
 

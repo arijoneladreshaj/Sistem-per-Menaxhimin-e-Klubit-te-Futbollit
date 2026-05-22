@@ -21,6 +21,7 @@ import StoreConfirmation from "./pages/StoreConfirmation";
 import Lajmet from "./pages/Lajmet";
 import Training from "./pages/Dashboard/Trainings";
 import DashboardDemtimet from "./pages/Dashboard/DashboardDemtimet";
+import DashboardBiletat  from "./pages/Dashboard/DashboardBiletat";
 
 function PrivateRoute({ children, adminOnly = false }) {
   const token = localStorage.getItem("accessToken");
@@ -35,21 +36,22 @@ export default function App() {
     <CartProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/"                  element={<HomePage />} />
-          <Route path="/ndeshjet"          element={<Ndeshjet />} />
-          <Route path="/players"           element={<Players />} />
           <Route path="/login"             element={<Login />} />
           <Route path="/register"          element={<Register />} />
-          <Route path="/preferences"       element={<Preferences />} />
-          <Route path="/lajmet"            element={<Lajmet />} />
-          <Route path="/Store"             element={<Store />} />
-          <Route path="/StoreConfirmation" element={<StoreConfirmation />} />
-          <Route path="/SectorPage/:matchId"           element={<SectorPage />} />
-          <Route path="/SeatsPage/:matchId/:sectorId"  element={<SeatsPage />} />
-          <Route path="/CartPage"          element={<CartPage />} />
-          <Route path="/ConfirmationPage"  element={<ConfirmationPage />} />
 
+          <Route path="/"                  element={<PrivateRoute><HomePage /></PrivateRoute>} />
+          <Route path="/ndeshjet"          element={<PrivateRoute><Ndeshjet /></PrivateRoute>} />
+          <Route path="/players"           element={<PrivateRoute><Players /></PrivateRoute>} />
+          <Route path="/preferences"       element={<PrivateRoute><Preferences /></PrivateRoute>} />
+          <Route path="/lajmet"            element={<PrivateRoute><Lajmet /></PrivateRoute>} />
+          <Route path="/Store"             element={<PrivateRoute><Store /></PrivateRoute>} />
+          <Route path="/StoreConfirmation" element={<PrivateRoute><StoreConfirmation /></PrivateRoute>} />
+          <Route path="/SectorPage/:matchId"           element={<PrivateRoute><SectorPage /></PrivateRoute>} />
+          <Route path="/SeatsPage/:matchId/:sectorId"  element={<PrivateRoute><SeatsPage /></PrivateRoute>} />
+          <Route path="/CartPage"          element={<PrivateRoute><CartPage /></PrivateRoute>} />
+          <Route path="/ConfirmationPage"  element={<PrivateRoute><ConfirmationPage /></PrivateRoute>} />
           <Route path="/ProfilePage"       element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+
           <Route path="/dashboard"         element={<PrivateRoute adminOnly><Dashboard /></PrivateRoute>} />
           <Route path="/staff"             element={<PrivateRoute adminOnly><Staff /></PrivateRoute>} />
           <Route path="/dashboardNdeshjet" element={<PrivateRoute adminOnly><DashboardNdeshjet /></PrivateRoute>} />
@@ -57,6 +59,7 @@ export default function App() {
           <Route path="/DashboardPlayers"  element={<PrivateRoute adminOnly><DashboardPlayers /></PrivateRoute>} />
           <Route path="/injuries"          element={<PrivateRoute adminOnly><DashboardDemtimet /></PrivateRoute>} />
           <Route path="/training"          element={<PrivateRoute adminOnly><Training /></PrivateRoute>} />
+          <Route path="/DashboardBiletat"  element={<PrivateRoute adminOnly><DashboardBiletat /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
     </CartProvider>

@@ -30,7 +30,7 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    if (error.response?.status === 401 && !original._retry) {
+    if ((error.response?.status === 401 || error.response?.status === 403) && !original._retry) {
       original._retry = true;
 
       if (isRefreshing) {
@@ -55,7 +55,7 @@ api.interceptors.response.use(
       }
 
       try {
-        const res = await axios.post("http://localhost:5000/refresh", { refreshToken });
+        const res = await api.post("/refresh", { refreshToken });
         const newToken = res.data.accessToken;
 
         localStorage.setItem("accessToken", newToken);

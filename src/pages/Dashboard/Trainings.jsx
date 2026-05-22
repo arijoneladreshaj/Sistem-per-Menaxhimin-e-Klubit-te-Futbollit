@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import "./Training.css";
 import "./Dashboard.css";
 import SideBar from "../../Components/SideBar";
@@ -28,7 +28,7 @@ function Training() {
 
   const fetchTrainings = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/training");
+      const res = await api.get("/api/training");
       setTrainings(res.data);
     } catch (err) { console.log(err); }
   };
@@ -46,9 +46,9 @@ function Training() {
   const handleSubmit = async () => {
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/training/${editingId}`, formData);
+        await api.put(`/api/training/${editingId}`, formData);
       } else {
-        await axios.post("http://localhost:5000/api/training", formData);
+        await api.post("/api/training", formData);
       }
       resetForm();
       fetchTrainings();
@@ -57,7 +57,7 @@ function Training() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/training/${id}`);
+      await api.delete(`/api/training/${id}`);
       fetchTrainings();
     } catch (err) { console.log(err); }
   };

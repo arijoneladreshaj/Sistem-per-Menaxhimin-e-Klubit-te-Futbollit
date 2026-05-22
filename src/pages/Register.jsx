@@ -50,7 +50,7 @@ function Register() {
     setErrors({});
 
     try {
-      await axios.post("http://localhost:5000/register", {
+      await axios.post("http://localhost:5001/register", {
         emri: formData.emri,
         mbiemri: formData.mbiemri,
         datelindja: formData.datelindja,

@@ -54,7 +54,7 @@ router.post("/refresh", async (req, res) => {
   if (!refreshToken) return res.status(401).json({ message: "Refresh token mungon" });
 
   try {
-    const decoded = jwt.verify(refreshToken, REFRESH_SECRET);
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     const pool = await poolPromise;
     const result = await pool.request()
@@ -68,7 +68,7 @@ router.post("/refresh", async (req, res) => {
 
     const accessToken = jwt.sign(
       { id: decoded.id, username: decoded.username, email: decoded.email, role: decoded.role },
-      ACCESS_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
 

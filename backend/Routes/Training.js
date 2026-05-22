@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const { sql, poolPromise } = require("../db");
+const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
 
 
 // GET all trainings
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
 
 
 // CREATE training
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 
@@ -141,7 +142,7 @@ router.post("/", async (req, res) => {
 
 
 // UPDATE training
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 
@@ -236,7 +237,7 @@ router.put("/:id", async (req, res) => {
 
 
 // DELETE training
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 

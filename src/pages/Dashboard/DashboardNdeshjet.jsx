@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
-import axios from "axios";
 import api from "../../api/axiosInstance";
 import { Modal, Form, Row, Col } from "react-bootstrap";
 

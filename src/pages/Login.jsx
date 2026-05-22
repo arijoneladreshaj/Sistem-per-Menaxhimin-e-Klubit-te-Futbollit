@@ -35,7 +35,7 @@ function Login() {
    
    try {
 // a duhet porti 5000 apo5001
-  const res = await fetch("http://localhost:5000/login", {
+  const res = await fetch("http://localhost:5001/login", {
 
     method: "POST",
 

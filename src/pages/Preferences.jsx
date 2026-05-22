@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axiosInstance";
 import "./Login.css";
 import "./Preferences.css";
 
-const API = "http://localhost:5000/api/preferences";
+const API = "/api/preferences";
 
 function Preferences() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ function Preferences() {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     if (user.id) {
       try {
-        await axios.put(`${API}/${user.id}`, { topics: selected });
+        await api.put(`${API}/${user.id}`, { topics: selected });
       } catch (err) {
         console.error("Preferences save error:", err);
       }

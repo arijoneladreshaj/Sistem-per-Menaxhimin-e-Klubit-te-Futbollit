@@ -1,10 +1,10 @@
 
-console.log("Lajmet route file loaded");
 const express = require("express");
 
 const router = express.Router();
 
 const { sql, poolPromise } = require("../db");
+const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
 
 
 // GET ALL
@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
 
 
 // POST
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 
@@ -108,7 +108,7 @@ router.post("/", async (req, res) => {
 
 
 // DELETE
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 
@@ -136,7 +136,7 @@ router.delete("/:id", async (req, res) => {
 
 
 // UPDATE
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 
   try {
 

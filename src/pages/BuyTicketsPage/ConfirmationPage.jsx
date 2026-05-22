@@ -1,18 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
+import api from "../../api/axiosInstance";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ConfirmationPage.css";
 
 export default function ConfirmationPage() {
   const navigate = useNavigate();
   const { cart, total, clearCart } = useCart();
+  const [order, setOrder] = useState(null);
 
-  // Ruaj porosinë në localStorage dhe pastro cart-in
   useEffect(() => {
     if (cart.length === 0) return;
 
-    const order = {
+    // Parandalon dyfishimin nga React StrictMode
+    const cartKey = "confirmationSaved_" + cart.map(s => s.id).sort().join(",");
+    if (sessionStorage.getItem(cartKey)) return;
+    sessionStorage.setItem(cartKey, "1");
+
+    const newOrder = {
       id: Date.now(),
       date: new Date().toLocaleDateString("sq-AL"),
       time: new Date().toLocaleTimeString("sq-AL"),
@@ -20,20 +26,19 @@ export default function ConfirmationPage() {
       total,
     };
 
-    const userEmail = JSON.parse(localStorage.getItem("user") || "{}").email;
-    const key = `myTickets_${userEmail}`;
-    const existing = JSON.parse(localStorage.getItem(key) || "[]");
-    localStorage.setItem(key, JSON.stringify([...existing, order]));
+    setOrder(newOrder);
+
+    // Ruaj në databazë
+    const matchId = cart[0]?.matchId;
+    if (matchId) {
+      api.post("/api/tickets", {
+        match_id: Number(matchId),
+        seats: cart,
+      }).catch(err => console.error("Gabim duke ruajtur biletat:", err));
+    }
 
     clearCart();
   }, []);
-
-  // Merr porosinë e fundit nga localStorage
-  const userEmail = JSON.parse(localStorage.getItem("user") || "{}").email;
-  const allOrders = JSON.parse(
-    localStorage.getItem(`myTickets_${userEmail}`) || "[]",
-  );
-  const order = allOrders[allOrders.length - 1];
 
   if (!order) {
     return (

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const API = 'http://localhost:5000/api/shipping';
+const API = '/api/shipping';
 
 const COUNTRIES = [
   'Albania', 'Austria', 'Belgium', 'Bosnia and Herzegovina',
@@ -50,7 +50,7 @@ export default function ShippingModal({ onClose }) {
 
   useEffect(() => {
     if (!user.id) return;
-    axios.get(`${API}/${user.id}`)
+    api.get(`${API}/${user.id}`)
       .then(res => {
         if (res.data.country)  setCountry(res.data.country);
         if (res.data.currency) setCurrency(res.data.currency);
@@ -62,7 +62,7 @@ export default function ShippingModal({ onClose }) {
   const handleSave = async () => {
     try {
       if (user.id) {
-        await axios.put(`${API}/${user.id}`, { country, currency, language });
+        await api.put(`${API}/${user.id}`, { country, currency, language });
       }
     } catch (err) {
       console.error('Preferences error:', err);

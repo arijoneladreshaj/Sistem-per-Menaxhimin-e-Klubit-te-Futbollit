@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Lajmet.css";
 import { Modal, Form, Button } from "react-bootstrap";
-import axios from "axios";
+import api from "../api/axiosInstance";
 import Navbar from "../Components/NavBar";
 
-const API = "http://127.0.0.1:5000/api/lajme";
+const API = "/api/lajme";
 
 const LAJMET_DATA = [
   {
@@ -62,7 +62,7 @@ export default function Lajmet() {
   const [kategoriaAktive, setKategoriaAktive] =
     useState("TË GJITHA");
 
-  const isAdmin = true;
+  const isAdmin = localStorage.getItem("role") === "Admin";
 
   const [show, setShow] = useState(false);
 
@@ -86,7 +86,7 @@ export default function Lajmet() {
 
     try {
 
-      const res = await axios.get(API);
+      const res = await api.get(API);
 
       setLajmet(res.data);
 
@@ -126,7 +126,7 @@ export default function Lajmet() {
 
     try {
 
-      await axios.delete(`${API}/${id}`);
+      await api.delete(`${API}/${id}`);
 
       fetchLajmet();
 
@@ -142,14 +142,14 @@ export default function Lajmet() {
 
       if (editId) {
 
-        await axios.put(
+        await api.put(
           `${API}/${editId}`,
           form
         );
 
       } else {
 
-        await axios.post(
+        await api.post(
           API,
           form
         );

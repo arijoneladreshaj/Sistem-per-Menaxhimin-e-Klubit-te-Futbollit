@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../api/axiosInstance";
 import React, { useEffect, useState, useMemo } from "react";
 import { Link,useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -174,14 +174,7 @@ function SizeModal({ product, onConfirm, onClose }) {
 }
 
 // ── PRODUCT CARD ──────────────────────────────────────────────────────────────
-function ProductCard({   
-  product,
-  onAdd,
-  onWishlist,
-  wishlisted,
-  role,
-  navigate,
-  handleDelete }) {
+function ProductCard({ product, onAdd, onWishlist, wishlisted }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div className="col">
@@ -266,8 +259,8 @@ export default function Store() {
 
   useEffect(() => {
 
-  axios
-    .get("http://localhost:5001/store")
+  api
+    .get("/store")
 
     .then((res) => {
 
@@ -330,17 +323,11 @@ const handleCheckout = () => {
   setCartOpen(false);
 };
 const handleDelete = async (id) => {
-
   try {
-
-    await axios.delete(`http://localhost:5001/store/${id}`);
-
+    await api.delete(`/store/${id}`);
     setProducts(prev => prev.filter(p => p.id !== id));
-
     showToast("Produkti u fshi");
-
   } catch (err) {
-
     console.log(err);
   }
 };
