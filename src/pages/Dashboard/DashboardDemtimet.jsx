@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< Updated upstream
 import api from "../../api/axiosInstance";
+=======
+import SideBar from "../../Components/SideBar";
+import TopBar from "../../Components/TopBar";
+import axios from "axios";
+>>>>>>> Stashed changes
 import { Modal, Form, Row, Col } from "react-bootstrap";
 import "./Dashboard.css";
 
@@ -297,49 +303,14 @@ const fetchPlayers = async () => {
   return (
     <div className="shell">
 
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-        <div className="logo-area">
-          <div className="crest">MU</div>
-          <div className="club-name">Manchester<span>United FC</span></div>
-        </div>
-        <nav className="flex-grow-1 overflow-auto py-2">
-          {navLinks.map(group => (
-            <React.Fragment key={group.section}>
-              <div className="nav-section">{group.section}</div>
-              {group.items.map(item => (
-                <div
-                  key={item.path}
-                  className={`nav-item${item.path === "/injuries" ? " active" : ""}`}
-                  onClick={() => navigate(item.path)}
-                >
-                  <div className="nav-dot" />
-                  {item.label}
-                  {item.badge && (
-                    <span className="badge ms-auto" style={{ background: "#DA291C" }}>{item.badge}</span>
-                  )}
-                </div>
-              ))}
-            </React.Fragment>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <span className="badge fw-bold" style={{ background: "#FBE122", color: "#000" }}>2025/26</span>
-          <span style={{ fontSize: 11, color: "#888" }}>Premier League</span>
-        </div>
-      </aside>
+      <SideBar active="/injuries" />
 
       {/* MAIN */}
       <div className="main">
 
-        {/* Topbar */}
-        <div className="topbar">
-          <div className="topbar-title">Menaxhimi i Dëmtimeve</div>
-          <div className="d-flex align-items-center gap-2">
-            <button className="btn btn-mu" onClick={openAdd}>+ Shto Dëmtim</button>
-            <div className="avatar">AK</div>
-          </div>
-        </div>
+        <TopBar title="Menaxhimi i Dëmtimeve">
+          <button className="btn btn-mu" onClick={openAdd}>+ Shto Dëmtim</button>
+        </TopBar>
 
         <div className="content">
 

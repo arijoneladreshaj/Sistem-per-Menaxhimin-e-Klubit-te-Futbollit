@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
+import TopBar from "../../Components/TopBar";
 import "./Dashboard.css";
 
 const players = [
@@ -81,13 +82,9 @@ export default function Dashboard() {
       {/* MAIN */}
       <div className="main">
 
-        <div className="topbar">
-          <div className="topbar-title">Dashboard i Klubit</div>
-          <div className="d-flex align-items-center gap-2">
-            <button className="btn btn-outline-secondary btn-sm">Eksporto</button>
-            <div className="avatar">AK</div>
-          </div>
-        </div>
+        <TopBar title="Dashboard i Klubit">
+          <button className="btn btn-outline-secondary btn-sm">Eksporto</button>
+        </TopBar>
 
         <div className="content">
 

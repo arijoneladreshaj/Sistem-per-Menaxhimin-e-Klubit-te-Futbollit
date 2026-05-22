@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import api from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
+import TopBar from "../../Components/TopBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Dashboard.css";
@@ -516,19 +517,11 @@ export default function DashboardPlayers() {
       
       <div className="main">
 
-        {/* Topbar */}
-        <div className="topbar">
-          <div className="topbar-title">Menaxhimi i Lojtarëve</div>
-          <div className="d-flex align-items-center gap-2">
-            <button onClick={() => exportCSV(filtered)} className="btn btn-outline-secondary btn-sm">
-              <i className="bi bi-download me-1" />Eksporto CSV
-            </button>
-            <button onClick={() => setModalPlayer({})} className="btn btn-sm" style={{ background: "#DA291C", color: "#fff", border: "none", fontWeight: 600 }}>
-              + Shto Lojtar
-            </button>
-            <div className="avatar">AK</div>
-          </div>
-        </div>
+        <TopBar title="Menaxhimi i Lojtarëve">
+          <button onClick={() => setModalPlayer({})} className="btn btn-sm" style={{ background: "#DA291C", color: "#fff", border: "none", fontWeight: 600 }}>
+            + Shto Lojtar
+          </button>
+        </TopBar>
 
         <div className="content" style={{ background: `linear-gradient(135deg, ${DARK} 0%, #2d0000 50%, ${DARK} 100%)`, fontFamily: FONT_B }}>
 

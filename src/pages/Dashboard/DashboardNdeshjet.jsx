@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
+<<<<<<< Updated upstream
 import api from "../../api/axiosInstance";
+=======
+import TopBar from "../../Components/TopBar";
+import axios from "axios";
+>>>>>>> Stashed changes
 import { Modal, Form, Row, Col } from "react-bootstrap";
 
 import "./Dashboard.css";
@@ -443,6 +448,7 @@ export default function DashboardNdeshjet() {
       <SideBar active="/dashboardNdeshjet" />
 
       <div className="main">
+<<<<<<< Updated upstream
         <div className="topbar">
           <div className="topbar-title">Menaxhimi i Ndeshjeve</div>
           <div className="d-flex align-items-center gap-2">
@@ -455,6 +461,13 @@ export default function DashboardNdeshjet() {
             </div>
           </div>
         </div>
+=======
+
+      
+        <TopBar title="Menaxhimi i Ndeshjeve">
+  <button className="btn btn-mu" onClick={openAdd}>+ Shto Ndeshje</button>
+</TopBar>
+>>>>>>> Stashed changes
 
         <div className="content" style={{ padding: 0 }}>
           <div

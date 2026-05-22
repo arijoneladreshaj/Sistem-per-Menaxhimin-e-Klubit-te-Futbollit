@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import SideBar from "../../Components/SideBar";
+<<<<<<< Updated upstream
 import api from "../../api/axiosInstance";
+=======
+import TopBar from "../../Components/TopBar";
+>>>>>>> Stashed changes
 import {
   Container, Row, Col, Card, Button, Modal, Form, Badge, Alert
 } from "react-bootstrap";
@@ -109,17 +113,11 @@ export default function StaffPage() {
 
     <div className="main">
 
+      <TopBar title="Menaxhimi i Stafit">
+        <Button className="btn-mu" onClick={openAdd}>+ Shto Staff</Button>
+      </TopBar>
+
       <Container fluid className="staff-container">
-      {/* Header */}
-      <Row className="align-items-center mb-3">
-        <Col>
-          <h2 className="staff-title">Menaxhimi i Stafit</h2>
-          <small className="staff-subtitle">Trajnerët, mjekët dhe stafi teknik</small>
-        </Col>
-        <Col xs="auto">
-          <Button className="btn-mu" onClick={openAdd}>+ Shto Staff</Button>
-        </Col>
-      </Row>
 
       {msg && <Alert variant="success" dismissible onClose={() => setMsg("")}>{msg}</Alert>}
 

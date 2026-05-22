@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../../Components/SideBar";
+<<<<<<< Updated upstream
 import api from "../../api/axiosInstance";
+=======
+import TopBar from "../../Components/TopBar";
+>>>>>>> Stashed changes
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Dashboard.css";
@@ -630,8 +634,12 @@ export default function DashboardStore() {
     <div className="shell">
   <SideBar active="/DashboardStore" />
   <div className="main">
-  
-  
+    <TopBar title="Menaxhimi i Dyqanit">
+      <button onClick={() => setModalProduct({})} className="btn btn-sm" style={{ background: "#DA291C", color: "#fff", border: "none", fontWeight: 600 }}>
+        + Shto Produkt
+      </button>
+    </TopBar>
+
     <div
       style={{
         background: `linear-gradient(135deg, ${DARK} 0%, #2d0000 50%, ${DARK} 100%)`,
@@ -639,59 +647,6 @@ export default function DashboardStore() {
         fontFamily: FONT_B,
       }}
     >
-      {/* ── HEADER ─────────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          background: "rgba(0,0,0,0.5)",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
-        <div
-          className="d-flex align-items-center justify-content-between px-4"
-          style={{ height: 64 }}
-        >
-          <div className="d-flex align-items-center gap-3">
-            <div
-              className="d-flex align-items-center justify-content-center"
-              style={{
-                width: 36,
-                height: 36,
-                background: RED,
-                borderRadius: 4,
-              }}
-            >
-              <i className="bi bi-shop" style={{ color: "#fff", fontSize: 18 }} />
-            </div>
-            <span
-              style={{
-                fontFamily: FONT_H,
-                fontSize: 22,
-                letterSpacing: 3,
-                color: "#fff",
-              }}
-            >
-              DASHBOARD STORE
-            </span>
-          </div>
-          <button
-            onClick={() => setModalProduct({})}
-            className="btn d-flex align-items-center gap-2"
-            style={{
-              background: "#fff",
-              color: RED,
-              fontFamily: FONT_H,
-              fontSize: 14,
-              letterSpacing: 2,
-              border: "none",
-              borderRadius: 0,
-              padding: "10px 24px",
-            }}
-          >
-            <i className="bi bi-plus-lg" />
-            SHTO PRODUKT
-          </button>
-        </div>
-      </div>
 
       <div className="px-4 py-4" style={{ maxWidth: 1400, margin: "0 auto" }}>
         {/* ── STATS ────────────────────────────────────────────────────────── */}
