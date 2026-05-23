@@ -6,6 +6,7 @@ import api from "../../api/axiosInstance";
 import { Modal, Form, Row, Col } from "react-bootstrap";
 
 import "./Dashboard.css";
+import "../Ndeshjet.css";
 
 const API = "http://localhost:5001/api/ndeshjet";
 
@@ -444,26 +445,11 @@ export default function DashboardNdeshjet() {
       <SideBar active="/dashboardNdeshjet" />
 
       <div className="main">
-<<<<<<< Updated upstream
-        <div className="topbar">
-          <div className="topbar-title">Menaxhimi i Ndeshjeve</div>
-          <div className="d-flex align-items-center gap-2">
-            <button className="btn btn-mu" onClick={openAdd}>
-              + Shto Ndeshje
-            </button>
-            <div className="avatar">
-              {user?.emri?.[0] || "A"}
-              {user?.mbiemri?.[0] || "K"}
-            </div>
-          </div>
-        </div>
-=======
-
-      
         <TopBar title="Menaxhimi i Ndeshjeve">
-  <button className="btn btn-mu" onClick={openAdd}>+ Shto Ndeshje</button>
-</TopBar>
->>>>>>> Stashed changes
+          <button className="btn btn-mu" onClick={openAdd}>
+            + Shto Ndeshje
+          </button>
+        </TopBar>
 
         <div className="content" style={{ padding: 0 }}>
           <div

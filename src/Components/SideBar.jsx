@@ -45,10 +45,17 @@ export default function SideBar({ active }) {
   return (
     <aside className="sidebar">
 
-      <div className="logo-area">
-        <div className="crest">MU</div>
-
-        <div className="club-name">
+      <div
+        className="logo-area"
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer", flexDirection: "column", alignItems: "center", padding: "20px 16px" }}
+      >
+        <img
+          src="https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg"
+          alt="MUFC"
+          style={{ height: 52, marginBottom: 10 }}
+        />
+        <div className="club-name" style={{ textAlign: "center" }}>
           Manchester
           <span>United FC</span>
         </div>
@@ -87,6 +94,15 @@ export default function SideBar({ active }) {
           </React.Fragment>
         ))}
       </nav>
+
+      <div
+        className={`nav-item ${active === "/DashboardProfile" ? "active" : ""}`}
+        onClick={() => navigate("/DashboardProfile")}
+        style={{ borderTop: "1px solid #2a2a2a", marginTop: "auto" }}
+      >
+        <div className="nav-dot" />
+        Profili
+      </div>
 
       <div className="sidebar-footer">
         <span

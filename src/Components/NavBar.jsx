@@ -42,20 +42,31 @@ export default function Navbar() {
         </ul>
       </div>
       <div className="mu-nav-right">
-        <div
-          className="mu-avatar"
-          onClick={() => navigate("/ProfilePage")}
-          title={`${user.emri ?? ""} ${user.mbiemri ?? ""}`}
-        >
-          {user.emri?.[0] ?? ""}
-          {user.mbiemri?.[0] ?? ""}
-        </div>
-        <button
-          className="mu-btn-solid"
-          onClick={() => navigate("/ndeshjet?tab=fixtures")}
-        >
-          Bli Bileta
-        </button>
+        {role !== "Admin" && (
+          <div
+            className="mu-avatar"
+            onClick={() => navigate("/ProfilePage")}
+            title={`${user.emri ?? ""} ${user.mbiemri ?? ""}`}
+          >
+            {user.emri?.[0] ?? ""}
+            {user.mbiemri?.[0] ?? ""}
+          </div>
+        )}
+        {role === "Admin" ? (
+          <button
+            className="mu-btn-solid"
+            onClick={() => navigate("/DashboardBiletat")}
+          >
+            Shiko Biletat
+          </button>
+        ) : (
+          <button
+            className="mu-btn-solid"
+            onClick={() => navigate("/ndeshjet?tab=fixtures")}
+          >
+            Bli Bileta
+          </button>
+        )}
       </div>
     </nav>
   );
