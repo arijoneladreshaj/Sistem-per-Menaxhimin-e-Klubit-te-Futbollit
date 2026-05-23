@@ -3,11 +3,12 @@ const express = require("express");
 const router = express.Router();
 
 const { sql, poolPromise } = require("../db");
-const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
+const { verifyToken, requireRole } = require("../middleware/authMiddleware");
+const TRAJNER_ROLES = ["Admin", "Trajner"];
 
 
 // GET all trainings
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
 
   try {
 
@@ -36,7 +37,7 @@ router.get("/", async (req, res) => {
 
 
 // CREATE training
-router.post("/", verifyToken, requireAdmin, async (req, res) => {
+router.post("/", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
 
   try {
 
@@ -142,7 +143,7 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
 
 
 // UPDATE training
-router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.put("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
 
   try {
 
@@ -237,7 +238,7 @@ router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 
 
 // DELETE training
-router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.delete("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
 
   try {
 

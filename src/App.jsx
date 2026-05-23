@@ -27,11 +27,11 @@ const DashboardBiletat  = lazy(() => import("./pages/Dashboard/DashboardBiletat"
 const DashboardProfile  = lazy(() => import("./pages/Dashboard/DashboardProfile"));
 const DashboardUsers    = lazy(() => import("./pages/Dashboard/DashboardUsers"));
 
-function PrivateRoute({ children, adminOnly = false }) {
+function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("accessToken");
-  const role  = localStorage.getItem("role");
+  const role  = (localStorage.getItem("role") || "").toLowerCase();
   if (!token) return <Navigate to="/login" replace />;
-  if (adminOnly && role !== "Admin") return <Navigate to="/" replace />;
+  if (roles && !roles.map(r => r.toLowerCase()).includes(role)) return <Navigate to="/" replace />;
   return children;
 }
 
@@ -57,16 +57,16 @@ export default function App() {
           <Route path="/ConfirmationPage"  element={<PrivateRoute><ConfirmationPage /></PrivateRoute>} />
           <Route path="/ProfilePage"       element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
 
-          <Route path="/dashboard"         element={<PrivateRoute adminOnly><Dashboard /></PrivateRoute>} />
-          <Route path="/staff"             element={<PrivateRoute adminOnly><Staff /></PrivateRoute>} />
-          <Route path="/dashboardNdeshjet" element={<PrivateRoute adminOnly><DashboardNdeshjet /></PrivateRoute>} />
-          <Route path="/DashboardStore"    element={<PrivateRoute adminOnly><DashboardStore /></PrivateRoute>} />
-          <Route path="/DashboardPlayers"  element={<PrivateRoute adminOnly><DashboardPlayers /></PrivateRoute>} />
-          <Route path="/injuries"          element={<PrivateRoute adminOnly><DashboardDemtimet /></PrivateRoute>} />
-          <Route path="/training"          element={<PrivateRoute adminOnly><Training /></PrivateRoute>} />
-          <Route path="/DashboardBiletat"   element={<PrivateRoute adminOnly><DashboardBiletat /></PrivateRoute>} />
-          <Route path="/DashboardProfile"  element={<PrivateRoute adminOnly><DashboardProfile /></PrivateRoute>} />
-          <Route path="/DashboardUsers"   element={<PrivateRoute adminOnly><DashboardUsers /></PrivateRoute>} />
+          <Route path="/dashboard"         element={<PrivateRoute roles={["Admin","Trajner","Menaxher"]}><Dashboard /></PrivateRoute>} />
+          <Route path="/staff"             element={<PrivateRoute roles={["Admin"]}><Staff /></PrivateRoute>} />
+          <Route path="/dashboardNdeshjet" element={<PrivateRoute roles={["Admin"]}><DashboardNdeshjet /></PrivateRoute>} />
+          <Route path="/DashboardStore"    element={<PrivateRoute roles={["Admin","Menaxher"]}><DashboardStore /></PrivateRoute>} />
+          <Route path="/DashboardPlayers"  element={<PrivateRoute roles={["Admin","Trajner"]}><DashboardPlayers /></PrivateRoute>} />
+          <Route path="/injuries"          element={<PrivateRoute roles={["Admin","Trajner"]}><DashboardDemtimet /></PrivateRoute>} />
+          <Route path="/training"          element={<PrivateRoute roles={["Admin","Trajner"]}><Training /></PrivateRoute>} />
+          <Route path="/DashboardBiletat"  element={<PrivateRoute roles={["Admin","Menaxher"]}><DashboardBiletat /></PrivateRoute>} />
+          <Route path="/DashboardProfile"  element={<PrivateRoute roles={["Admin","Trajner","Menaxher"]}><DashboardProfile /></PrivateRoute>} />
+          <Route path="/DashboardUsers"    element={<PrivateRoute roles={["Admin"]}><DashboardUsers /></PrivateRoute>} />
         </Routes>
         </Suspense>
       </BrowserRouter>

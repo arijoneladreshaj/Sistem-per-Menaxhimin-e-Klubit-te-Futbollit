@@ -5,43 +5,41 @@ const navLinks = [
   {
     section: "Kryesor",
     items: [
-      { label: "Dashboard", path: "/dashboard" },
+      { label: "Dashboard", path: "/dashboard", roles: ["Admin","Trajner","Menaxher"] },
     ],
   },
-
   {
     section: "Menaxhim",
     items: [
-      { label: "Lojtarët", path: "/DashboardPlayers", badge: 6 },
-      { label: "Store", path: "/DashboardStore", badge: 18 },
-      { label: "Stafi", path: "/staff", badge: 4 },
-      { label: "Ndeshjet", path: "/dashboardNdeshjet", badge: 5 },
-      { label: "Stërvitjet", path: "/training",         badge: 4 },
-      { label: "Biletat",      path: "/DashboardBiletat",  badge: null },
-      { label: "Përdoruesit", path: "/DashboardUsers",    badge: null },
+      { label: "Lojtarët",    path: "/DashboardPlayers",  badge: 6,    roles: ["Admin","Trajner"] },
+      { label: "Store",       path: "/DashboardStore",    badge: 18,   roles: ["Admin","Menaxher"] },
+      { label: "Stafi",       path: "/staff",             badge: 4,    roles: ["Admin"] },
+      { label: "Ndeshjet",    path: "/dashboardNdeshjet", badge: 5,    roles: ["Admin"] },
+      { label: "Stërvitjet",  path: "/training",          badge: 4,    roles: ["Admin","Trajner"] },
+      { label: "Biletat",     path: "/DashboardBiletat",  badge: null, roles: ["Admin","Menaxher"] },
+      { label: "Përdoruesit", path: "/DashboardUsers",    badge: null, roles: ["Admin"] },
     ],
   },
-
   {
     section: "Financa",
     items: [
-      { label: "Transferimet", path: "/transfers", badge: 3 },
-      { label: "Kontratat", path: "/contracts", badge: 4 },
+      { label: "Transferimet", path: "/transfers", badge: 3, roles: ["Admin","Menaxher"] },
+      { label: "Kontratat",    path: "/contracts", badge: 4, roles: ["Admin","Menaxher"] },
     ],
   },
-
   {
     section: "Analitikë",
     items: [
-      { label: "Dëmtimet", path: "/injuries", badge: 4 },
-      { label: "Sezonet", path: "/seasons", badge: 3 },
-      { label: "Klubet", path: "/clubs", badge: 3 },
+      { label: "Dëmtimet", path: "/injuries", badge: 4, roles: ["Admin","Trajner"] },
+      { label: "Sezonet",  path: "/seasons",  badge: 3, roles: ["Admin"] },
+      { label: "Klubet",   path: "/clubs",    badge: 3, roles: ["Admin"] },
     ],
   },
 ];
 
 export default function SideBar({ active }) {
   const navigate = useNavigate();
+  const role = localStorage.getItem("role") || "";
 
   return (
     <aside className="sidebar">
@@ -63,37 +61,30 @@ export default function SideBar({ active }) {
       </div>
 
       <nav className="flex-grow-1 overflow-auto py-2">
-        {navLinks.map((group) => (
-          <React.Fragment key={group.section}>
-
-            <div className="nav-section">
-              {group.section}
-            </div>
-
-            {group.items.map((item) => (
-              <div
-                key={item.path}
-                className={`nav-item ${
-                  active === item.path ? "active" : ""
-                }`}
-                onClick={() => navigate(item.path)}
-              >
-                <div className="nav-dot" />
-
-                {item.label}
-
-                {item.badge && (
-                  <span
-                    className="badge ms-auto"
-                    style={{ background: "#DA291C" }}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-              </div>
-            ))}
-          </React.Fragment>
-        ))}
+        {navLinks.map((group) => {
+          const visibleItems = group.items.filter(item => item.roles.includes(role));
+          if (visibleItems.length === 0) return null;
+          return (
+            <React.Fragment key={group.section}>
+              <div className="nav-section">{group.section}</div>
+              {visibleItems.map((item) => (
+                <div
+                  key={item.path}
+                  className={`nav-item ${active === item.path ? "active" : ""}`}
+                  onClick={() => navigate(item.path)}
+                >
+                  <div className="nav-dot" />
+                  {item.label}
+                  {item.badge && (
+                    <span className="badge ms-auto" style={{ background: "#DA291C" }}>
+                      {item.badge}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </React.Fragment>
+          );
+        })}
       </nav>
 
       <div

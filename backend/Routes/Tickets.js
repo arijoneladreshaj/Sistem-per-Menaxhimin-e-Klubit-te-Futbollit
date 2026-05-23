@@ -1,7 +1,8 @@
 const express = require("express");
 const router  = express.Router();
 const { sql, poolPromise } = require("../db");
-const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
+const { verifyToken, requireRole } = require("../middleware/authMiddleware");
+const MENAXHER_ROLES = ["Admin", "Menaxher"];
 
 // ── PUBLIKE ────────────────────────────────────────────────────
 
@@ -45,7 +46,7 @@ router.get("/my", verifyToken, async (req, res) => {
 });
 
 // GET /api/tickets — të gjitha biletat (admin)
-router.get("/", verifyToken, requireAdmin, async (req, res) => {
+router.get("/", verifyToken, requireRole(...MENAXHER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request().query(`
@@ -64,7 +65,7 @@ router.get("/", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // GET /api/tickets/match/:matchId — biletat e një ndeshje (admin)
-router.get("/match/:matchId", verifyToken, requireAdmin, async (req, res) => {
+router.get("/match/:matchId", verifyToken, requireRole(...MENAXHER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request()
@@ -117,7 +118,7 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 // PUT /api/tickets/:id — ndrysho biletën (admin)
-router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.put("/:id", verifyToken, requireRole(...MENAXHER_ROLES), async (req, res) => {
   try {
     const { statusi, sektori, numri_uleses, emri_bleresit, mbiemri_bleresit, cmimi, is_vip, match_id } = req.body;
     const pool = await poolPromise;
@@ -149,10 +150,21 @@ router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/tickets/:id (admin)
+// DELETE /api/tickets/:id — useri fshin biletat e veta, admin/menaxher fshijnë çdo biletë
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const pool = await poolPromise;
+    const isStaff = MENAXHER_ROLES.map(r => r.toLowerCase()).includes(req.user?.role?.toLowerCase());
+
+    if (!isStaff) {
+      const check = await pool.request()
+        .input("id",      sql.Int, req.params.id)
+        .input("user_id", sql.Int, req.user.id)
+        .query("SELECT id FROM Tickets WHERE id = @id AND user_id = @user_id");
+      if (!check.recordset[0])
+        return res.status(403).json({ error: "Nuk ke leje" });
+    }
+
     await pool.request()
       .input("id", sql.Int, req.params.id)
       .query("DELETE FROM Tickets WHERE id = @id");

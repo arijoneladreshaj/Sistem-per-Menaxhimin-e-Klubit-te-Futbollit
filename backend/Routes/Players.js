@@ -4,7 +4,8 @@ const path    = require("path");
 const fs      = require("fs");
 const multer  = require("multer");
 const { sql, poolPromise } = require("../db");
-const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
+const { verifyToken, requireRole } = require("../middleware/authMiddleware");
+const TRAJNER_ROLES = ["Admin", "Trajner"];
 
 const UPLOAD_DIR = path.join(__dirname, "../../public/players");
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -69,7 +70,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST
-router.post("/", verifyToken, requireAdmin, async (req, res) => {
+router.post("/", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const {
       club_id, emri, mbiemri, data_lindjes, kombesia,
@@ -115,7 +116,7 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // PUT
-router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.put("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const {
       emri, mbiemri, data_lindjes, kombesia,
@@ -163,7 +164,7 @@ router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // POST photo upload
-router.post("/:id/photo", verifyToken, requireAdmin, upload.single("foto"), async (req, res) => {
+router.post("/:id/photo", verifyToken, requireRole(...TRAJNER_ROLES), upload.single("foto"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Nuk u dërgua asnjë file" });
 
@@ -192,7 +193,7 @@ router.post("/:id/photo", verifyToken, requireAdmin, upload.single("foto"), asyn
 });
 
 // DELETE photo
-router.delete("/:id/photo", verifyToken, requireAdmin, async (req, res) => {
+router.delete("/:id/photo", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
     const row = await pool.request()
@@ -213,7 +214,7 @@ router.delete("/:id/photo", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // DELETE
-router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.delete("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
     await pool.request()

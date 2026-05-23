@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../db");
+const { verifyToken } = require("../middleware/authMiddleware");
 
 // GET shipping preferences for a user
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", verifyToken, async (req, res) => {
+  if (req.user.id !== Number(req.params.userId))
+    return res.status(403).json({ error: "Nuk ke leje" });
   try {
     const pool = await poolPromise;
     const result = await pool.request()
@@ -21,7 +24,9 @@ router.get("/:userId", async (req, res) => {
 });
 
 // SAVE shipping preferences for a user
-router.put("/:userId", async (req, res) => {
+router.put("/:userId", verifyToken, async (req, res) => {
+  if (req.user.id !== Number(req.params.userId))
+    return res.status(403).json({ error: "Nuk ke leje" });
   try {
     const { country, currency, language } = req.body;
     const pool = await poolPromise;

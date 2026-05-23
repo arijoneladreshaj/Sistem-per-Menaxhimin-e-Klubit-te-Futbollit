@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 
 const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tabela", "Shop"];
+const STAFF_ROLES = ["Admin", "Trajner", "Menaxher"];
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function Navbar() {
               )}
             </li>
           ))}
-          {role === "Admin" && (
+          {STAFF_ROLES.includes(role) && (
             <li>
               <Link to="/dashboard">Dashboard</Link>
             </li>
@@ -42,24 +43,15 @@ export default function Navbar() {
         </ul>
       </div>
       <div className="mu-nav-right">
-        {role !== "Admin" && (
-          <div
-            className="mu-avatar"
-            onClick={() => navigate("/ProfilePage")}
-            title={`${user.emri ?? ""} ${user.mbiemri ?? ""}`}
-          >
-            {user.emri?.[0] ?? ""}
-            {user.mbiemri?.[0] ?? ""}
-          </div>
-        )}
-        {role === "Admin" ? (
-          <button
-            className="mu-btn-solid"
-            onClick={() => navigate("/DashboardBiletat")}
-          >
-            Shiko Biletat
-          </button>
-        ) : (
+        <div
+          className="mu-avatar"
+          onClick={() => navigate(STAFF_ROLES.includes(role) ? "/DashboardProfile" : "/ProfilePage")}
+          title={`${user.emri ?? ""} ${user.mbiemri ?? ""}`}
+        >
+          {user.emri?.[0] ?? ""}
+          {user.mbiemri?.[0] ?? ""}
+        </div>
+        {!STAFF_ROLES.includes(role) && (
           <button
             className="mu-btn-solid"
             onClick={() => navigate("/ndeshjet?tab=fixtures")}
