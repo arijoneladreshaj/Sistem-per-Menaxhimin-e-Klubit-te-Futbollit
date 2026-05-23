@@ -25,6 +25,8 @@ const Training          = lazy(() => import("./pages/Dashboard/Trainings"));
 const DashboardDemtimet = lazy(() => import("./pages/Dashboard/DashboardDemtimet"));
 const DashboardBiletat  = lazy(() => import("./pages/Dashboard/DashboardBiletat"));
 const DashboardProfile  = lazy(() => import("./pages/Dashboard/DashboardProfile"));
+const DashboardSezone   = lazy(() => import("./pages/Dashboard/DashboardSezone"));
+const SeasonArchive     = lazy(() => import("./pages/SeasonArchive"));
 
 function PrivateRoute({ children, adminOnly = false }) {
   const token = localStorage.getItem("accessToken");
@@ -65,6 +67,8 @@ export default function App() {
           <Route path="/training"          element={<PrivateRoute adminOnly><Training /></PrivateRoute>} />
           <Route path="/DashboardBiletat"   element={<PrivateRoute adminOnly><DashboardBiletat /></PrivateRoute>} />
           <Route path="/DashboardProfile"  element={<PrivateRoute adminOnly><DashboardProfile /></PrivateRoute>} />
+          <Route path="/seasons"           element={<PrivateRoute adminOnly><DashboardSezone /></PrivateRoute>} />
+          <Route path="/sezonet"           element={<PrivateRoute><SeasonArchive /></PrivateRoute>} />
         </Routes>
         </Suspense>
       </BrowserRouter>

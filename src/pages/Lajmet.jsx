@@ -59,8 +59,8 @@ function badgeClass(kategoria) {
 
 export default function Lajmet() {
 
-  const [kategoriaAktive, setKategoriaAktive] =
-    useState("TË GJITHA");
+  const [kategoriaAktive, setKategoriaAktive] = useState("TË GJITHA");
+  const [activeSeason, setActiveSeason] = useState(null);
 
   const isAdmin = localStorage.getItem("role") === "Admin";
 
@@ -80,6 +80,10 @@ export default function Lajmet() {
 
   useEffect(() => {
     fetchLajmet();
+    fetch("http://localhost:5001/api/seasons/active")
+      .then(r => r.json())
+      .then(d => { if (d?.emertimi) setActiveSeason(d); })
+      .catch(() => {});
   }, []);
 
   const fetchLajmet = async () => {
@@ -205,7 +209,7 @@ export default function Lajmet() {
           <div className="d-flex gap-3 mb-3">
 
             <span className="lajmet-badge-season badge text-danger bg-white fw-bold">
-              SEZONI 2025/26
+              {activeSeason ? `SEZONI ${activeSeason.emertimi}` : "SEZONI 2025/26"}
             </span>
 
             <span className="text-white-50 small fw-semibold align-self-center">
