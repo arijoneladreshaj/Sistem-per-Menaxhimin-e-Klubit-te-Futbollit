@@ -17,7 +17,8 @@ const navLinks = [
       { label: "Stafi", path: "/staff", badge: 4 },
       { label: "Ndeshjet", path: "/dashboardNdeshjet", badge: 5 },
       { label: "Stërvitjet", path: "/training",         badge: 4 },
-      { label: "Biletat",    path: "/DashboardBiletat",  badge: null },
+      { label: "Biletat",      path: "/DashboardBiletat",  badge: null },
+      { label: "Përdoruesit", path: "/DashboardUsers",    badge: null },
     ],
   },
 
