@@ -67,21 +67,24 @@ export default function SideBar({ active }) {
           return (
             <React.Fragment key={group.section}>
               <div className="nav-section">{group.section}</div>
-              {visibleItems.map((item) => (
-                <div
-                  key={item.path}
-                  className={`nav-item ${active === item.path ? "active" : ""}`}
-                  onClick={() => navigate(item.path)}
-                >
-                  <div className="nav-dot" />
-                  {item.label}
-                  {item.badge && (
-                    <span className="badge ms-auto" style={{ background: "#DA291C" }}>
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-              ))}
+              {visibleItems.map((item) => {
+                const badgeVal = item.badge;
+                return (
+                  <div
+                    key={item.path}
+                    className={`nav-item ${active === item.path ? "active" : ""}`}
+                    onClick={() => navigate(item.path)}
+                  >
+                    <div className="nav-dot" />
+                    {item.label}
+                    {badgeVal > 0 && (
+                      <span className="badge ms-auto" style={{ background: "#DA291C" }}>
+                        {badgeVal}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </React.Fragment>
           );
         })}

@@ -13,7 +13,7 @@ router.get("/my", verifyToken, async (req, res) => {
         SELECT TOP 20 id, titulli, mesazhi, is_read, created_at
         FROM Notifications
         WHERE user_id = @user_id
-        ORDER BY created_at DESC
+        ORDER BY is_read ASC, created_at DESC
       `);
     res.json(result.recordset);
   } catch (err) {

@@ -11,7 +11,14 @@ router.get("/", verifyToken, requireAdmin, async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request().query(
-      "SELECT id, username, emri, mbiemri, email, role, datelindja FROM Users ORDER BY id ASC"
+      `SELECT id, username, emri, mbiemri, email, role, datelindja FROM Users
+       ORDER BY CASE role
+         WHEN 'Admin'    THEN 1
+         WHEN 'Trajner'  THEN 2
+         WHEN 'Menaxher' THEN 3
+         WHEN 'Lojtari'  THEN 4
+         ELSE 5
+       END, emri ASC`
     );
     res.json(result.recordset);
   } catch (err) {
@@ -65,7 +72,23 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
         VALUES (@username, @emri, @mbiemri, @email, @password_hash, @role)
       `);
 
-    res.status(201).json({ success: true, user: insert.recordset[0] });
+    const newUser = insert.recordset[0];
+
+    if (["Trajner", "Menaxher"].includes(role)) {
+      await pool.request()
+        .input("club_id", sql.Int,      1)
+        .input("user_id", sql.Int,      newUser.id)
+        .input("emri",    sql.NVarChar, emri.trim())
+        .input("mbiemri", sql.NVarChar, mbiemri.trim())
+        .input("roli",    sql.NVarChar, role)
+        .input("statusi", sql.NVarChar, "Aktiv")
+        .query(`
+          INSERT INTO Staff (club_id, user_id, emri, mbiemri, roli, statusi)
+          VALUES (@club_id, @user_id, @emri, @mbiemri, @roli, @statusi)
+        `);
+    }
+
+    res.status(201).json({ success: true, user: newUser });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

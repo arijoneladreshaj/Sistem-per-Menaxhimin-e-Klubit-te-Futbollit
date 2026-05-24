@@ -9,10 +9,7 @@ import "./Staff.css";
 
 const API = "http://localhost:5001/api/staff";
 
-const ROLET = [
-  "Trajner Kryesor", "Asistent Trajner", "Trajner Portierësh",
-  "Fizioterapeut", "Mjek", "Analist", "Skaut", "Menaxher"
-];
+const ROLET = ["Trajner", "Menaxher"];
 
 const emptyForm = {
   club_id: 1,
@@ -27,11 +24,7 @@ const emptyForm = {
 };
 
 const roliIcon = (roli) => {
-  const map = {
-    "Trajner Kryesor": "⚽", "Asistent Trajner": "📋",
-    "Trajner Portierësh": "🧤", "Fizioterapeut": "💪",
-    "Mjek": "🏥", "Analist": "📊", "Skaut": "🔍", "Menaxher": "👔",
-  };
+  const map = { "Trajner": "⚽", "Menaxher": "👔" };
   return map[roli] || "👤";
 };
 
@@ -110,13 +103,15 @@ export default function StaffPage() {
 
     <div className="main">
 
-      <TopBar title="Menaxhimi i Stafit">
-        <Button className="btn-mu" onClick={openAdd}>+ Shto Staff</Button>
-      </TopBar>
+      <TopBar title="Menaxhimi i Stafit" />
 
       <Container fluid className="staff-container">
 
       {msg && <Alert variant="success" dismissible onClose={() => setMsg("")}>{msg}</Alert>}
+
+      <Alert variant="info" className="py-2" style={{ fontSize: 13 }}>
+        Për të shtuar staf të ri, shko te <strong>Përdoruesit</strong> dhe shto user me rol <strong>Trajner</strong> ose <strong>Menaxher</strong> — do shfaqet automatikisht këtu.
+      </Alert>
 
       {/* Search */}
       <Row className="mb-4">
@@ -206,15 +201,6 @@ export default function StaffPage() {
           </Col>
         ))}
 
-        {/* Add Card */}
-        <Col xs={12} sm={6} lg={4} xl={3}>
-          <Card className="add-card h-100" onClick={openAdd}>
-            <Card.Body className="d-flex flex-column align-items-center justify-content-center">
-              <div className="add-icon">+</div>
-              <h6 className="add-text">Shto Staff të Ri</h6>
-            </Card.Body>
-          </Card>
-        </Col>
       </Row>
 
       {/* Modal */}
