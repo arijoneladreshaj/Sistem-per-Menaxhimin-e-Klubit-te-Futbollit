@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
+import "../pages/ManchesterUnitedHome.css";
 
-const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Tabela", "Shop"];
 const STAFF_ROLES = ["Admin", "Trajner", "Menaxher"];
+const NAV_LINKS = ["Lajmet", "Ndeshjet", "Lojtarët", "Store", "Sezonet"];
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -24,12 +25,14 @@ export default function Navbar() {
             <li key={link}>
               {link === "Ndeshjet" ? (
                 <Link to="/ndeshjet">{link}</Link>
-              ) : link === "Shop" ? (
+              ) : link === "Store" ? (
                 <Link to="/Store">{link}</Link>
               ) : link === "Lojtarët" ? (
                 <Link to="/players">{link}</Link>
               ) : link === "Lajmet" ? (
                 <Link to="/lajmet">{link}</Link>
+              ) : link === "Sezonet" ? (
+                <Link to="/sezonet">{link}</Link>
               ) : (
                 <a href="#">{link}</a>
               )}
@@ -45,7 +48,11 @@ export default function Navbar() {
       <div className="mu-nav-right">
         <div
           className="mu-avatar"
-          onClick={() => navigate(STAFF_ROLES.includes(role) ? "/DashboardProfile" : "/ProfilePage")}
+          onClick={() =>
+            navigate(
+              STAFF_ROLES.includes(role) ? "/DashboardProfile" : "/ProfilePage",
+            )
+          }
           title={`${user.emri ?? ""} ${user.mbiemri ?? ""}`}
         >
           {user.emri?.[0] ?? ""}
