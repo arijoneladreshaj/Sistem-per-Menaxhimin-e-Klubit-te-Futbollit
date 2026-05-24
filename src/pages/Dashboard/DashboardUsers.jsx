@@ -4,7 +4,7 @@ import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
 import "./Dashboard.css";
 
-const ROLES = ["Trajner", "Menaxher", "Admin"];
+const ROLES = ["Trajner", "Menaxher", "Admin", "Lojtari"];
 
 const ROLE_COLOR = {
   Admin:    { bg: "#7f1d1d", color: "#fca5a5" },

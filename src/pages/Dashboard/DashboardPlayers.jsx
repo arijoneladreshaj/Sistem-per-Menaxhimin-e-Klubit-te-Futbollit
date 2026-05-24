@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Dashboard.css";
 
-const API = "http://localhost:5001/players";
+const API = "/players";
 
 const RED    = "#cc0000";
 const DARK   = "#1a0000";

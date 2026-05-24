@@ -41,7 +41,8 @@ const DashboardProfile = lazy(
 const DashboardSezone = lazy(() => import("./pages/Dashboard/DashboardSezone"));
 const SeasonArchive = lazy(() => import("./pages/SeasonArchive"));
 
-const DashboardUsers = lazy(() => import("./pages/Dashboard/DashboardUsers"));
+const DashboardUsers      = lazy(() => import("./pages/Dashboard/DashboardUsers"));
+const NotificationsPage   = lazy(() => import("./pages/NotificationsPage"));
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("accessToken");
@@ -248,7 +249,7 @@ export default function App() {
             <Route
               path="/DashboardProfile"
               element={
-                <PrivateRoute roles={["Admin", "Trajner", "Menaxher"]}>
+                <PrivateRoute roles={["Admin", "Trajner", "Menaxher", "Lojtari"]}>
                   <DashboardProfile />
                 </PrivateRoute>
               }
@@ -258,6 +259,14 @@ export default function App() {
               element={
                 <PrivateRoute roles={["Admin"]}>
                   <DashboardUsers />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <PrivateRoute roles={["Lojtari"]}>
+                  <NotificationsPage />
                 </PrivateRoute>
               }
             />

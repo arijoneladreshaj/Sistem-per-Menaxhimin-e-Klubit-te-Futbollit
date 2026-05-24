@@ -44,9 +44,10 @@ function Login() {
     localStorage.setItem("role",         data.user.role);
     localStorage.setItem("user",         JSON.stringify(data.user));
 
-    const staffRoles = ["Admin", "Trajner", "Menaxher"];
-    if (staffRoles.includes(data.user.role)) {
+    if (["Admin", "Trajner", "Menaxher"].includes(data.user.role)) {
       navigate("/dashboard");
+    } else if (data.user.role === "Lojtari") {
+      navigate("/");
     } else {
       navigate("/preferences");
     }

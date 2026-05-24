@@ -10,10 +10,18 @@ const formatTime = (t) => {
   return m ? m[1] : "—";
 };
 
+const STATUS_COLOR = {
+  "Po vij":       { bg: "#1a3a1a", color: "#4ade80" },
+  "Nuk vij":      { bg: "#7f1d1d", color: "#fca5a5" },
+  "Papërcaktuar": { bg: "#2a2a2a", color: "#888"    },
+};
+
 function Training() {
-  const [trainings, setTrainings] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState(null);
+  const [trainings,   setTrainings]   = useState([]);
+  const [showForm,    setShowForm]    = useState(false);
+  const [editingId,   setEditingId]   = useState(null);
+  const [attendance,  setAttendance]  = useState({});
+  const [openAtt,     setOpenAtt]     = useState(null);
   const [formData, setFormData] = useState({
     club_id: 1,
     data_stervitjes: "",
@@ -59,6 +67,15 @@ function Training() {
     try {
       await api.delete(`/api/training/${id}`);
       fetchTrainings();
+    } catch (err) { console.log(err); }
+  };
+
+  const toggleAttendance = async (id) => {
+    if (openAtt === id) { setOpenAtt(null); return; }
+    try {
+      const res = await api.get(`/api/training/${id}/attendance`);
+      setAttendance(prev => ({ ...prev, [id]: res.data }));
+      setOpenAtt(id);
     } catch (err) { console.log(err); }
   };
 
@@ -112,7 +129,32 @@ function Training() {
                 <div className="trn-card-actions">
                   <button className="trn-btn-edit" onClick={() => handleEdit(t)}>Ndrysho</button>
                   <button className="trn-btn-delete" onClick={() => handleDelete(t.id)}>Fshij</button>
+                  <button className="trn-btn-edit" onClick={() => toggleAttendance(t.id)} style={{ marginLeft: "auto" }}>
+                    {openAtt === t.id ? "Mbyll" : "Prezenca"}
+                  </button>
                 </div>
+
+                {openAtt === t.id && (
+                  <div style={{ marginTop: 12, borderTop: "1px solid #2a2a2a", paddingTop: 10 }}>
+                    {!attendance[t.id] || attendance[t.id].length === 0 ? (
+                      <p style={{ color: "#666", fontSize: 12, margin: 0 }}>Nuk ka lojtarë të regjistruar</p>
+                    ) : (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                        {attendance[t.id].map(a => {
+                          const s = STATUS_COLOR[a.statusi] || STATUS_COLOR["Papërcaktuar"];
+                          return (
+                            <div key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12 }}>
+                              <span style={{ color: "#ccc" }}>{a.emri} {a.mbiemri}</span>
+                              <span style={{ background: s.bg, color: s.color, padding: "2px 8px", borderRadius: 4, fontSize: 11 }}>
+                                {a.statusi}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>

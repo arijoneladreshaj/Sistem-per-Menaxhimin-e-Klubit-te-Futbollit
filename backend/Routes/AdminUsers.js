@@ -4,7 +4,7 @@ const bcrypt  = require("bcryptjs");
 const { sql, poolPromise } = require("../db");
 const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
 
-const ALLOWED_ROLES = ["Admin", "Trajner", "Menaxher"];
+const ALLOWED_ROLES = ["Admin", "Trajner", "Menaxher", "Lojtari"];
 
 // GET /api/admin/users — lista e të gjithë userëve
 router.get("/", verifyToken, requireAdmin, async (req, res) => {
