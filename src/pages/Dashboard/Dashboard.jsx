@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
+import api from "../../api/axiosInstance";
 import "./Dashboard.css";
 import api from "../../api/axiosInstance";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [activeSeason, setActiveSeason] = useState(null);
+
+  useEffect(() => {
+    api.get("http://localhost:5001/api/seasons/active")
+      .then(res => setActiveSeason(res.data))
+      .catch(() => {});
+  }, []);
 
   const [players,    setPlayers]    = useState([]);
   const [matches,    setMatches]    = useState([]);
@@ -52,6 +60,15 @@ export default function Dashboard() {
       <div className="main">
 
         <TopBar title="Dashboard i Klubit">
+          {activeSeason && (
+            <span style={{
+              background: "#14532d", color: "#4ade80",
+              borderRadius: 6, padding: "3px 10px",
+              fontSize: 12, fontWeight: 600,
+            }}>
+              ● {activeSeason.emertimi}
+            </span>
+          )}
           <button className="btn btn-outline-secondary btn-sm">Eksporto</button>
         </TopBar>
 

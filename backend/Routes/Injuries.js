@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../db");
-const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
+const { verifyToken, requireRole } = require("../middleware/authMiddleware");
+const TRAJNER_ROLES = ["Admin", "Trajner"];
 
 // Funksioni që përditëson statusin e lojtarit bazuar në dëmtime
 async function updatePlayerStatus(pool, player_id) {
@@ -22,7 +23,7 @@ async function updatePlayerStatus(pool, player_id) {
 }
 
 // GET all injuries with player info
-router.get("/", verifyToken, requireAdmin, async (req, res) => {
+router.get("/", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request().query(`
@@ -42,7 +43,7 @@ router.get("/", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // GET single injury
-router.get("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.get("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request()
@@ -56,7 +57,7 @@ router.get("/:id", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // CREATE injury
-router.post("/", verifyToken, requireAdmin, async (req, res) => {
+router.post("/", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const { player_id, lloji_demtimit, pershkrimi, data_demtimit, data_rikthimit, statusi } = req.body;
     if (!player_id || !lloji_demtimit || !data_demtimit) {
@@ -84,7 +85,7 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // UPDATE injury
-router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.put("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const { player_id, lloji_demtimit, pershkrimi, data_demtimit, data_rikthimit, statusi } = req.body;
     const pool = await poolPromise;
@@ -116,7 +117,7 @@ router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 });
 
 // DELETE injury
-router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
+router.delete("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
 

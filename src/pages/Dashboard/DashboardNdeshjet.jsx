@@ -7,6 +7,15 @@ import { Modal, Form, Row, Col } from "react-bootstrap";
 
 import "./Dashboard.css";
 import "../Ndeshjet.css";
+import "../ManchesterUnitedHome.css";
+
+if (!document.getElementById("mu-dash-fonts")) {
+  const l = document.createElement("link");
+  l.id = "mu-dash-fonts";
+  l.rel = "stylesheet";
+  l.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap";
+  document.head.appendChild(l);
+}
 
 const API = "http://localhost:5001/api/ndeshjet";
 
@@ -238,6 +247,7 @@ export default function DashboardNdeshjet() {
   const [tab, setTab] = useState("fixtures");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [activeSeason, setActiveSeason] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -258,6 +268,9 @@ export default function DashboardNdeshjet() {
 
   useEffect(() => {
     fetchMatches();
+    api.get("http://localhost:5001/api/seasons/active")
+      .then(res => setActiveSeason(res.data))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -463,7 +476,7 @@ export default function DashboardNdeshjet() {
               style={{ padding: "36px 50px 28px" }}
             >
               <div className="mu-eyebrow">
-                <span className="mu-eyebrow-badge">Sezoni 2025/26</span>
+                <span className="mu-eyebrow-badge">{activeSeason ? `Sezoni ${activeSeason.emertimi}` : "Sezoni 2025/26"}</span>
                 <span className="mu-eyebrow-sub">All Competitions</span>
               </div>
               <h1

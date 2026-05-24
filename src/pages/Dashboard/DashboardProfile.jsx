@@ -127,7 +127,7 @@ export default function DashboardProfile() {
                   )}
                   <div style={{ color: "#888", fontSize: 13 }}>{storedUser.email}</div>
                   <span className="badge" style={{ background: "#DA291C", marginTop: 6, fontSize: 11 }}>
-                    Admin
+                    {storedUser.role || "User"}
                   </span>
                 </div>
               </div>

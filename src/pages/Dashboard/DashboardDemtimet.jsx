@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
 import api from "../../api/axiosInstance";
@@ -10,19 +9,6 @@ const API         = "http://localhost:5001/api/injuries";
 const PLAYERS_API = "http://localhost:5001/api/players";
 
 
-const navLinks = [
-  { section: "Kryesor",   items: [{ label: "Dashboard",    path: "/dashboard" }] },
-  { section: "Menaxhim",  items: [{ label: "Lojtarët",     path: "/players",           badge: 6  },
-                                   { label: "Store",        path: "/DashboardStore",    badge: 18 },
-                                   { label: "Stafi",        path: "/staff",             badge: 4  },
-                                   { label: "Ndeshjet",     path: "/dashboardNdeshjet", badge: 5  },
-                                   { label: "Stërvitjet",   path: "/training",          badge: 4  }] },
-  { section: "Financa",   items: [{ label: "Transferimet", path: "/transfers",          badge: 3  },
-                                   { label: "Kontratat",    path: "/contracts",         badge: 4  }] },
-  { section: "Analitikë", items: [{ label: "Dëmtimet",     path: "/injuries",           badge: 4  },
-                                   { label: "Sezonet",      path: "/seasons",           badge: 3  },
-                                   { label: "Klubet",       path: "/clubs",             badge: 3  }] },
-];
 
 const LLOJET = ["Muskulor", "Ligament", "Tendini", "Shtrëngim", "Thyerje", "Kokë", "Gjuri", "Shpine", "Tjetër"];
 const STATUSET = ["Aktiv", "Rikuperim", "Shëruar"];
@@ -197,7 +183,6 @@ function InjuryCard({ inj, onEdit, onDelete }) {
 
 /* ════════════════════════════════════════════════════════════ */
 export default function DashboardDemtimet() {
-  const navigate = useNavigate();
   const [injuries, setInjuries]   = useState([]);
   const [players,  setPlayers]    = useState([]);
   const [filter,   setFilter]     = useState("Të gjitha");

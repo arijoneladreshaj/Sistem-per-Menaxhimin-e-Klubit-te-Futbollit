@@ -256,6 +256,14 @@ export default function Store() {
   const [sizeProduct, setSizeProduct]   = useState(null);
   const [toast, setToast]               = useState(null);
   const [shippingOpen, setShippingOpen] = useState(false);
+  const [activeSeason, setActiveSeason] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:5001/api/seasons/active")
+      .then(r => r.json())
+      .then(d => { if (d?.emertimi) setActiveSeason(d); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
 
@@ -378,7 +386,7 @@ const handleDelete = async (id) => {
       {/* HERO HEADER */}
       <div style={{background:'rgba(0,0,0,0.18)',borderBottom:'1px solid rgba(255,255,255,0.08)',padding:'40px 40px 0'}}>
         <div className="mb-3">
-          <span style={{background:'rgba(0,0,0,0.3)',color:'#fff',fontSize:10,fontWeight:700,letterSpacing:3,textTransform:'uppercase',padding:'4px 12px'}}>SEZONI 2025/26</span>
+          <span style={{background:'rgba(0,0,0,0.3)',color:'#fff',fontSize:10,fontWeight:700,letterSpacing:3,textTransform:'uppercase',padding:'4px 12px'}}>{activeSeason ? `SEZONI ${activeSeason.emertimi}` : 'SEZONI 2025/26'}</span>
           <span style={{color:'rgba(255,255,255,0.55)',fontSize:12,fontWeight:600,letterSpacing:2,textTransform:'uppercase',marginLeft:12}}>OLD TRAFFORD</span>
         </div>
         <h1 style={{fontFamily:FONT_H,fontSize:'clamp(52px,7vw,86px)',color:'#fff',lineHeight:0.88,letterSpacing:1,marginBottom:20}}>

@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import api from "../../api/axiosInstance";
-import { useNavigate } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Dashboard.css";
 
-const API = "http://localhost:5001/players";
+const API = "/players";
 
 const RED    = "#cc0000";
 const DARK   = "#1a0000";
@@ -404,7 +403,6 @@ function SortHeader({ label, field, sortField, sortDir, onSort, flex }) {
    MAIN
 ═══════════════════════════════════════════════════════════════════════════════ */
 export default function DashboardPlayers() {
-  const navigate = useNavigate();
 
   const [players,  setPlayers]  = useState([]);
   const [loading,  setLoading]  = useState(true);

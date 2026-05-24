@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axiosInstance";
 import "./ManchesterUnitedHome.css";
 import "./Ndeshjet.css";
 import Navbar from "../Components/NavBar";
@@ -71,7 +71,7 @@ function MatchRow({ match, onBuyTicket }) {
 
       {/* Teams + Score */}
       <div className="nd-teams">
-        {}
+  
         <div className="nd-team-home">
           <span
             className={`nd-team-name ${match.home === "Man United" ? "mu" : ""}`}
@@ -88,7 +88,7 @@ function MatchRow({ match, onBuyTicket }) {
           {match.score}
         </div>
 
-        {}
+  
         <div className="nd-team-away">
           <TeamLogo name={match.away} logoUrl={awayLogo} />
           <span
@@ -99,7 +99,7 @@ function MatchRow({ match, onBuyTicket }) {
         </div>
       </div>
 
-      {}
+
       <div className="nd-venue">{match.venue}</div>
 
       {isUpcoming && (
@@ -183,14 +183,16 @@ function convertApiMatch(m) {
     result,
     venue: m.stadiumi || "",
     ticketsAvailable: !isPlayed,
+    _raw: m,
   };
 }
 
 function groupByMonth(list) {
   const groups = {};
   list.forEach((m) => {
-    const d = m.date ? m.date : "";
-    const key = d || "Pa datë";
+    const raw = m._raw;
+    const d = raw?.data_ndeshjes ? new Date(raw.data_ndeshjes) : null;
+    const key = d ? `${monthNames[d.getMonth()]} ${d.getFullYear()}` : "Pa datë";
     if (!groups[key]) groups[key] = [];
     groups[key].push(m);
   });
@@ -200,6 +202,7 @@ function groupByMonth(list) {
 export default function Ndeshjet() {
   const [tab, setTab] = useState("rezultate");
   const [apiMatches, setApiMatches] = useState([]);
+  const [activeSeason, setActiveSeason] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -208,9 +211,13 @@ export default function Ndeshjet() {
   }, [searchParams]);
 
   useEffect(() => {
-    axios.get(API)
+    api.get(API)
       .then(res => setApiMatches(res.data))
       .catch(err => console.error(err));
+    fetch("http://localhost:5001/api/seasons/active")
+      .then(r => r.json())
+      .then(d => { if (d?.emertimi) setActiveSeason(d); })
+      .catch(() => {});
   }, []);
 
   const converted = apiMatches.map(convertApiMatch);
@@ -222,7 +229,7 @@ export default function Ndeshjet() {
     <div className="mu-wrap">
       <Navbar />
 
-      {}
+
       <div
         className="mu-hero"
         style={{ minHeight: 220, alignItems: "flex-end" }}
@@ -231,7 +238,7 @@ export default function Ndeshjet() {
         <div className="mu-hero-stripe" />
         <div className="mu-hero-content" style={{ padding: "36px 50px 28px" }}>
           <div className="mu-eyebrow">
-            <span className="mu-eyebrow-badge">Sezoni 2025/26</span>
+            <span className="mu-eyebrow-badge">{activeSeason ? `Sezoni ${activeSeason.emertimi}` : "Sezoni 2025/26"}</span>
             <span className="mu-eyebrow-sub">All Competitions</span>
           </div>
           <h1
@@ -259,7 +266,7 @@ export default function Ndeshjet() {
         ))}
       </div>
 
-      {}
+
       <div className="nd-list">
         {tab === "rezultate" && <StatsBar matches={data} />}
         {data.map((group) => (
@@ -276,7 +283,7 @@ export default function Ndeshjet() {
         ))}
       </div>
 
-      {}
+
       <div className="mu-ticker">
         <span className="mu-ticker-label">Live</span>
         <div

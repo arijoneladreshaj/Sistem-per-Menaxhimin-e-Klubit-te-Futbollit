@@ -17,6 +17,14 @@ export default function ManchesterUnitedHome() {
   const animRef = useRef(null);
   const offsetRef = useRef(0);
   const tickerRef = useRef(null);
+  const [activeSeason, setActiveSeason] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:5001/api/seasons/active")
+      .then(r => r.json())
+      .then(d => { if (d?.emertimi) setActiveSeason(d); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -62,7 +70,7 @@ export default function ManchesterUnitedHome() {
 
         <div className="mu-hero-content">
           <div className="mu-eyebrow">
-            <span className="mu-eyebrow-badge">Sezoni 2025/26</span>
+            <span className="mu-eyebrow-badge">{activeSeason ? `Sezoni ${activeSeason.emertimi}` : "Sezoni 2025/26"}</span>
             <span className="mu-eyebrow-sub">Old Trafford</span>
           </div>
 
@@ -80,8 +88,8 @@ export default function ManchesterUnitedHome() {
           </p>
 
           <div className="mu-actions">
-            <button className="mu-cta-main">Shiko Ndeshjet</button>
-            <button className="mu-cta-sec">Lajmet e Fundit</button>
+            <button className="mu-cta-main" onClick={() => navigate("/ndeshjet")}>Shiko Ndeshjet</button>
+            <button className="mu-cta-sec" onClick={() => navigate("/lajmet")}>Lajmet e Fundit</button>
           </div>
         </div>
       </div>

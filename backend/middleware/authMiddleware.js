@@ -22,4 +22,14 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { verifyToken, requireAdmin };
+function requireRole(...roles) {
+  const normalized = roles.map(r => r.toLowerCase());
+  return (req, res, next) => {
+    if (!normalized.includes(req.user?.role?.toLowerCase())) {
+      return res.status(403).json({ message: "Nuk ke akses për këtë veprim" });
+    }
+    next();
+  };
+}
+
+module.exports = { verifyToken, requireAdmin, requireRole };
