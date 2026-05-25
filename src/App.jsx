@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CartProvider } from "./Context/CartContext";
+import FooterLayout from "./Components/FooterLayout";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const Ndeshjet = lazy(() => import("./pages/Ndeshjet"));
@@ -79,110 +80,19 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            <Route
-              path="/"
-              element={
-                <PrivateRoute>
-                  <HomePage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/ndeshjet"
-              element={
-                <PrivateRoute>
-                  <Ndeshjet />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/players"
-              element={
-                <PrivateRoute>
-                  <Players />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/preferences"
-              element={
-                <PrivateRoute>
-                  <Preferences />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/lajmet"
-              element={
-                <PrivateRoute>
-                  <Lajmet />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/Store"
-              element={
-                <PrivateRoute>
-                  <Store />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/StoreConfirmation"
-              element={
-                <PrivateRoute>
-                  <StoreConfirmation />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/SectorPage/:matchId"
-              element={
-                <PrivateRoute>
-                  <SectorPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/SeatsPage/:matchId/:sectorId"
-              element={
-                <PrivateRoute>
-                  <SeatsPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/CartPage"
-              element={
-                <PrivateRoute>
-                  <CartPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/ConfirmationPage"
-              element={
-                <PrivateRoute>
-                  <ConfirmationPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/ProfilePage"
-              element={
-                <PrivateRoute>
-                  <ProfilePage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/sezonet"
-              element={
-                <PrivateRoute>
-                  <SeasonArchive />
-                </PrivateRoute>
-              }
-            />
+            <Route path="/" element={<PrivateRoute><FooterLayout><HomePage /></FooterLayout></PrivateRoute>} />
+            <Route path="/ndeshjet" element={<PrivateRoute><FooterLayout><Ndeshjet /></FooterLayout></PrivateRoute>} />
+            <Route path="/players" element={<PrivateRoute><FooterLayout><Players /></FooterLayout></PrivateRoute>} />
+            <Route path="/preferences" element={<PrivateRoute><FooterLayout><Preferences /></FooterLayout></PrivateRoute>} />
+            <Route path="/lajmet" element={<PrivateRoute><FooterLayout><Lajmet /></FooterLayout></PrivateRoute>} />
+            <Route path="/Store" element={<PrivateRoute><FooterLayout><Store /></FooterLayout></PrivateRoute>} />
+            <Route path="/StoreConfirmation" element={<PrivateRoute><FooterLayout><StoreConfirmation /></FooterLayout></PrivateRoute>} />
+            <Route path="/SectorPage/:matchId" element={<PrivateRoute><FooterLayout><SectorPage /></FooterLayout></PrivateRoute>} />
+            <Route path="/SeatsPage/:matchId/:sectorId" element={<PrivateRoute><FooterLayout><SeatsPage /></FooterLayout></PrivateRoute>} />
+            <Route path="/CartPage" element={<PrivateRoute><FooterLayout><CartPage /></FooterLayout></PrivateRoute>} />
+            <Route path="/ConfirmationPage" element={<PrivateRoute><FooterLayout><ConfirmationPage /></FooterLayout></PrivateRoute>} />
+            <Route path="/ProfilePage" element={<PrivateRoute><FooterLayout><ProfilePage /></FooterLayout></PrivateRoute>} />
+            <Route path="/sezonet" element={<PrivateRoute><FooterLayout><SeasonArchive /></FooterLayout></PrivateRoute>} />
 
             <Route
               path="/dashboard"
