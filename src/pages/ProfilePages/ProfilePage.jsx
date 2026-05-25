@@ -30,6 +30,7 @@ export default function ProfilePage() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
+  const [deleteType, setDeleteType] = useState("ticket");
 
   const [showAccModal, setShowAccModal] = useState(false);
 
@@ -42,9 +43,13 @@ export default function ProfilePage() {
       .then((res) => setTickets(res.data))
       .catch(() => setTickets([]));
   }, []);
-  const [orders, setOrders] = useState(
-    JSON.parse(localStorage.getItem(`myOrders_${userEmail}`) || "[]"),
-  );
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    api.get("/api/orders/my")
+      .then(res => setOrders(res.data))
+      .catch(() => {});
+  }, []);
   if (!storedUser.id) {
     return (
       <div className="pp-empty">
@@ -133,11 +138,14 @@ export default function ProfilePage() {
 
   const handleDeleteOrder = async () => {
     try {
-      await api.delete(`/api/tickets/${orderToDelete}`);
-      setTickets((prev) => prev.filter((t) => t.id !== orderToDelete));
-    } catch (e) {
-      console.error(e);
-    }
+      if (deleteType === "order") {
+        await api.delete(`/api/orders/${orderToDelete}`);
+        setOrders(prev => prev.filter(o => o.id !== orderToDelete));
+      } else {
+        await api.delete(`/api/tickets/${orderToDelete}`);
+        setTickets(prev => prev.filter(t => t.id !== orderToDelete));
+      }
+    } catch (e) { console.error(e); }
     setShowDeleteModal(false);
     setOrderToDelete(null);
   };
@@ -413,6 +421,7 @@ export default function ProfilePage() {
                               className="btn btn-sm btn-outline-danger"
                               onClick={() => {
                                 setOrderToDelete(t.id);
+                                setDeleteType("ticket");
                                 setShowDeleteModal(true);
                               }}
                             >
@@ -477,7 +486,7 @@ export default function ProfilePage() {
                               </span>
 
                               <span className="pp-order-date">
-                                {order.date} · {order.time}
+                                {new Date(order.created_at).toLocaleDateString("sq-AL")}
                               </span>
                             </div>
 
@@ -489,6 +498,7 @@ export default function ProfilePage() {
                               className="btn btn-sm btn-outline-danger"
                               onClick={() => {
                                 setOrderToDelete(order.id);
+                                setDeleteType("order");
                                 setShowDeleteModal(true);
                               }}
                             >
@@ -499,19 +509,12 @@ export default function ProfilePage() {
                           {order.items.map((item, idx) => (
                             <div key={idx} className="pp-seat-row">
                               <div className="pp-seat-left">
-                                <span className="pp-seat-num">{item.name}</span>
-
-                                <span className="pp-seat-sector">
-                                  Madhësia: {item.selectedSize}
-                                </span>
-
-                                <span className="pp-passenger">
-                                  Sasia: x{item.qty}
-                                </span>
+                                <span className="pp-seat-num">{item.emri}</span>
+                                <span className="pp-seat-sector">Madhësia: {item.madhesia}</span>
+                                <span className="pp-passenger">Sasia: x{item.sasia}</span>
                               </div>
-
                               <span className="pp-seat-price">
-                                €{(item.price * item.qty).toFixed(2)}
+                                €{(item.cmimi * item.sasia).toFixed(2)}
                               </span>
                             </div>
                           ))}

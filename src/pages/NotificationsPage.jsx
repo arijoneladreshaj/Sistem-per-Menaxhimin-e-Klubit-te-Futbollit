@@ -33,6 +33,7 @@ export default function NotificationsPage() {
 
   const fetchAll = async () => {
     try {
+
       const [nRes, tRes, aRes, matchRes] = await Promise.all([
         api.get("/api/notifications/my"),
         api.get("/api/training"),
@@ -87,6 +88,8 @@ export default function NotificationsPage() {
   };
 
   const unread = notifs.filter(n => !n.is_read).length;
+  const role = localStorage.getItem("role");
+  const isPlayer = role === "Lojtari";
 
   return (
     <div style={{ minHeight: "100vh", background: "#0a0a0a", color: "#fff", fontFamily: "sans-serif" }}>
@@ -106,6 +109,7 @@ export default function NotificationsPage() {
 
         {/* TABS */}
         <div style={{ display: "flex", borderBottom: "1px solid #2a2a2a", marginBottom: 24 }}>
+
           {[["notifs", "Njoftimet", unread], ["stervitje", "Prezenca", 0], ["ndeshja", "Ndeshja", 0]].map(([key, label, badge]) => (
             <button
               key={key}

@@ -909,7 +909,7 @@ export default function Players() {
       <div style={{ position: "absolute", top: -80, right: -80, width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.08)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: 100, left: -200, width: 700, height: 700, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.07)", pointerEvents: "none" }} />
 
-      <div style={{ background: "#cc0000" }}>
+      <div className="mu-wrap" style={{ minHeight: "auto" }}>
         <Navbar />
       </div>
 

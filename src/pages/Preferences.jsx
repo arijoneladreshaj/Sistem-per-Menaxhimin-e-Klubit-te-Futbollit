@@ -12,24 +12,12 @@ function Preferences() {
   const [submitted, setSubmitted] = useState(false);
 
   const options = [
-    {
-      id: "lajme",
-      label: "Lajmet e fundit",
-      desc: "Transferime, konferenca, deklarata",
-    },
-    {
-      id: "ndeshje",
-      label: "Ndeshjet",
-      desc: "Rezultate, statistika, analizë",
-    },
-    {
-      id: "lojtaret",
-      label: "Lojtarët",
-      desc: "Performanca dhe lajme për lojtarë",
-    },
-    { id: "bileta", label: "Biletat", desc: "Disponueshmëria e biletave" },
-    { id: "merkato", label: "Merkato", desc: "Transferime dhe huazime" },
-    { id: "akademia", label: "Akademia", desc: "Lojtarët e rinj dhe talentët" },
+    { id: "lajme",    label: "Lajmet e fundit", desc: "Lajme, konferenca dhe deklarata" },
+    { id: "ndeshje",  label: "Ndeshjet",         desc: "Rezultate, statistika, analizë"  },
+    { id: "lojtaret", label: "Lojtarët",          desc: "Lajme dhe shtesa në skuadër"    },
+    { id: "store",    label: "Store",             desc: "Produkte të reja në dyqan"      },
+    { id: "sezonet",  label: "Sezonet",           desc: "Sezone të reja dhe çmimet"      },
+    { id: "bileta",   label: "Biletat",           desc: "Bileta të reja disponueshme"    },
   ];
 
   const toggle = (id) => {

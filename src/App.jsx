@@ -179,7 +179,7 @@ export default function App() {
             <Route
               path="/notifications"
               element={
-                <PrivateRoute roles={["Lojtari"]}>
+                <PrivateRoute>
                   <NotificationsPage />
                 </PrivateRoute>
               }

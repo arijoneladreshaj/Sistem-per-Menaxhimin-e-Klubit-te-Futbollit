@@ -82,8 +82,11 @@ export default function SeasonArchive() {
   const s = { background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#fff", borderRadius: 8, padding: "8px 12px", fontSize: 13 };
 
   return (
-    <div style={{ background: "#080808", minHeight: "100vh", fontFamily: "'Barlow',sans-serif" }}>
-      <Navbar />
+    <div style={{ minHeight: "100vh", fontFamily: "'Barlow',sans-serif" }}>
+      <div style={{ background: "#cc0000" }}>
+        <Navbar />
+      </div>
+      <div style={{ background: "#0a0a0a" }}>
 
       {/* HERO */}
       <div style={{ position: "relative", minHeight: 260, display: "flex", alignItems: "flex-end", overflow: "hidden", background: "linear-gradient(135deg,#1a0000,#0a0a0a)" }}>
@@ -352,6 +355,7 @@ export default function SeasonArchive() {
             <div style={{ color: "#444", textAlign: "center", padding: 80, fontSize: 16 }}>Zgjidh një sezon nga lista</div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

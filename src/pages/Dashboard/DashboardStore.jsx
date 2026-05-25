@@ -495,7 +495,18 @@ function DeleteModal({ product, onConfirm, onClose, deleting }) {
 /* ═══════════════════════════════════════════════════════════════════════════
    DASHBOARD STORE (main)
    ═══════════════════════════════════════════════════════════════════════════ */
+const ORDER_STATUSET = ["Në pritje", "Dërguar", "Dorëzuar", "Anuluar"];
+const ORDER_STATUS_COLOR = {
+  "Në pritje": { bg: "#713f12", color: "#fbbf24" },
+  "Dërguar":   { bg: "#1e3a5f", color: "#60a5fa" },
+  "Dorëzuar":  { bg: "#166534", color: "#4ade80" },
+  "Anuluar":   { bg: "#7f1d1d", color: "#f87171" },
+};
+
 export default function DashboardStore() {
+  const [activeTab, setActiveTab] = useState("produktet");
+
+  // produktet
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -506,6 +517,12 @@ export default function DashboardStore() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // porositë
+  const [orders, setOrders] = useState([]);
+  const [orderSearch, setOrderSearch] = useState("");
+  const [orderFilter, setOrderFilter] = useState("Të gjitha");
+  const [expandedOrder, setExpandedOrder] = useState(null);
 
   // toast
   const [toast, setToast] = useState(null);
@@ -535,7 +552,33 @@ export default function DashboardStore() {
 
   useEffect(() => {
     fetchProducts();
+    fetchOrders();
   }, []);
+
+  /* ── ORDERS ────────────────────────────────────────────────────────────── */
+  const fetchOrders = async () => {
+    try {
+      const res = await api.get("/api/orders/all");
+      setOrders(res.data);
+    } catch (e) { console.error(e); }
+  };
+
+  const handleOrderStatusChange = async (id, statusi) => {
+    try {
+      await api.patch(`/api/orders/${id}/status`, { statusi });
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, statusi } : o));
+      showToast("Statusi u ndryshua!");
+    } catch { showToast("Gabim!", "error"); }
+  };
+
+  const handleOrderDelete = async (id) => {
+    if (!window.confirm("A je i sigurt që dëshiron ta fshish këtë porosi?")) return;
+    try {
+      await api.delete(`/api/orders/${id}`);
+      setOrders(prev => prev.filter(o => o.id !== id));
+      showToast("Porosia u fshi!");
+    } catch { showToast("Gabim!", "error"); }
+  };
 
   /* ── CREATE ────────────────────────────────────────────────────────────── */
   const handleCreate = async (data) => {
@@ -627,11 +670,43 @@ export default function DashboardStore() {
     },
   ];
 
+  const filteredOrders = orders.filter(o => {
+    const matchFilter = orderFilter === "Të gjitha" || o.statusi === orderFilter;
+    const matchSearch = !orderSearch.trim() ||
+      String(o.id).includes(orderSearch) ||
+      `${o.emri} ${o.mbiemri}`.toLowerCase().includes(orderSearch.toLowerCase()) ||
+      (o.user_email || "").toLowerCase().includes(orderSearch.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
+  const orderStats = {
+    total:      orders.length,
+    pritje:     orders.filter(o => o.statusi === "Në pritje").length,
+    derguar:    orders.filter(o => o.statusi === "Dërguar").length,
+    te_ardhura: orders.filter(o => o.statusi !== "Anuluar").reduce((s, o) => s + Number(o.total || 0), 0),
+  };
+
   return (
     <div className="shell">
   <SideBar active="/DashboardStore" />
   <div className="main">
     <TopBar title="Menaxhimi i Dyqanit">
+      <div style={{ display: "flex", gap: 6 }}>
+        {["produktet", "porosite"].map(t => (
+          <button
+            key={t}
+            onClick={() => setActiveTab(t)}
+            style={{
+              padding: "5px 16px", borderRadius: 5, border: "none",
+              fontSize: 12, fontWeight: 600, cursor: "pointer",
+              background: activeTab === t ? "#DA291C" : "#2a2a2a",
+              color: activeTab === t ? "#fff" : "#888",
+            }}
+          >
+            {t === "produktet" ? "Produktet" : `Porositë${orders.length > 0 ? ` (${orders.length})` : ""}`}
+          </button>
+        ))}
+      </div>
       <button onClick={() => setModalProduct({})} className="btn btn-sm" style={{ background: "#DA291C", color: "#fff", border: "none", fontWeight: 600 }}>
         + Shto Produkt
       </button>
@@ -645,6 +720,219 @@ export default function DashboardStore() {
       }}
     >
 
+      {/* ══════════════ TAB POROSITË ══════════════ */}
+      {activeTab === "porosite" && (
+        <div className="px-4 py-4" style={{ maxWidth: 1400, margin: "0 auto" }}>
+
+          {/* STATS */}
+          <div className="row g-3 mb-4">
+            {[
+              { icon: "bi-bag-check",      label: "TOTALI",      value: orderStats.total,                       color: "#fff"    },
+              { icon: "bi-hourglass-split", label: "NË PRITJE",   value: orderStats.pritje,                      color: "#fbbf24" },
+              { icon: "bi-truck",          label: "DËRGUAR",     value: orderStats.derguar,                     color: "#60a5fa" },
+              { icon: "bi-currency-euro",  label: "TË ARDHURA",  value: `€${orderStats.te_ardhura.toFixed(0)}`, color: "#4ade80" },
+            ].map(s => (
+              <div key={s.label} className="col-6 col-md-3">
+                <div className="p-3 h-100" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <div className="d-flex align-items-center gap-2 mb-2">
+                    <i className={`bi ${s.icon}`} style={{ color: s.color, fontSize: 16 }} />
+                    <span style={{ fontFamily: FONT_B, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: "rgba(255,255,255,0.4)", textTransform: "uppercase" }}>
+                      {s.label}
+                    </span>
+                  </div>
+                  <div style={{ fontFamily: FONT_H, fontSize: 32, color: s.color, letterSpacing: 1, lineHeight: 1 }}>
+                    {s.value}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* FILTERS */}
+          <div className="d-flex flex-wrap align-items-center gap-3 mb-4 p-3"
+            style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="d-flex align-items-center gap-2 flex-fill">
+              <i className="bi bi-search" style={{ color: "rgba(255,255,255,0.3)", fontSize: 14 }} />
+              <input
+                className="form-control border-0"
+                style={{ background: "transparent", color: "#fff", fontFamily: FONT_B, fontSize: 14, boxShadow: "none" }}
+                placeholder="Kërko ID, emër, email..."
+                value={orderSearch}
+                onChange={e => setOrderSearch(e.target.value)}
+              />
+            </div>
+            <div className="d-flex gap-1 flex-wrap">
+              {["Të gjitha", ...ORDER_STATUSET].map(s => (
+                <button
+                  key={s}
+                  onClick={() => setOrderFilter(s)}
+                  className="btn"
+                  style={{
+                    background:    orderFilter === s ? "#fff" : "rgba(255,255,255,0.06)",
+                    color:         orderFilter === s ? RED    : "rgba(255,255,255,0.5)",
+                    fontFamily: FONT_B, fontWeight: 700, fontSize: 11, letterSpacing: 1,
+                    borderRadius: 0,
+                    border:        orderFilter === s ? "1px solid #fff" : "1px solid rgba(255,255,255,0.1)",
+                    padding: "6px 16px",
+                  }}
+                >
+                  {s}{s !== "Të gjitha" && ` (${orders.filter(o => o.statusi === s).length})`}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* TABLE */}
+          <div style={{ background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden" }}>
+            {/* Table header */}
+            <div className="d-none d-md-flex align-items-center px-3 py-2"
+              style={{ background: "rgba(0,0,0,0.3)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              {[
+                { label: "#",        flex: 0.4 },
+                { label: "BLERËSI",  flex: 2   },
+                { label: "DATA",     flex: 1   },
+                { label: "PRODUKTET",flex: 1.2 },
+                { label: "TOTALI",   flex: 1   },
+                { label: "DËRGESA", flex: 1   },
+                { label: "STATUSI",  flex: 1.5 },
+                { label: "VEPRIME",  flex: 1   },
+              ].map(col => (
+                <div key={col.label} style={{ flex: col.flex, fontFamily: FONT_B, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>
+                  {col.label}
+                </div>
+              ))}
+            </div>
+
+            {filteredOrders.length === 0 ? (
+              <div className="text-center py-5">
+                <i className="bi bi-inbox" style={{ fontSize: 48, color: "rgba(255,255,255,0.15)" }} />
+                <p className="mt-3" style={{ fontFamily: FONT_H, fontSize: 20, color: "rgba(255,255,255,0.3)", letterSpacing: 2 }}>
+                  ASNJË POROSI
+                </p>
+              </div>
+            ) : filteredOrders.map(o => (
+              <React.Fragment key={o.id}>
+                <div
+                  className="d-flex flex-wrap flex-md-nowrap align-items-center px-3 py-3"
+                  style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", transition: "background 0.15s", cursor: "default" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
+                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                >
+                  {/* # */}
+                  <div style={{ flex: 0.4, fontFamily: FONT_B, fontSize: 13, color: "rgba(255,255,255,0.25)" }}>
+                    #{o.id}
+                  </div>
+                  {/* Blerësi */}
+                  <div style={{ flex: 2, minWidth: 0 }}>
+                    <div style={{ fontFamily: FONT_H, fontSize: 15, color: "#fff", letterSpacing: 0.5 }}>
+                      {o.emri} {o.mbiemri}
+                    </div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontFamily: FONT_B }}>
+                      {o.user_email || o.email}
+                    </div>
+                  </div>
+                  {/* Data */}
+                  <div style={{ flex: 1, fontFamily: FONT_B, fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
+                    {new Date(o.created_at).toLocaleDateString("sq-AL")}
+                  </div>
+                  {/* Produktet */}
+                  <div style={{ flex: 1.2 }}>
+                    <button
+                      onClick={() => setExpandedOrder(expandedOrder === o.id ? null : o.id)}
+                      className="btn d-flex align-items-center gap-1"
+                      style={{
+                        background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)",
+                        border: "1px solid rgba(255,255,255,0.1)", fontFamily: FONT_B,
+                        fontWeight: 700, fontSize: 11, letterSpacing: 1, borderRadius: 0, padding: "6px 14px",
+                      }}
+                    >
+                      <i className="bi bi-box-seam" style={{ fontSize: 12 }} />
+                      {o.items?.length || 0} {expandedOrder === o.id ? "▲" : "▼"}
+                    </button>
+                  </div>
+                  {/* Totali */}
+                  <div style={{ flex: 1, fontFamily: FONT_H, fontSize: 18, color: "#4ade80" }}>
+                    €{Number(o.total).toFixed(2)}
+                  </div>
+                  {/* Dërgesa */}
+                  <div style={{ flex: 1, fontFamily: FONT_B, fontSize: 13, color: Number(o.shipping) === 0 ? "#4ade80" : "rgba(255,255,255,0.5)" }}>
+                    {Number(o.shipping) === 0 ? "FALAS" : `€${Number(o.shipping).toFixed(2)}`}
+                  </div>
+                  {/* Statusi */}
+                  <div style={{ flex: 1.5 }}>
+                    <select
+                      value={o.statusi || "Në pritje"}
+                      onChange={e => handleOrderStatusChange(o.id, e.target.value)}
+                      style={{
+                        background: ORDER_STATUS_COLOR[o.statusi]?.bg || "#1a1a1a",
+                        color:      ORDER_STATUS_COLOR[o.statusi]?.color || "#fff",
+                        border: "none", borderRadius: 4, padding: "4px 10px", fontSize: 12, cursor: "pointer",
+                        fontFamily: FONT_B, fontWeight: 700,
+                      }}
+                    >
+                      {ORDER_STATUSET.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  {/* Veprime */}
+                  <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+                    <button
+                      onClick={() => handleOrderDelete(o.id)}
+                      className="btn d-flex align-items-center gap-1"
+                      style={{
+                        background: "rgba(255,77,77,0.1)", color: "#ff4d4d",
+                        border: "1px solid rgba(255,77,77,0.2)", fontFamily: FONT_B,
+                        fontWeight: 700, fontSize: 11, letterSpacing: 1, borderRadius: 0, padding: "6px 14px",
+                      }}
+                    >
+                      <i className="bi bi-trash3" style={{ fontSize: 12 }} />
+                      FSHI
+                    </button>
+                  </div>
+                </div>
+
+                {/* Rreshti i zgjeruar — produktet + adresa */}
+                {expandedOrder === o.id && (
+                  <div style={{ background: "rgba(0,0,0,0.35)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px" }}>
+                    <div style={{ fontFamily: FONT_B, fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 10 }}>
+                      <strong style={{ color: "rgba(255,255,255,0.7)" }}>Adresa:</strong>{" "}
+                      {o.adresa}, {o.qyteti}, {o.shteti}
+                      <span style={{ marginLeft: 12 }}>📞 {o.telefoni}</span>
+                    </div>
+                    <div className="d-none d-md-flex px-2 py-1 mb-1"
+                      style={{ background: "rgba(0,0,0,0.3)", borderRadius: 4 }}>
+                      {["PRODUKTI", "MADHËSIA", "SASIA", "ÇMIMI NJËSI", "NËNTOTALI"].map(h => (
+                        <div key={h} style={{ flex: h === "PRODUKTI" ? 3 : 1, fontFamily: FONT_B, fontSize: 10, fontWeight: 700, letterSpacing: 1.5, color: "rgba(255,255,255,0.3)" }}>
+                          {h}
+                        </div>
+                      ))}
+                    </div>
+                    {(o.items || []).map((item, idx) => (
+                      <div key={idx} className="d-flex align-items-center px-2 py-2"
+                        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                        <div style={{ flex: 3, fontFamily: FONT_H, fontSize: 14, color: "#fff", letterSpacing: 0.5 }}>{item.emri}</div>
+                        <div style={{ flex: 1, fontFamily: FONT_B, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{item.madhesia}</div>
+                        <div style={{ flex: 1, fontFamily: FONT_B, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>x{item.sasia}</div>
+                        <div style={{ flex: 1, fontFamily: FONT_B, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>€{Number(item.cmimi).toFixed(2)}</div>
+                        <div style={{ flex: 1, fontFamily: FONT_H, fontSize: 15, color: "#4ade80" }}>€{(Number(item.cmimi) * item.sasia).toFixed(2)}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Results count */}
+          <div className="mt-3 text-end">
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", fontFamily: FONT_B, fontWeight: 600, letterSpacing: 1 }}>
+              {filteredOrders.length} nga {orders.length} porosi
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════ TAB PRODUKTET ══════════════ */}
+      {activeTab === "produktet" && (
       <div className="px-4 py-4" style={{ maxWidth: 1400, margin: "0 auto" }}>
         {/* ── STATS ────────────────────────────────────────────────────────── */}
         <div className="row g-3 mb-4">
@@ -1072,6 +1360,7 @@ export default function DashboardStore() {
           </div>
         )}
       </div>
+      )}
 
       {/* ── MODALS ───────────────────────────────────────────────────────── */}
       {modalProduct !== null && (

@@ -30,7 +30,7 @@ router.post("/register", async (req, res) => {
       }
     }
 
-    await pool.request()
+    const userRes = await pool.request()
       .input("emri", sql.NVarChar, emri)
       .input("mbiemri", sql.NVarChar, mbiemri)
       .input("datelindja", sql.Date, datelindja || null)
@@ -40,8 +40,15 @@ router.post("/register", async (req, res) => {
       .input("role", sql.NVarChar, "user")
       .query(`
         INSERT INTO Users (emri, mbiemri, datelindja, email, username, password_hash, role)
+        OUTPUT INSERTED.id
         VALUES (@emri, @mbiemri, @datelindja, @email, @username, @password_hash, @role)
       `);
+
+    const newUserId = userRes.recordset[0].id;
+
+    await pool.request()
+      .input("user_id", sql.Int, newUserId)
+      .query(`INSERT INTO UserPreferences (user_id, topics) VALUES (@user_id, '[]')`);
 
     res.json({ success: true, message: "Useri u regjistrua me sukses" });
 

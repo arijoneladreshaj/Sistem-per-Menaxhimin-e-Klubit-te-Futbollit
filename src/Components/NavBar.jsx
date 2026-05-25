@@ -14,13 +14,13 @@ export default function Navbar() {
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
-    if (role !== PLAYER_ROLE) return;
-    const fetch = () =>
+    if (STAFF_ROLES.includes(role)) return;
+    const fetchCount = () =>
       api.get("/api/notifications/unread-count")
         .then(res => setUnread(res.data.count))
         .catch(() => {});
-    fetch();
-    const interval = setInterval(fetch, 60000);
+    fetchCount();
+    const interval = setInterval(fetchCount, 60000);
     return () => clearInterval(interval);
   }, [role]);
 
@@ -53,7 +53,7 @@ export default function Navbar() {
 
       <div className="mu-nav-right">
 
-        {role === PLAYER_ROLE && (
+        {!STAFF_ROLES.includes(role) && (
           <button
             onClick={() => navigate("/notifications")}
             style={{ background: "transparent", border: "none", cursor: "pointer", position: "relative", padding: "4px 8px" }}

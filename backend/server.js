@@ -29,6 +29,8 @@ app.use("/api/transfers",       require("./Routes/Transfers"));
 
 app.use("/api/users",       require("./Routes/Profile"));
 app.use("/api/seasons",              require("./Routes/Seasons"));
+app.use("/api/favorites",            require("./Routes/Favorites"));
+app.use("/api/orders",               require("./Routes/Orders"));
 app.use("/api/admin/users",   require("./Routes/AdminUsers"));
 app.use("/api/notifications", require("./Routes/Notifications"));
 app.use("/api/lineup",        require("./Routes/Lineup"));

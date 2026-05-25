@@ -1,45 +1,28 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import api from "../api/axiosInstance";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./BuyTicketsPage/ConfirmationPage.css";
 export default function StoreConfirmationPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const orderData = location.state?.order;
-    if (!orderData) return;
-
-    // Ruaj porosinë në localStorage
-    const userEmail = JSON.parse(localStorage.getItem("user") || "{}").email;
-    const key = `myOrders_${userEmail}`;
-    const existing = JSON.parse(localStorage.getItem(key) || "[]");
-    const newOrder = {
-      id: Date.now(),
-      date: new Date().toLocaleDateString("sq-AL"),
-      time: new Date().toLocaleTimeString("sq-AL"),
-      items: orderData.items,
-      subtotal: orderData.subtotal,
-      shipping: orderData.shipping,
-      total: orderData.total,
-    };
-    localStorage.setItem(key, JSON.stringify([...existing, newOrder]));
-    setOrder(newOrder);
+    const orderId = location.state?.orderId;
+    if (!orderId) { setLoading(false); return; }
+    api.get(`/api/orders/${orderId}`)
+      .then(res => setOrder(res.data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [location.state]);
 
-  // Fallback: nëse nuk ka state, merr porosinë e fundit
-  useEffect(() => {
-    if (!order && !location.state?.order) {
-      const userEmail = JSON.parse(localStorage.getItem("user") || "{}").email;
-      const allOrders = JSON.parse(
-        localStorage.getItem(`myOrders_${userEmail}`) || "[]"
-      );
-      if (allOrders.length > 0) {
-        setOrder(allOrders[allOrders.length - 1]);
-      }
-    }
-  }, [order, location.state]);
+  if (loading) return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a", color:"#fff" }}>
+      Duke ngarkuar...
+    </div>
+  );
 
   if (!order) {
     return (
@@ -52,13 +35,7 @@ export default function StoreConfirmationPage() {
     );
   }
 
-  // Grupo sipas kategorisë
-  const grouped = order.items.reduce((acc, item) => {
-    const cat = item.cat || "Produkte";
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(item);
-    return acc;
-  }, {});
+  const grouped = { "Produkte": order.items };
 
   return (
     <div className="cf-page">
@@ -73,7 +50,7 @@ export default function StoreConfirmationPage() {
                 Numri i porosisë: <strong>#{order.id}</strong>
               </p>
               <p className="cf-date">
-                {order.date} · {order.time}
+                {new Date(order.created_at).toLocaleDateString("sq-AL")}
               </p>
             </div>
 
@@ -85,15 +62,15 @@ export default function StoreConfirmationPage() {
                 <div key={category} className="cf-sector-group">
                   <div className="cf-sector-label">{category}</div>
                   {items.map((item, idx) => (
-                    <div key={item.cartId || idx} className="cf-seat-row">
+                    <div key={item.id || idx} className="cf-seat-row">
                       <div className="cf-seat-info">
-                        <span className="cf-seat-num">{item.name}</span>
+                        <span className="cf-seat-num">{item.emri}</span>
                         <span className="cf-passenger">
-                          Madhësia: {item.selectedSize} · x{item.qty}
+                          Madhësia: {item.madhesia} · x{item.sasia}
                         </span>
                       </div>
                       <span className="cf-seat-price">
-                        €{(item.price * item.qty).toFixed(2)}
+                        €{(item.cmimi * item.sasia).toFixed(2)}
                       </span>
                     </div>
                   ))}
@@ -167,7 +144,7 @@ export default function StoreConfirmationPage() {
               <button
                 className="btn btn-danger cf-btn-main"
                 onClick={() =>
-                  navigate("/ProfilePage", { state: { tab: "porositë" } })
+                  navigate("/ProfilePage", { state: { tab: "porosite" } })
                 }
               >
                 Shiko Porositë e Mia

@@ -109,6 +109,17 @@ router.post("/", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) =>
            @pozicioni, @numri_faneles, @pesha, @gjatesia, @statusi, @vlera_tregut)
       `);
     const newId = result.recordset[0].id;
+
+    const prefRes = await pool.request()
+      .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%lojtaret%'`);
+    for (const row of prefRes.recordset) {
+      await pool.request()
+        .input("uid", sql.Int,      row.user_id)
+        .input("tit", sql.NVarChar, "Lojtar i ri")
+        .input("msg", sql.NVarChar, `${emri} ${mbiemri} u shtua në skuadër`)
+        .query(`INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@uid, @tit, @msg)`);
+    }
+
     res.status(201).json({ success: true, message: "Lojtari u shtua", id: newId });
   } catch (err) {
     res.status(500).json({ error: err.message });

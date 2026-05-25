@@ -128,9 +128,18 @@ router.post("/", verifyToken, requireRole(...MENAXHER_ROLES), async (req, res) =
         )
       `);
 
-    res.json({
-      message: "Product created successfully"
-    });
+    // Notification për "store"
+    const prefRes = await pool.request()
+      .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%store%'`);
+    for (const row of prefRes.recordset) {
+      await pool.request()
+        .input("uid", sql.Int,      row.user_id)
+        .input("tit", sql.NVarChar, "Produkt i ri në Store")
+        .input("msg", sql.NVarChar, `${name} u shtua në dyqan`)
+        .query(`INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@uid, @tit, @msg)`);
+    }
+
+    res.json({ message: "Product created successfully" });
 
   } catch (err) {
 

@@ -10,26 +10,6 @@ const NAV_BG = 'rgba(0,0,0,0.45)';
 const FONT_H = "'Bebas Neue', sans-serif";
 const FONT_B = "'Barlow', sans-serif";
 
-const ALL_PRODUCTS = [
-  { id:1,  name:'Home Kit 25/26',         cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:'I RI',     player:null,        num:null, img:'/Store/HomeKit.png',             bg:'rgba(0,0,0,0.25)', sizes:['S','M','L','XL','XXL'] },
-  { id:2,  name:'Away Kit 25/26',          cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:'AWAY',     player:null,        num:null, img:'/Store/AwayKit.png',             bg:'rgba(0,0,0,0.4)',  sizes:['S','M','L','XL'] },
-  { id:3,  name:'Third Kit 25/26',         cat:'Fanella',    sub:'Burra',         price:89.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/ThirdKit.png',            bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL','XXL'] },
-  { id:4,  name:'Home Kit - Fëmijë',       cat:'Fanella',    sub:'Fëmijë',        price:64.99,  oldPrice:null,   badge:'I RI',     player:null,        num:null, img:'/Store/HomeKitKids.png',         bg:'rgba(0,0,0,0.25)', sizes:['3-4','5-6','7-8','9-10','11-12'] },
-  { id:5,  name:'Home Kit - Gra',          cat:'Fanella',    sub:'Gra',           price:79.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/HomeKitWomen.png',        bg:'rgba(0,0,0,0.2)',  sizes:['XS','S','M','L','XL'] },
-  { id:6,  name:'Rashford #10',            cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'RASHFORD',  num:'10', img:'/Store/Rashford.png',            bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL','XXL'] },
-  { id:7,  name:'Fernandes #8',            cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'FERNANDES', num:'8',  img:'/Store/Fernandes.png',           bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL','XXL'] },
-  { id:8,  name:'Mount #7',               cat:'Fanella',    sub:'Personalizuar', price:99.99,  oldPrice:null,   badge:'CUSTOM',   player:'MOUNT',     num:'7',  img:'/Store/Mount.png',               bg:'rgba(0,0,0,0.3)', sizes:['S','M','L','XL'] },
-  { id:9,  name:'Xhaketa Trajnimit',       cat:'Trajnim',    sub:'Burra',         price:54.99,  oldPrice:79.00,  badge:'30% ULJE', player:null,        num:null, img:'/Store/TrainingJacket.png',      bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL','XXL'] },
-  { id:10, name:'Pantallona Trajnimi',      cat:'Trajnim',    sub:'Burra',         price:44.99,  oldPrice:60.00,  badge:'25% ULJE', player:null,        num:null, img:'/Store/TrainingPants.png',       bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L','XL'] },
-  { id:11, name:'Komplet Trajnimi',         cat:'Trajnim',    sub:'Burra',         price:94.99,  oldPrice:130.00, badge:'KOMPLETE', player:null,        num:null, img:'/Store/TrainingSuit.png',        bg:'rgba(0,0,0,0.35)', sizes:['S','M','L','XL','XXL'] },
-  { id:12, name:'Xhaketa Trajnimit - Gra', cat:'Trajnim',    sub:'Gra',           price:54.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/TrainingJacketWomen.png', bg:'rgba(0,0,0,0.2)',  sizes:['XS','S','M','L','XL'] },
-  { id:13, name:'Kapela MU 2025',           cat:'Aksesore',   sub:'Aksesore',      price:29.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/hat.png',                 bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
-  { id:14, name:'Shalli MU',               cat:'Aksesore',   sub:'Aksesore',      price:24.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/scarf.png',               bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
-  { id:15, name:'Çorapet MU',              cat:'Aksesore',   sub:'Aksesore',      price:14.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/socks.png',               bg:'rgba(0,0,0,0.2)',  sizes:['S','M','L'] },
-  { id:16, name:'Top Zyrtar MU',           cat:'Aksesore',   sub:'Aksesore',      price:34.99,  oldPrice:49.99,  badge:'30% ULJE', player:null,        num:null, img:'/Store/ball.png',                bg:'rgba(0,0,0,0.25)', sizes:['ONE SIZE'] },
-  { id:17, name:'Mug MU',                  cat:'Memorabilia',sub:'Memorabilia',   price:19.99,  oldPrice:null,   badge:null,       player:null,        num:null, img:'/Store/mug.png',                 bg:'rgba(0,0,0,0.2)',  sizes:['ONE SIZE'] },
-  { id:18, name:'Foto e Nënshkruar',        cat:'Memorabilia',sub:'Memorabilia',   price:149.99, oldPrice:null,   badge:'EKSKL.',   player:null,        num:null, img:'/Store/signedPhoto.jpg',         bg:'rgba(0,0,0,0.3)',  sizes:['ONE SIZE'] },
-];
 
 const CATEGORIES    = ['Të gjitha','Fanella','Trajnim','Aksesore','Memorabilia'];
 const SUBCATEGORIES = { Fanella:['Burra','Gra','Fëmijë','Personalizuar'], Trajnim:['Burra','Gra'], Aksesore:['Aksesore'], Memorabilia:['Memorabilia'] };
@@ -132,6 +112,68 @@ function CartSidebar({ cart, onClose, onRemove, onClear, onCheckout }) {
   );
 }
 
+// ── ADDRESS MODAL ─────────────────────────────────────────────────────────────
+function AddressModal({ cart, onClose, onConfirm }) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [form, setForm] = useState({ emri: user.emri||"", mbiemri: user.mbiemri||"", email: user.email||"", telefoni: "", adresa: "", qyteti: "", shteti: "Kosovo" });
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const inp = { background:"#111", border:"1px solid #333", color:"#fff", borderRadius:6, padding:"9px 12px", width:"100%", fontSize:13 };
+
+  const subtotal = cart.reduce((s,i) => s + i.price*i.qty, 0);
+  const shipping = subtotal >= 75 ? 0 : 4.99;
+  const total = subtotal + shipping;
+
+  const handle = e => setForm(p => ({...p, [e.target.name]: e.target.value}));
+
+  const submit = async () => {
+    if (!form.emri||!form.mbiemri||!form.adresa||!form.qyteti) return setErr("Plotëso të gjitha fushat!");
+    setLoading(true);
+    try {
+      const res = await onConfirm({ ...form, subtotal, shipping, total, items: cart });
+      if (!res.success) setErr(res.message || "Gabim!");
+    } catch { setErr("Gabim gjatë ruajtjes!"); }
+    setLoading(false);
+  };
+
+  return (
+    <>
+      <div onClick={onClose} className="position-fixed top-0 start-0 w-100 h-100" style={{background:"rgba(0,0,0,0.75)",zIndex:1100}} />
+      <div className="position-fixed" style={{top:"50%",left:"50%",transform:"translate(-50%,-50%)",zIndex:1101,width:460,maxHeight:"90vh",overflowY:"auto",background:"#111",border:"1px solid #2a2a2a",borderRadius:12,padding:"28px 28px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <span style={{color:"#fff",fontWeight:700,fontSize:17}}>Adresa e Dërgimit</span>
+          <button onClick={onClose} style={{background:"transparent",border:"none",color:"#888",fontSize:20,cursor:"pointer"}}>×</button>
+        </div>
+        {err && <div style={{background:"#3f1515",color:"#f87171",borderRadius:6,padding:"8px 12px",marginBottom:12,fontSize:13}}>{err}</div>}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+          {[["emri","Emri"],["mbiemri","Mbiemri"]].map(([n,l]) => (
+            <div key={n}><label style={{color:"#666",fontSize:11,display:"block",marginBottom:4}}>{l} *</label><input name={n} value={form[n]} onChange={handle} style={inp} /></div>
+          ))}
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+          {[["email","Email"],["telefoni","Telefoni"]].map(([n,l]) => (
+            <div key={n}><label style={{color:"#666",fontSize:11,display:"block",marginBottom:4}}>{l}</label><input name={n} value={form[n]} onChange={handle} style={inp} /></div>
+          ))}
+        </div>
+        <div style={{marginBottom:10}}><label style={{color:"#666",fontSize:11,display:"block",marginBottom:4}}>Adresa *</label><input name="adresa" value={form.adresa} onChange={handle} style={inp} /></div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:20}}>
+          {[["qyteti","Qyteti"],["shteti","Shteti"]].map(([n,l]) => (
+            <div key={n}><label style={{color:"#666",fontSize:11,display:"block",marginBottom:4}}>{l} *</label><input name={n} value={form[n]} onChange={handle} style={inp} /></div>
+          ))}
+        </div>
+        <div style={{borderTop:"1px solid #222",paddingTop:16,marginBottom:16}}>
+          <div style={{display:"flex",justifyContent:"space-between",color:"#888",fontSize:13,marginBottom:6}}><span>Nëntotali</span><span>€{subtotal.toFixed(2)}</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",color:"#888",fontSize:13,marginBottom:6}}><span>Dërgesa</span><span style={{color: shipping===0?"#4ade80":"#fff"}}>{shipping===0?"FALAS":`€${shipping.toFixed(2)}`}</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",color:"#fff",fontWeight:700,fontSize:15}}><span>Total</span><span>€{total.toFixed(2)}</span></div>
+        </div>
+        <button onClick={submit} disabled={loading} style={{width:"100%",background:"#DA291C",color:"#fff",border:"none",borderRadius:8,padding:"12px",fontWeight:700,fontSize:15,cursor:"pointer"}}>
+          {loading ? "Duke ruajtur..." : "Konfirmo Porosinë"}
+        </button>
+      </div>
+    </>
+  );
+}
+
 // ── SIZE MODAL ────────────────────────────────────────────────────────────────
 function SizeModal({ product, onConfirm, onClose }) {
   const [selected, setSelected] = useState(null);
@@ -209,7 +251,7 @@ function ProductCard({ product, onAdd, onWishlist, wishlisted }) {
           )}
           <button onClick={() => onWishlist(product.id)}
             className="position-absolute top-0 end-0 m-2 d-flex align-items-center justify-content-center border-0"
-            style={{width:30,height:30,background:'rgba(0,0,0,0.4)',color:wishlisted?'#fff':'rgba(255,255,255,0.35)',borderRadius:'50%',cursor:'pointer'}}>
+            style={{width:30,height:30,background:wishlisted?'#DA291C':'rgba(0,0,0,0.5)',color:'#fff',borderRadius:'50%',cursor:'pointer',border:'none'}}>
             <i className={`bi ${wishlisted?'bi-heart-fill':'bi-heart'}`} style={{fontSize:13}}></i>
           </button>
           <button onClick={() => onAdd(product)}
@@ -253,6 +295,9 @@ export default function Store() {
   const [cart, setCart]                 = useState([]);
   const [cartOpen, setCartOpen]         = useState(false);
   const [wishlist, setWishlist]         = useState([]);
+  const [wishlistOpen, setWishlistOpen] = useState(false);
+  const [addressOpen, setAddressOpen]   = useState(false);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [sizeProduct, setSizeProduct]   = useState(null);
   const [toast, setToast]               = useState(null);
   const [shippingOpen, setShippingOpen] = useState(false);
@@ -263,6 +308,12 @@ export default function Store() {
       .then(r => r.json())
       .then(d => { if (d?.emertimi) setActiveSeason(d); })
       .catch(() => {});
+
+    if (user.id) {
+      api.get("/api/favorites")
+        .then(res => setWishlist(res.data))
+        .catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
@@ -309,27 +360,35 @@ export default function Store() {
     showToast(`${item.name} (${size}) u shtua!`);
     setCartOpen(true);
   };
-  const toggleWishlist = id => setWishlist(prev => prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
+  const toggleWishlist = async id => {
+    const isFav = wishlist.includes(id);
+    setWishlist(prev => isFav ? prev.filter(x => x !== id) : [...prev, id]);
+    try {
+      if (isFav) await api.delete(`/api/favorites/${id}`);
+      else await api.post(`/api/favorites/${id}`);
+    } catch {}
+  };
   const toggleSub      = sub => setActiveSubs(prev => prev.includes(sub)?prev.filter(x=>x!==sub):[...prev,sub]);
 
   const navigate = useNavigate();
 
 const handleCheckout = () => {
-  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const shipping = subtotal >= 75 ? 0 : 4.99;
-  navigate("/StoreConfirmation", {
-    state: {
-      order: {
-        items: cart,
-        subtotal,
-        shipping,
-        total: subtotal + shipping,
-      },
-    },
-  });
-  setCart([]);
   setCartOpen(false);
+  setAddressOpen(true);
 };
+
+const handleConfirmOrder = async (data) => {
+  try {
+    const res = await api.post("/api/orders", data);
+    setAddressOpen(false);
+    setCart([]);
+    navigate("/StoreConfirmation", { state: { orderId: res.data.orderId } });
+    return { success: true };
+  } catch (e) {
+    return { success: false, message: e.response?.data?.message || "Gabim!" };
+  }
+};
+
 const handleDelete = async (id) => {
   try {
     await api.delete(`/store/${id}`);
@@ -341,7 +400,7 @@ const handleDelete = async (id) => {
 };
 
   const filtered = useMemo(() => {
-    let list = products.length > 0 ? products : ALL_PRODUCTS;
+    let list = products;
     if (activeCat!=='Të gjitha') list = list.filter(p => p.cat===activeCat);
     if (activeSubs.length>0)    list = list.filter(p => activeSubs.includes(p.sub));
     if (search.trim())           list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
@@ -373,7 +432,7 @@ const handleDelete = async (id) => {
         <button onClick={()=>setShippingOpen(true)} className="btn border-0 bg-transparent text-white" style={{opacity:0.7}}>
           <i className="bi bi-globe2" style={{fontSize:16}}></i>
         </button>
-        <button className="btn border-0 bg-transparent text-white position-relative" style={{opacity:0.7}}>
+        <button onClick={()=>setWishlistOpen(true)} className="btn border-0 bg-transparent text-white position-relative" style={{opacity:0.7}}>
           <i className="bi bi-heart" style={{fontSize:16}}></i>
           {wishlist.length>0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill" style={{background:'#fff',color:RED,fontSize:9}}>{wishlist.length}</span>}
         </button>
@@ -521,7 +580,36 @@ const handleDelete = async (id) => {
         </div>
       </div>
 
+      {/* WISHLIST PANEL */}
+      {wishlistOpen && (
+        <div style={{position:'fixed',top:0,right:0,width:360,height:'100vh',background:'#111',borderLeft:'1px solid #222',zIndex:9000,display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'20px 20px 16px',borderBottom:'1px solid #222',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <span style={{color:'#fff',fontWeight:700,fontSize:16}}>Të preferuarat <span style={{color:'#DA291C'}}>({wishlist.length})</span></span>
+            <button onClick={()=>setWishlistOpen(false)} style={{background:'transparent',border:'none',color:'#888',fontSize:20,cursor:'pointer'}}>×</button>
+          </div>
+          <div style={{flex:1,overflowY:'auto',padding:'16px'}}>
+            {wishlist.length === 0 ? (
+              <div style={{color:'#555',textAlign:'center',marginTop:60}}>Nuk ke produkte të preferuara</div>
+            ) : (
+              products.filter(p => wishlist.includes(p.id)).map(p => (
+                <div key={p.id} style={{display:'flex',gap:12,padding:'12px 0',borderBottom:'1px solid #1e1e1e',alignItems:'center'}}>
+                  <img src={p.img} alt={p.name} style={{width:56,height:56,objectFit:'cover',borderRadius:6,background:'#1a1a1a'}} />
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{color:'#fff',fontSize:13,fontWeight:600,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{p.name}</div>
+                    <div style={{color:'#DA291C',fontSize:13,fontWeight:700,marginTop:2}}>£{p.price}</div>
+                  </div>
+                  <button onClick={()=>toggleWishlist(p.id)} style={{background:'transparent',border:'none',color:'#f87171',fontSize:18,cursor:'pointer'}}>
+                    <i className="bi bi-heart-fill"></i>
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
       {/* MODALS */}
+      {addressOpen && <AddressModal cart={cart} onClose={()=>setAddressOpen(false)} onConfirm={handleConfirmOrder} />}
       {shippingOpen&&<ShippingModal onClose={()=>setShippingOpen(false)} />}
       {cartOpen && <CartSidebar cart={cart} onClose={()=>setCartOpen(false)}
   onRemove={id=>setCart(prev=>prev.filter(i=>i.cartId!==id))}

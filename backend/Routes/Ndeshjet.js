@@ -145,10 +145,17 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
         )
       `);
 
-    res.json({
-      success: true,
-      message: "Ndeshja u shtua me sukses"
-    });
+    const prefRes = await pool.request()
+      .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%ndeshje%'`);
+    for (const row of prefRes.recordset) {
+      await pool.request()
+        .input("uid", sql.Int,      row.user_id)
+        .input("tit", sql.NVarChar, "Ndeshje e re")
+        .input("msg", sql.NVarChar, `Man United vs ${ekipi_kundershtare}`)
+        .query(`INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@uid, @tit, @msg)`);
+    }
+
+    res.json({ success: true, message: "Ndeshja u shtua me sukses" });
 
   } catch (err) {
     res.status(500).json({ error: err.message });

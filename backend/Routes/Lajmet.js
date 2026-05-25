@@ -94,9 +94,17 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
         )
       `);
 
-    res.json({
-      message: "Lajmi u shtua"
-    });
+    const prefRes = await pool.request()
+      .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%lajme%'`);
+    for (const row of prefRes.recordset) {
+      await pool.request()
+        .input("uid", sql.Int,      row.user_id)
+        .input("tit", sql.NVarChar, "Lajm i ri")
+        .input("msg", sql.NVarChar, titulli)
+        .query(`INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@uid, @tit, @msg)`);
+    }
+
+    res.json({ message: "Lajmi u shtua" });
 
   } catch (err) {
 

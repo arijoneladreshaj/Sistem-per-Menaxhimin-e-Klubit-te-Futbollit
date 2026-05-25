@@ -62,7 +62,19 @@ function Register() {
         password: formData.password,
       });
 
-      navigate("/login");
+      // Auto-login pas regjistrimit
+      const loginRes = await api.post("/login", {
+        username: formData.username,
+        password: formData.password,
+      });
+      const data = loginRes.data;
+      localStorage.setItem("accessToken",  data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("isLoggedIn",   "true");
+      localStorage.setItem("role",         data.user.role);
+      localStorage.setItem("user",         JSON.stringify(data.user));
+
+      navigate("/preferences");
     } catch (err) {
       const msg = err.response?.data?.message || "Gabim gjatë regjistrimit";
       setErrors({ general: msg });
