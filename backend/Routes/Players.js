@@ -27,7 +27,7 @@ const upload = multer({
 });
 
 const POZICIONET_VALID = ["Portier", "Mbrojtës", "Mesfushor", "Sulmues"];
-const STATUSET_VALID   = ["Aktiv", "Lenduar", "I transferuar", "I pensionuar"];
+const STATUSET_VALID   = ["Aktiv", "Lenduar", "Pezulluar", "I transferuar", "I pensionuar"];
 
 // GET all
 router.get("/", async (req, res) => {

@@ -15,33 +15,26 @@ router.get("/:match_id", verifyToken, async (req, res) => {
         SELECT
           ml.slot_id, ml.player_id, ml.roli, ml.formacioni,
           p.emri, p.mbiemri, p.numri_faneles, p.pozicioni,
-          ISNULL(SUM(ps.gola),           0) AS gola,
-          ISNULL(SUM(ps.asistime),       0) AS asistime,
-          ISNULL(SUM(ps.kartona_verdhe), 0) AS karton_verdhe,
-          ISNULL(SUM(ps.kartona_kuq),    0) AS karton_kuq,
-          COUNT(ps.id)                       AS ndeshje
+          ISNULL(p.goals,   0)  AS gola,
+          ISNULL(p.assists, 0)  AS asistime,
+          ISNULL(p.apps,    0)  AS ndeshje,
+          ISNULL(p.rating,  70) AS rating
         FROM MatchLineup ml
-        JOIN  Players    p  ON p.id  = ml.player_id
-        LEFT JOIN PlayerStats ps ON ps.player_id = ml.player_id
+        JOIN Players p ON p.id = ml.player_id
         WHERE ml.match_id = @match_id
-        GROUP BY ml.slot_id, ml.player_id, ml.roli, ml.formacioni,
-                 p.emri, p.mbiemri, p.numri_faneles, p.pozicioni
       `);
 
-    // Te gjithe lojtaret aktiv me statistikat totale (per selectorin)
+    // Te gjithe lojtaret aktiv me statistikat (per selectorin)
     const playersRes = await pool.request().query(`
       SELECT
         p.id AS player_id,
         p.emri, p.mbiemri, p.numri_faneles, p.pozicioni,
-        ISNULL(SUM(ps.gola),           0) AS gola,
-        ISNULL(SUM(ps.asistime),       0) AS asistime,
-        ISNULL(SUM(ps.kartona_verdhe), 0) AS karton_verdhe,
-        ISNULL(SUM(ps.kartona_kuq),    0) AS karton_kuq,
-        COUNT(ps.id)                       AS ndeshje
+        ISNULL(p.goals,   0)  AS gola,
+        ISNULL(p.assists, 0)  AS asistime,
+        ISNULL(p.apps,    0)  AS ndeshje,
+        ISNULL(p.rating,  70) AS rating
       FROM Players p
-      LEFT JOIN PlayerStats ps ON ps.player_id = p.id
       WHERE p.statusi = 'Aktiv'
-      GROUP BY p.id, p.emri, p.mbiemri, p.numri_faneles, p.pozicioni
       ORDER BY
         CASE p.pozicioni
           WHEN 'Portier'   THEN 1

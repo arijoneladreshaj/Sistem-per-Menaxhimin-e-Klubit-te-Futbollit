@@ -14,7 +14,7 @@ const FONT_H = "'Bebas Neue', sans-serif";
 const FONT_B = "'Barlow', sans-serif";
 
 const POZICIONET = ["Portier", "Mbrojtës", "Mesfushor", "Sulmues"];
-const STATUSET   = ["Aktiv", "Lenduar", "I transferuar", "I pensionuar"];
+const STATUSET   = ["Aktiv", "Lenduar", "Pezulluar", "I transferuar", "I pensionuar"];
 
 const POZ_COLOR = {
   Portier:   "#facc15",
@@ -25,6 +25,7 @@ const POZ_COLOR = {
 const STA_COLOR = {
   Aktiv:          { bg: "rgba(74,222,128,0.15)",  fg: "#4ade80"  },
   Lenduar:        { bg: "rgba(248,113,113,0.15)", fg: "#f87171"  },
+  Pezulluar:      { bg: "rgba(251,191,36,0.15)",  fg: "#fbbf24"  },
   "I transferuar":{ bg: "rgba(96,165,250,0.15)",  fg: "#60a5fa"  },
   "I pensionuar": { bg: "rgba(255,255,255,0.08)", fg: "rgba(255,255,255,0.45)" },
 };
