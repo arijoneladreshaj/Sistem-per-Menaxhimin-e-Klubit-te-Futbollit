@@ -88,6 +88,27 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
         `);
     }
 
+    if (role === "Lojtari") {
+      const playerInsert = await pool.request()
+        .input("club_id",   sql.Int,      1)
+        .input("emri",      sql.NVarChar, emri.trim())
+        .input("mbiemri",   sql.NVarChar, mbiemri.trim())
+        .input("pozicioni", sql.NVarChar, "Portier")
+        .input("statusi",   sql.NVarChar, "Aktiv")
+        .query(`
+          INSERT INTO Players (club_id, emri, mbiemri, pozicioni, statusi)
+          OUTPUT INSERTED.id
+          VALUES (@club_id, @emri, @mbiemri, @pozicioni, @statusi)
+        `);
+
+      const playerId = playerInsert.recordset[0].id;
+
+      await pool.request()
+        .input("player_id", sql.Int, playerId)
+        .input("user_id",   sql.Int, newUser.id)
+        .query("UPDATE Users SET player_id = @player_id WHERE id = @user_id");
+    }
+
     res.status(201).json({ success: true, user: newUser });
   } catch (err) {
     res.status(500).json({ message: err.message });

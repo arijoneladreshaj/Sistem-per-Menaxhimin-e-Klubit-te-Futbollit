@@ -10,6 +10,7 @@ const ROLE_COLOR = {
   Admin:    { bg: "#7f1d1d", color: "#fca5a5" },
   Trajner:  { bg: "#1e3a5f", color: "#60a5fa" },
   Menaxher: { bg: "#1a3a1a", color: "#4ade80" },
+  Lojtari:  { bg: "#1a2e1a", color: "#86efac" },
   user:     { bg: "#2a2a2a", color: "#888"    },
 };
 

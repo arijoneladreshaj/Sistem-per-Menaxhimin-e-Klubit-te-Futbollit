@@ -256,7 +256,11 @@
 
 .nd-ticket-action {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  min-width: 110px;
 }
 .nd-buy-btn {
   background: #da020a;

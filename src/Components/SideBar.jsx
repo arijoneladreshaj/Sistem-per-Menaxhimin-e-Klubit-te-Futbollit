@@ -12,6 +12,7 @@ const navLinks = [
     section: "Menaxhim",
     items: [
       { label: "Lojtarët",    path: "/DashboardPlayers",  badge: 6,    roles: ["Admin","Trajner"] },
+      { label: "Formacioni",  path: "/lineup",            badge: null, roles: ["Admin","Trajner"] },
       { label: "Store",       path: "/DashboardStore",    badge: 18,   roles: ["Admin","Menaxher"] },
       { label: "Stafi",       path: "/staff",             badge: 4,    roles: ["Admin"] },
       { label: "Ndeshjet",    path: "/dashboardNdeshjet", badge: 5,    roles: ["Admin"] },

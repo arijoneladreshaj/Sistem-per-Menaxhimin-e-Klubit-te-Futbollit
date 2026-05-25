@@ -217,9 +217,24 @@ router.delete("/:id/photo", verifyToken, requireRole(...TRAJNER_ROLES), async (r
 router.delete("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
+    const id = req.params.id;
+
+    // Hiq lidhjen me userin (nëse ekziston kolona player_id)
     await pool.request()
-      .input("id", sql.Int, req.params.id)
+      .input("id", sql.Int, id)
+      .query("UPDATE Users SET player_id = NULL WHERE player_id = @id");
+
+    // Fshi rekorde të varura
+    await pool.request().input("id", sql.Int, id).query("DELETE FROM PlayerStats  WHERE player_id = @id");
+    await pool.request().input("id", sql.Int, id).query("DELETE FROM MatchLineup  WHERE player_id = @id");
+    await pool.request().input("id", sql.Int, id).query("DELETE FROM Injuries     WHERE player_id = @id");
+    await pool.request().input("id", sql.Int, id).query("DELETE FROM Transfers    WHERE player_id = @id");
+    await pool.request().input("id", sql.Int, id).query("DELETE FROM Contracts    WHERE player_id = @id");
+
+    await pool.request()
+      .input("id", sql.Int, id)
       .query("DELETE FROM Players WHERE id = @id");
+
     res.json({ success: true, message: "Lojtari u fshi" });
   } catch (err) {
     res.status(500).json({ error: err.message });

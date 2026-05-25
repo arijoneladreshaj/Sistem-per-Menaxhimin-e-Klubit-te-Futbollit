@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { sql, poolPromise } = require("../db");
-const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
+const { verifyToken, requireAdmin, requireRole } = require("../middleware/authMiddleware");
 
 
 // GET all matches
@@ -23,6 +23,23 @@ router.get("/", async (req, res) => {
 
     res.json(result.recordset);
 
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// GET next upcoming match (duhet te jete para /:id)
+router.get("/next-upcoming", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT TOP 1 * FROM Matches
+      WHERE statusi = 'Planifikuar'
+        AND data_ndeshjes >= CAST(GETDATE() AS DATE)
+      ORDER BY data_ndeshjes ASC, ora ASC
+    `);
+    res.json(result.recordset[0] || null);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

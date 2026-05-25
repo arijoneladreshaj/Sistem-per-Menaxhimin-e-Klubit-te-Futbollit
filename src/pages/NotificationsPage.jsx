@@ -8,6 +8,15 @@ const STATUS_STYLE = {
   "Papërcaktuar": { bg: "#1a1a1a", color: "#888",    border: "#333"    },
 };
 
+const POZ_COLOR = {
+  Portier: "#facc15", "Mbrojtës": "#60a5fa", Mesfushor: "#4ade80", Sulmues: "#f87171",
+};
+
+const ROLI_STYLE = {
+  "Titular": { bg: "rgba(34,197,94,0.15)",  color: "#22c55e" },
+  "Rezerve": { bg: "rgba(234,179,8,0.15)",  color: "#eab308" },
+};
+
 export default function NotificationsPage() {
   const navigate = useNavigate();
   const [tab,        setTab]       = useState("notifs");
@@ -15,6 +24,8 @@ export default function NotificationsPage() {
   const [sessions,   setSessions]  = useState([]);
   const [attendance, setAttendance]= useState({});
   const [loading,    setLoading]   = useState(true);
+  const [nextMatch,  setNextMatch] = useState(null);
+  const [lineup,     setLineup]    = useState({ titularet: [], rezervat: [], formacioni: "4-4-2" });
 
   useEffect(() => {
     fetchAll();
@@ -22,10 +33,11 @@ export default function NotificationsPage() {
 
   const fetchAll = async () => {
     try {
-      const [nRes, tRes, aRes] = await Promise.all([
+      const [nRes, tRes, aRes, matchRes] = await Promise.all([
         api.get("/api/notifications/my"),
         api.get("/api/training"),
         api.get("/api/training/my-attendance"),
+        api.get("/api/ndeshjet/next-upcoming"),
       ]);
 
       setNotifs(nRes.data);
@@ -40,6 +52,15 @@ export default function NotificationsPage() {
       const map = {};
       aRes.data.forEach(a => { map[a.training_id] = a.statusi; });
       setAttendance(map);
+
+      const m = matchRes.data;
+      setNextMatch(m);
+      if (m) {
+        try {
+          const lRes = await api.get(`/api/lineup/${m.id}`);
+          setLineup(lRes.data);
+        } catch {}
+      }
     } catch {}
     finally { setLoading(false); }
   };
@@ -85,7 +106,7 @@ export default function NotificationsPage() {
 
         {/* TABS */}
         <div style={{ display: "flex", borderBottom: "1px solid #2a2a2a", marginBottom: 24 }}>
-          {[["notifs", "Njoftimet", unread], ["stervitje", "Prezenca", 0]].map(([key, label, badge]) => (
+          {[["notifs", "Njoftimet", unread], ["stervitje", "Prezenca", 0], ["ndeshja", "Ndeshja", 0]].map(([key, label, badge]) => (
             <button
               key={key}
               onClick={() => setTab(key)}
@@ -135,7 +156,7 @@ export default function NotificationsPage() {
               </div>
             )}
           </>
-        ) : (
+        ) : tab === "stervitje" ? (
           <>
             {sessions.length === 0 ? (
               <div style={{ textAlign: "center", color: "#666", padding: 40 }}>Nuk ka stërvitje të ardhshme</div>
@@ -191,7 +212,117 @@ export default function NotificationsPage() {
               </div>
             )}
           </>
-        )}
+        ) : tab === "ndeshja" ? (
+          <>
+            {!nextMatch ? (
+              <div style={{ textAlign: "center", color: "#666", padding: 40 }}>
+                Nuk ka ndeshje të planifikuara
+              </div>
+            ) : (
+              <>
+                {/* Info ndeshja */}
+                <div style={{ background: "#141414", border: "1px solid #2a2a2a", borderRadius: 10, padding: "16px 20px", marginBottom: 20 }}>
+                  <div style={{ fontSize: 11, color: "#666", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>
+                    Ndeshja e ardhshme
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: 18, color: "#fff" }}>
+                    Man United <span style={{ color: "#DA291C" }}>vs</span> {nextMatch.ekipi_kundershtare}
+                  </div>
+                  <div style={{ color: "#888", fontSize: 13, marginTop: 4 }}>
+                    {new Date(nextMatch.data_ndeshjes).toLocaleDateString("sq-AL", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                    {nextMatch.ora && ` · ${String(nextMatch.ora).slice(0, 5)}`}
+                    {nextMatch.stadiumi && ` · ${nextMatch.stadiumi}`}
+                  </div>
+                  <div style={{ marginTop: 8, fontSize: 12, color: "#888" }}>
+                    Formacioni: <span style={{ color: "#fff", fontWeight: 700 }}>{lineup.formacioni || "—"}</span>
+                    {" · "}{lineup.titularet?.length || 0} titular · {lineup.rezervat?.length || 0} rezervë
+                  </div>
+                </div>
+
+                {/* Nuk ka lineup ende */}
+                {lineup.titularet?.length === 0 && lineup.rezervat?.length === 0 ? (
+                  <div style={{ textAlign: "center", color: "#666", padding: 32, background: "#141414", borderRadius: 10 }}>
+                    Trajneri nuk ka publikuar formacionin ende
+                  </div>
+                ) : (
+                  <>
+                    {/* Titularet */}
+                    {lineup.titularet?.length > 0 && (
+                      <div style={{ marginBottom: 16 }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: "#22c55e", textTransform: "uppercase", marginBottom: 8 }}>
+                          Titularet ({lineup.titularet.length}/11)
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                          {lineup.titularet.map(p => (
+                            <div key={p.player_id} style={{
+                              display: "flex", alignItems: "center", gap: 12,
+                              background: "#141414", border: "1px solid rgba(34,197,94,0.2)",
+                              borderRadius: 8, padding: "10px 14px",
+                            }}>
+                              <div style={{
+                                width: 36, height: 36, background: "#DA291C", borderRadius: 4,
+                                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                              }}>
+                                <span style={{ fontWeight: 700, fontSize: 14, color: "#fff" }}>{p.numri_faneles ?? "—"}</span>
+                              </div>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 600, fontSize: 14, color: "#fff" }}>
+                                  {p.emri} {p.mbiemri}
+                                </div>
+                                <div style={{ fontSize: 11, color: POZ_COLOR[p.pozicioni] || "#888", marginTop: 1 }}>
+                                  {p.pozicioni}{p.slot_id ? ` · ${p.slot_id}` : ""}
+                                </div>
+                              </div>
+                              <div style={{ display: "flex", gap: 8, fontSize: 12, color: "#888" }}>
+                                {p.gola > 0 && <span>⚽{p.gola}</span>}
+                                {p.asistime > 0 && <span>🅰{p.asistime}</span>}
+                                {p.karton_verdhe > 0 && <span>🟨{p.karton_verdhe}</span>}
+                                {p.karton_kuq > 0 && <span>🟥{p.karton_kuq}</span>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Rezervat */}
+                    {lineup.rezervat?.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: "#eab308", textTransform: "uppercase", marginBottom: 8 }}>
+                          Bankë ({lineup.rezervat.length})
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                          {lineup.rezervat.map(p => (
+                            <div key={p.player_id} style={{
+                              display: "flex", alignItems: "center", gap: 12,
+                              background: "#141414", border: "1px solid rgba(234,179,8,0.2)",
+                              borderRadius: 8, padding: "10px 14px",
+                            }}>
+                              <div style={{
+                                width: 36, height: 36, background: "#444", borderRadius: 4,
+                                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                              }}>
+                                <span style={{ fontWeight: 700, fontSize: 14, color: "#fff" }}>{p.numri_faneles ?? "—"}</span>
+                              </div>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 600, fontSize: 14, color: "#fff" }}>
+                                  {p.emri} {p.mbiemri}
+                                </div>
+                                <div style={{ fontSize: 11, color: POZ_COLOR[p.pozicioni] || "#888", marginTop: 1 }}>
+                                  {p.pozicioni}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </>
+        ) : null}
       </div>
     </div>
   );

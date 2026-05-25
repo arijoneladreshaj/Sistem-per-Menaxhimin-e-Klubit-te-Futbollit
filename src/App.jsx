@@ -43,6 +43,8 @@ const SeasonArchive = lazy(() => import("./pages/SeasonArchive"));
 
 const DashboardUsers      = lazy(() => import("./pages/Dashboard/DashboardUsers"));
 const NotificationsPage   = lazy(() => import("./pages/NotificationsPage"));
+const LineupPage          = lazy(() => import("./pages/Dashboard/LineupPage"));
+const PublicLineupPage    = lazy(() => import("./pages/PublicLineupPage"));
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("accessToken");
@@ -267,6 +269,22 @@ export default function App() {
               element={
                 <PrivateRoute roles={["Lojtari"]}>
                   <NotificationsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/lineup"
+              element={
+                <PrivateRoute roles={["Admin", "Trajner", "Lojtari"]}>
+                  <LineupPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/lineup/:matchId"
+              element={
+                <PrivateRoute>
+                  <PublicLineupPage />
                 </PrivateRoute>
               }
             />

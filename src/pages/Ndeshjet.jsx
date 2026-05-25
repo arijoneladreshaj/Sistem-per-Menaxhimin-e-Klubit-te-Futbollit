@@ -50,7 +50,7 @@ function TeamLogo({ name, logoUrl }) {
 }
 
 /* ── Match Row ── */
-function MatchRow({ match, onBuyTicket }) {
+function MatchRow({ match, onBuyTicket, onShowLineup }) {
   const isUpcoming = match.result === "upcoming";
   const resultClass = RESULT_COLOR_CLASS[match.result];
   const awayLogo = match.home === "Man United" ? match.logo_kundershtarit : null;
@@ -103,7 +103,24 @@ function MatchRow({ match, onBuyTicket }) {
       <div className="nd-venue">{match.venue}</div>
 
       {isUpcoming && (
-        <div className="nd-ticket-action">
+        <div className="nd-ticket-action" style={{ flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+          <button
+            onClick={() => onShowLineup(match)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "rgba(255,255,255,0.4)",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: 1,
+              cursor: "pointer",
+              padding: 0,
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+            }}
+          >
+            📋 Formacioni
+          </button>
           {match.ticketsAvailable ? (
             <button
               className="nd-buy-btn"
@@ -277,6 +294,7 @@ export default function Ndeshjet() {
                 key={i}
                 match={match}
                 onBuyTicket={(id) => navigate(`/SectorPage/${id}`)}
+                onShowLineup={(m) => navigate(`/lineup/${m.id}`)}
               />
             ))}
           </div>
