@@ -280,7 +280,7 @@ export default function Lajmet() {
 
           </div>
         )}
-        </div>
+        
 
         {lajmetFiltruara.length > 0 && (
 
@@ -405,6 +405,7 @@ export default function Lajmet() {
                     </span>
 
                   </div>
+                  
 
                   {isAdmin && (
 
@@ -436,7 +437,7 @@ export default function Lajmet() {
           ))}
         </div>
       </div>
-
+</div>
       {/* MODAL */}
       <Modal
         show={show}

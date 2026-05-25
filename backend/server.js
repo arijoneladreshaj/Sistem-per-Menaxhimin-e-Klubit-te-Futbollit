@@ -22,6 +22,11 @@ app.use("/api/staff",       require("./Routes/Staff"));
 app.use("/api/injuries",    require("./Routes/Injuries"));
 app.use("/api/preferences", require("./Routes/Preferences"));
 app.use("/api/shipping",    require("./Routes/ShippingModal"));
+
+app.use("/api/dashboard",       require("./Routes/Dashboard"));
+app.use("/api/contracts",       require("./Routes/Contracts"));
+app.use("/api/transfers",       require("./Routes/Transfers"));
+
 app.use("/api/users",       require("./Routes/Profile"));
 app.use("/api/seasons",              require("./Routes/Seasons"));
 app.use("/api/admin/users",   require("./Routes/AdminUsers"));

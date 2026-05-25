@@ -120,7 +120,8 @@ router.put("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) 
   try {
     const {
       emri, mbiemri, data_lindjes, kombesia,
-      pozicioni, numri_faneles, pesha, gjatesia, statusi, vlera_tregut
+      pozicioni, numri_faneles, pesha, gjatesia, statusi, vlera_tregut,
+      apps, goals, assists, saves, clean_sheets, rating
     } = req.body;
 
     if (pozicioni && !POZICIONET_VALID.includes(pozicioni))
@@ -142,6 +143,12 @@ router.put("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) 
       .input("gjatesia",      sql.Decimal(5, 2),  gjatesia || null)
       .input("statusi",       sql.NVarChar(20),   statusi)
       .input("vlera_tregut",  sql.Decimal(15, 2), vlera_tregut || 0)
+      .input("apps",          sql.Int,            apps ?? 0)
+      .input("goals",         sql.Int,            goals ?? 0)
+      .input("assists",       sql.Int,            assists ?? 0)
+      .input("saves",         sql.Int,            saves ?? 0)
+      .input("clean_sheets",  sql.Int,            clean_sheets ?? 0)
+      .input("rating",        sql.Decimal(4,1),   rating ?? 70)
       .query(`
         UPDATE Players SET
           emri          = @emri,
@@ -154,6 +161,12 @@ router.put("/:id", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) 
           gjatesia      = @gjatesia,
           statusi       = @statusi,
           vlera_tregut  = @vlera_tregut,
+          apps          = @apps,
+          goals         = @goals,
+          assists       = @assists,
+          saves         = @saves,
+          clean_sheets  = @clean_sheets,
+          rating        = @rating,
           updated_at    = GETDATE()
         WHERE id = @id
       `);

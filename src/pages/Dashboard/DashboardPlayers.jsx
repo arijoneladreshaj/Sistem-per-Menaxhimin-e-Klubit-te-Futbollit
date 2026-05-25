@@ -359,6 +359,119 @@ function PlayerModal({ player, onSave, onClose, saving }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
+   STATS MODAL
+═══════════════════════════════════════════════════════════════════════════════ */
+function StatsModal({ player, onSave, onClose, saving }) {
+  const isGK = player.pozicioni === "Portier";
+  const [form, setForm] = useState({
+    apps:        player.apps         ?? 0,
+    goals:       player.goals        ?? 0,
+    assists:     player.assists      ?? 0,
+    saves:       player.saves        ?? 0,
+    clean_sheets:player.clean_sheets ?? 0,
+    rating:      player.rating       ?? 70,
+  });
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const fields = isGK
+    ? [
+        { key: "apps",         label: "Ndeshje",            icon: "bi-calendar3",     max: 99  },
+        { key: "saves",        label: "Pritje",             icon: "bi-hand-index",    max: 200 },
+        { key: "clean_sheets", label: "Portë të Mbyllura",  icon: "bi-shield-check",  max: 50  },
+        { key: "rating",       label: "Rating (1-100)",     icon: "bi-star",          max: 100, step: 0.1 },
+      ]
+    : [
+        { key: "apps",    label: "Ndeshje",           icon: "bi-calendar3",  max: 99  },
+        { key: "goals",   label: "Gola",              icon: "bi-dribbble",   max: 99  },
+        { key: "assists", label: "Asiste",            icon: "bi-award",      max: 99  },
+        { key: "rating",  label: "Rating (1-100)",    icon: "bi-star",       max: 100, step: 0.1 },
+      ];
+
+  return (
+    <>
+      <div onClick={onClose} className="position-fixed top-0 start-0 w-100 h-100" style={{ background: "rgba(0,0,0,0.75)", zIndex: 1000 }} />
+      <div className="position-fixed d-flex flex-column" style={{
+        top: "50%", left: "50%", transform: "translate(-50%,-50%)",
+        zIndex: 1001, width: "95%", maxWidth: 460, background: DARK,
+        border: "1px solid rgba(255,255,255,0.12)", overflow: "hidden",
+      }}>
+        {/* Header */}
+        <div className="d-flex align-items-center justify-content-between px-4 py-3" style={{ background: "rgba(0,0,0,0.45)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="d-flex align-items-center gap-2">
+            <i className="bi bi-bar-chart-fill" style={{ color: "#facc15", fontSize: 18 }} />
+            <span style={{ fontFamily: FONT_H, fontSize: 22, letterSpacing: 2, color: "#fff" }}>
+              STATISTIKAT
+            </span>
+          </div>
+          <button onClick={onClose} className="btn border-0 bg-transparent text-white"><i className="bi bi-x-lg" /></button>
+        </div>
+
+        {/* Player name */}
+        <div className="px-4 pt-3 pb-1">
+          <div style={{ fontFamily: FONT_H, fontSize: 20, color: "#fff", letterSpacing: 1 }}>
+            {player.emri} {player.mbiemri}
+          </div>
+          <div style={{ fontSize: 11, color: POZ_COLOR[player.pozicioni] || "rgba(255,255,255,0.4)", fontFamily: FONT_B, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginTop: 2 }}>
+            {player.pozicioni} · #{player.numri_faneles ?? "—"}
+          </div>
+        </div>
+
+        {/* Fields */}
+        <div className="px-4 py-3" style={{ flex: 1 }}>
+          <div className="row g-3">
+            {fields.map(f => (
+              <div key={f.key} className="col-6">
+                <label style={LABEL}>
+                  <i className={`bi ${f.icon} me-1`} />{f.label}
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  max={f.max}
+                  step={f.step || 1}
+                  className="form-control"
+                  style={INPUT(false)}
+                  value={form[f.key]}
+                  onChange={e => set(f.key, +e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Rating bar preview */}
+          <div className="mt-3">
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: FONT_B, letterSpacing: 2, marginBottom: 6, textTransform: "uppercase" }}>
+              Paraqitja e ratingut
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.07)", borderRadius: 99, height: 6, overflow: "hidden" }}>
+              <div style={{
+                width: `${Math.min(100, form.rating)}%`, height: "100%", borderRadius: 99,
+                background: form.rating >= 83 ? "#ffd700" : form.rating >= 77 ? "#4ade80" : "#94a3b8",
+                transition: "width 0.3s ease",
+              }} />
+            </div>
+            <div style={{ textAlign: "right", fontSize: 18, fontFamily: FONT_H, marginTop: 4,
+              color: form.rating >= 83 ? "#ffd700" : form.rating >= 77 ? "#4ade80" : "#94a3b8" }}>
+              {form.rating}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 py-3 d-flex gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", background: "rgba(0,0,0,0.45)" }}>
+          <button onClick={onClose} className="btn flex-fill" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.6)", fontFamily: FONT_B, fontWeight: 700, fontSize: 13, letterSpacing: 1, borderRadius: 0, padding: "12px 0" }}>ANULO</button>
+          <button onClick={() => onSave({ ...player, ...form })} disabled={saving} className="btn flex-fill fw-bold"
+            style={{ background: "#facc15", color: "#000", fontFamily: FONT_H, fontSize: 16, letterSpacing: 2, border: "none", borderRadius: 0, padding: "12px 0", opacity: saving ? 0.6 : 1 }}>
+            {saving ? <><span className="spinner-border spinner-border-sm me-2" />DUKE RUAJTUR...</> : <><i className="bi bi-check-lg me-2" />RUAJ STATISTIKAT</>}
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
    DELETE MODAL
 ═══════════════════════════════════════════════════════════════════════════════ */
 function DeleteModal({ player, onConfirm, onClose, deleting }) {
@@ -415,6 +528,7 @@ export default function DashboardPlayers() {
   const [modalPlayer,  setModalPlayer]  = useState(null);
   const [detailPlayer, setDetailPlayer] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [statsPlayer,  setStatsPlayer]  = useState(null);
   const [saving,   setSaving]   = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -460,6 +574,16 @@ export default function DashboardPlayers() {
     try { await api.delete(`${API}/${id}`); showToast("Lojtari u fshi!"); setDeleteTarget(null); fetchPlayers(); }
     catch { showToast("Gabim gjatë fshirjes", "error"); }
     finally { setDeleting(false); }
+  };
+
+  const handleStatsUpdate = async (data) => {
+    setSaving(true);
+    try {
+      await api.put(`${API}/${data.id}`, data);
+      showToast("Statistikat u përditësuan!"); setStatsPlayer(null); fetchPlayers();
+    }
+    catch (err) { showToast(err.response?.data?.error || "Gabim gjatë përditësimit", "error"); }
+    finally { setSaving(false); }
   };
 
   /* ── sort handler ── */
@@ -657,6 +781,9 @@ export default function DashboardPlayers() {
 
                 {/* Actions */}
                 <div className="d-flex gap-2" style={{ flex: 1.5, justifyContent: "flex-end" }} onClick={e => e.stopPropagation()}>
+                  <button onClick={() => setStatsPlayer({ ...p })} className="btn d-flex align-items-center gap-1" style={{ background: "rgba(250,204,21,0.1)", color: "#facc15", border: "1px solid rgba(250,204,21,0.25)", fontFamily: FONT_B, fontWeight: 700, fontSize: 11, letterSpacing: 1, borderRadius: 0, padding: "6px 12px" }}>
+                    <i className="bi bi-bar-chart-fill" style={{ fontSize: 11 }} />STAT
+                  </button>
                   <button onClick={() => setModalPlayer({ ...p })} className="btn d-flex align-items-center gap-1" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)", fontFamily: FONT_B, fontWeight: 700, fontSize: 11, letterSpacing: 1, borderRadius: 0, padding: "6px 12px" }}>
                     <i className="bi bi-pencil" style={{ fontSize: 11 }} />EDITO
                   </button>
@@ -704,6 +831,10 @@ export default function DashboardPlayers() {
 
       {deleteTarget && (
         <DeleteModal player={deleteTarget} onConfirm={handleDelete} onClose={() => setDeleteTarget(null)} deleting={deleting} />
+      )}
+
+      {statsPlayer && (
+        <StatsModal player={statsPlayer} onSave={handleStatsUpdate} onClose={() => setStatsPlayer(null)} saving={saving} />
       )}
 
       {/* ── TOAST ── */}
