@@ -4,7 +4,7 @@ import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
 import api from "../../api/axiosInstance";
 import "./Dashboard.css";
-import api from "../../api/axiosInstance";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();

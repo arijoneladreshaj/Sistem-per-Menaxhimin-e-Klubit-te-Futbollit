@@ -22,7 +22,7 @@ app.use("/api/staff",       require("./Routes/Staff"));
 app.use("/api/injuries",    require("./Routes/Injuries"));
 app.use("/api/preferences", require("./Routes/Preferences"));
 app.use("/api/shipping",    require("./Routes/ShippingModal"));
-app.use("/api/users",       require("./Routes/Users"));
+
 app.use("/api/dashboard",       require("./Routes/Dashboard"));
 
 app.use("/api/users",       require("./Routes/Profile"));
