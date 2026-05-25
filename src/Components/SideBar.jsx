@@ -39,7 +39,7 @@ const navLinks = [
 
 export default function SideBar({ active }) {
   const navigate = useNavigate();
-  const role = localStorage.getItem("role") || "";
+  const role = (localStorage.getItem("role") || "").toLowerCase();
 
   return (
     <aside className="sidebar">
@@ -62,7 +62,7 @@ export default function SideBar({ active }) {
 
       <nav className="flex-grow-1 overflow-auto py-2">
         {navLinks.map((group) => {
-          const visibleItems = group.items.filter(item => item.roles.includes(role));
+          const visibleItems = group.items.filter(item => item.roles.map(r => r.toLowerCase()).includes(role));
           if (visibleItems.length === 0) return null;
           return (
             <React.Fragment key={group.section}>

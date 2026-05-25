@@ -42,6 +42,7 @@ const DashboardSezone = lazy(() => import("./pages/Dashboard/DashboardSezone"));
 const SeasonArchive = lazy(() => import("./pages/SeasonArchive"));
 
 const DashboardUsers      = lazy(() => import("./pages/Dashboard/DashboardUsers"));
+const DashboardKontratat  = lazy(() => import("./pages/Dashboard/DashboardKontratat"));
 const NotificationsPage   = lazy(() => import("./pages/NotificationsPage"));
 
 function PrivateRoute({ children, roles }) {
@@ -275,6 +276,14 @@ export default function App() {
               element={
                 <PrivateRoute roles={["Admin"]}>
                   <DashboardSezone />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contracts"
+              element={
+                <PrivateRoute roles={["Admin", "Menaxher"]}>
+                  <DashboardKontratat />
                 </PrivateRoute>
               }
             />
