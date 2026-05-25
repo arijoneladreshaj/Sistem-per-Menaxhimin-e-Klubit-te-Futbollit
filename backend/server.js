@@ -24,6 +24,7 @@ app.use("/api/preferences", require("./Routes/Preferences"));
 app.use("/api/shipping",    require("./Routes/ShippingModal"));
 app.use("/api/dashboard",       require("./Routes/Dashboard"));
 app.use("/api/contracts",       require("./Routes/Contracts"));
+app.use("/api/transfers",       require("./Routes/Transfers"));
 
 app.use("/api/users",       require("./Routes/Profile"));
 app.use("/api/seasons",              require("./Routes/Seasons"));
