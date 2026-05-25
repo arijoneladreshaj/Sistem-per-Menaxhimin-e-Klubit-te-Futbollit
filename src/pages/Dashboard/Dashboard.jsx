@@ -101,7 +101,7 @@ export default function Dashboard() {
             <div className="panel">
               <div className="panel-header">
                 <div className="panel-title">Lojtarët — Skuadra</div>
-                <div className="panel-action" onClick={() => navigate("/players")}>Shiko të gjithë →</div>
+                <div className="panel-action" onClick={() => navigate("/DashboardPlayers")}>Shiko të gjithë →</div>
               </div>
               <div style={{ padding: "10px 18px" }}>
                 <table className="table table-dark table-hover mb-0" style={{ fontSize: 13 }}>

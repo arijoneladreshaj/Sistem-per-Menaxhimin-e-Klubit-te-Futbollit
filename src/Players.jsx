@@ -4,7 +4,15 @@ import axios from "axios";
 import Navbar from "./Components/NavBar";
 import "./pages/ManchesterUnitedHome.css";
 
-const LOCAL = (name) => `/players/${name}.png`;
+// ── FOTO helper ───────────────────────────────────────────────────────────────
+const LOCAL = (slug) => `/players/${slug}.png`;
+
+const FLAG_MAP = {
+  "Türkiye": "🇹🇷", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Belgium": "🇧🇪", "Portugal": "🇵🇹",
+  "Morocco": "🇲🇦", "Netherlands": "🇳🇱", "Argentina": "🇦🇷", "France": "🇫🇷",
+  "Brazil": "🇧🇷", "Uruguay": "🇺🇾", "Côte d'Ivoire": "🇨🇮", "Cameroon": "🇨🇲",
+  "Slovenia": "🇸🇮", "Denmark": "🇩🇰", "Paraguay": "🇵🇾", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+};
 
 function slugPhoto(first, last) {
   const norm = s => s.toLowerCase()
@@ -15,7 +23,6 @@ function slugPhoto(first, last) {
   return `/players/${!f || f === l ? norm(l) : `${norm(f)}-${norm(l)}`}.png`;
 }
 
-// ── DB → UI mapper ────────────────────────────────────────────────────────────
 const POZ_MAP = {
   Portier:   { pos: "GK",  cat: "GK"  },
   Mbrojtës:  { pos: "CB",  cat: "DEF" },
@@ -39,12 +46,11 @@ function mapPlayer(p) {
     pos,
     cat,
     country:     p.kombesia ?? "",
-    flag:        "",
+    flag:        FLAG_MAP[p.kombesia] || "",
     born,
     age,
     height:      p.gjatesia ? `${p.gjatesia} cm` : null,
     weight:      p.pesha    ? `${p.pesha} kg`    : null,
-    foot:        null,
     joined:      null,
     contract:    null,
     apps:        0,
@@ -53,7 +59,7 @@ function mapPlayer(p) {
     saves:       0,
     cleanSheets: 0,
     rating:      70,
-    captain:     false,
+    captain:     p.mbiemri === "Fernandes",
     onLoan:      p.statusi === "I transferuar",
     photo:       p.foto_url || slugPhoto(p.emri, p.mbiemri),
     bio:         `${p.emri} ${p.mbiemri} · ${p.pozicioni}${p.kombesia ? " · " + p.kombesia : ""}`,
@@ -62,302 +68,299 @@ function mapPlayer(p) {
   };
 }
 
-// ── (placeholder — do not delete) ─────────────────────────────────────────────
+// ── FULL SQUAD 2025/26 (fallback statik) ─────────────────────────────────────
 const _staticPlayers = [
   // GOALKEEPERS
   {
     id: 1, number: 1, name: "Altay", surname: "Bayındır",
     pos: "GK", cat: "GK", country: "Türkiye", flag: "🇹🇷",
     born: "Apr 9, 1998", age: 27, height: "1.97 m", weight: "87 kg",
-    foot: "Right", joined: "2023", contract: "Jun 2027",
+    joined: "2023", contract: "Jun 2027",
     apps: 6, goals: 0, assists: 0, saves: 13, cleanSheets: 2, rating: 70,
-    onLoan: false, espnId: 274272, photo: LOCAL("altay-bayindir"),
+    onLoan: false, photo: LOCAL("altay-bayindir"),
     bio: "Backup goalkeeper who joined from Fenerbahçe. A reliable shot-stopper with excellent reflexes.",
   },
   {
     id: 2, number: 22, name: "Tom", surname: "Heaton",
     pos: "GK", cat: "GK", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Apr 15, 1986", age: 39, height: "1.88 m", weight: "84 kg",
-    foot: "Right", joined: "2021", contract: "Jun 2026",
+    joined: "2021", contract: "Jun 2026",
     apps: 0, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 67,
-    onLoan: false, espnId: 42250, photo: LOCAL("tom-heaton"),
+    onLoan: false, photo: LOCAL("tom-heaton"),
     bio: "Veteran goalkeeper and Academy graduate in his second spell at the club. Highly valued member of the goalkeeping group.",
   },
   {
     id: 3, number: 31, name: "Senne", surname: "Lammens",
     pos: "GK", cat: "GK", country: "Belgium", flag: "🇧🇪",
     born: "May 27, 2001", age: 23, height: "1.91 m", weight: "82 kg",
-    foot: "Right", joined: "2025", contract: "Jun 2030",
+    joined: "2025", contract: "Jun 2030",
     apps: 23, goals: 0, assists: 0, saves: 53, cleanSheets: 5, rating: 72,
-    onLoan: false, espnId: 301425, photo: "/players/senne-lammens.webp",
+    onLoan: false, photo: "/players/senne-lammens.webp",
     bio: "Young Belgian goalkeeper signed from Royal Antwerp. An impressive shot-stopper who has made 53 saves this season.",
   },
-
   // DEFENDERS
   {
     id: 4, number: 2, name: "Diogo", surname: "Dalot",
     pos: "RB", cat: "DEF", country: "Portugal", flag: "🇵🇹",
     born: "Mar 18, 1999", age: 26, height: "1.83 m", weight: "78 kg",
-    foot: "Right", joined: "2019", contract: "Jun 2028",
+    joined: "2019", contract: "Jun 2028",
     apps: 27, goals: 1, assists: 3, saves: 0, cleanSheets: 0, rating: 77,
-    onLoan: false, espnId: 238902, photo: LOCAL("diogo-dalot"),
+    onLoan: false, photo: LOCAL("diogo-dalot"),
     bio: "Attacking full-back and vice-captain. Known for his tireless runs down the right flank and composed defending.",
   },
   {
     id: 5, number: 3, name: "Noussair", surname: "Mazraoui",
     pos: "RB", cat: "DEF", country: "Morocco", flag: "🇲🇦",
     born: "Nov 14, 1997", age: 28, height: "1.81 m", weight: "75 kg",
-    foot: "Right", joined: "2024", contract: "Jun 2028",
+    joined: "2024", contract: "Jun 2028",
     apps: 15, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 75,
-    onLoan: false, espnId: 239350, photo: LOCAL("noussair-mazraoui"),
+    onLoan: false, photo: LOCAL("noussair-mazraoui"),
     bio: "Versatile Moroccan full-back signed from Bayern Munich. Experienced in the Champions League.",
   },
   {
     id: 6, number: 4, name: "Matthijs", surname: "de Ligt",
     pos: "CB", cat: "DEF", country: "Netherlands", flag: "🇳🇱",
     born: "Aug 12, 1999", age: 26, height: "1.89 m", weight: "85 kg",
-    foot: "Right", joined: "2024", contract: "Jun 2029",
+    joined: "2024", contract: "Jun 2029",
     apps: 13, goals: 1, assists: 0, saves: 0, cleanSheets: 0, rating: 76,
-    onLoan: false, espnId: 239349, photo: LOCAL("matthijs-de-ligt"),
+    onLoan: false, photo: LOCAL("matthijs-de-ligt"),
     bio: "Commanding Dutch centre-back signed from Bayern Munich. Former Ajax and Juventus defender.",
   },
   {
     id: 7, number: 5, name: "Harry", surname: "Maguire",
     pos: "CB", cat: "DEF", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Mar 5, 1993", age: 33, height: "1.94 m", weight: "100 kg",
-    foot: "Right", joined: "2019", contract: "Jun 2025",
+    joined: "2019", contract: "Jun 2025",
     apps: 16, goals: 1, assists: 1, saves: 0, cleanSheets: 0, rating: 73,
-    onLoan: false, espnId: 157073, photo: LOCAL("harry-maguire"),
+    onLoan: false, photo: LOCAL("harry-maguire"),
     bio: "Experienced centre-back and former club captain. Strong in the air and a composed ball-playing defender.",
   },
   {
     id: 8, number: 6, name: "Lisandro", surname: "Martínez",
     pos: "CB", cat: "DEF", country: "Argentina", flag: "🇦🇷",
     born: "Jan 18, 1998", age: 28, height: "1.75 m", weight: "78 kg",
-    foot: "Left", joined: "2022", contract: "Jun 2027",
+    joined: "2022", contract: "Jun 2027",
     apps: 14, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 79,
-    onLoan: false, espnId: 233937, photo: LOCAL("lisandro-martinez"),
+    onLoan: false, photo: LOCAL("lisandro-martinez"),
     bio: "Fiercely competitive Argentine defender nicknamed 'The Butcher'. World Cup winner with Argentina in 2022.",
   },
   {
     id: 9, number: 12, name: "Tyrell", surname: "Malacia",
     pos: "LB", cat: "DEF", country: "Netherlands", flag: "🇳🇱",
     born: "Aug 17, 2000", age: 26, height: "1.70 m", weight: "65 kg",
-    foot: "Left", joined: "2022", contract: "Jun 2027",
+    joined: "2022", contract: "Jun 2027",
     apps: 2, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 71,
-    onLoan: false, espnId: 259863, photo: LOCAL("tyrell-malacia"),
+    onLoan: false, photo: LOCAL("tyrell-malacia"),
     bio: "Dutch left-back returning from a long injury. Pacey and direct with good defensive instincts.",
   },
   {
     id: 10, number: 13, name: "Patrick", surname: "Dorgu",
     pos: "LB", cat: "DEF", country: "Denmark", flag: "🇩🇰",
     born: "Jan 29, 2004", age: 21, height: "1.84 m", weight: "76 kg",
-    foot: "Left", joined: "2025", contract: "Jun 2030",
+    joined: "2025", contract: "Jun 2030",
     apps: 22, goals: 3, assists: 3, saves: 0, cleanSheets: 0, rating: 77,
-    onLoan: false, espnId: 366781, photo: LOCAL("patrick-dorgu"),
+    onLoan: false, photo: LOCAL("patrick-dorgu"),
     bio: "Dynamic Danish full-back signed from Lecce. Has scored 3 goals this season — impressive for a defender.",
   },
   {
     id: 11, number: 15, name: "Leny", surname: "Yoro",
     pos: "CB", cat: "DEF", country: "France", flag: "🇫🇷",
     born: "Nov 20, 2005", age: 20, height: "1.90 m", weight: "80 kg",
-    foot: "Right", joined: "2024", contract: "Jun 2029",
+    joined: "2024", contract: "Jun 2029",
     apps: 26, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 77,
-    onLoan: false, espnId: 340206, photo: LOCAL("leny-yoro"),
+    onLoan: false, photo: LOCAL("leny-yoro"),
     bio: "One of Europe's most exciting young defenders. Joined from Lille in 2024, already 26 appearances this season.",
   },
   {
     id: 12, number: 23, name: "Luke", surname: "Shaw",
     pos: "LB", cat: "DEF", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Jul 12, 1995", age: 30, height: "1.85 m", weight: "75 kg",
-    foot: "Left", joined: "2014", contract: "Jun 2027",
+    joined: "2014", contract: "Jun 2027",
     apps: 29, goals: 0, assists: 1, saves: 0, cleanSheets: 0, rating: 74,
-    onLoan: false, espnId: 167127, photo: LOCAL("luke-shaw"),
+    onLoan: false, photo: LOCAL("luke-shaw"),
     bio: "Experienced left-back at United for over a decade. Euro 2020 finalist with England.",
   },
   {
     id: 13, number: 26, name: "Ayden", surname: "Heaven",
     pos: "CB", cat: "DEF", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Jun 14, 2006", age: 19, height: "1.87 m", weight: "78 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2028",
+    joined: "Academy", contract: "Jun 2028",
     apps: 13, goals: 0, assists: 1, saves: 0, cleanSheets: 0, rating: 69,
-    onLoan: false, espnId: 356044, photo: LOCAL("ayden-heaven"),
+    onLoan: false, photo: LOCAL("ayden-heaven"),
     bio: "Highly-rated Academy centre-back who has made 13 appearances this season. England youth international.",
   },
   {
     id: 14, number: 33, name: "Tyler", surname: "Fredricson",
     pos: "CB", cat: "DEF", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Jan 10, 2005", age: 21, height: "1.88 m", weight: "80 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2027",
+    joined: "Academy", contract: "Jun 2027",
     apps: 1, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 66,
-    onLoan: false, espnId: 347052, photo: LOCAL("tyler-fredricson"),
+    onLoan: false, photo: LOCAL("tyler-fredricson"),
     bio: "Academy graduate centre-back who earned his senior opportunity through strong performances.",
   },
   {
     id: 15, number: 35, name: "Diego", surname: "León",
     pos: "RB", cat: "DEF", country: "Paraguay", flag: "🇵🇾",
     born: "Dec 27, 2003", age: 21, height: "1.77 m", weight: "70 kg",
-    foot: "Right", joined: "2023", contract: "Jun 2027",
+    joined: "2023", contract: "Jun 2027",
     apps: 0, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 66,
-    onLoan: false, espnId: 387634, photo: LOCAL("diego-leon"),
+    onLoan: false, photo: LOCAL("diego-leon"),
     bio: "Young Paraguayan defender with bags of potential. Has been part of the first team training group.",
   },
   {
     id: 16, number: 72, name: "Godwill", surname: "Kukonki",
     pos: "CB", cat: "DEF", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Jan 12, 2006", age: 18, height: "1.95 m", weight: "85 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2027",
+    joined: "Academy", contract: "Jun 2027",
     apps: 0, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 65,
-    onLoan: false, espnId: 393747, photo: LOCAL("godwill-kukonki"),
+    onLoan: false, photo: LOCAL("godwill-kukonki"),
     bio: "Towering Academy centre-back with exceptional physical presence. One of the most promising young defenders.",
   },
-
   // MIDFIELDERS
   {
     id: 17, number: 7, name: "Mason", surname: "Mount",
     pos: "CM", cat: "MID", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Jan 10, 2000", age: 25, height: "1.81 m", weight: "70 kg",
-    foot: "Right", joined: "2023", contract: "Jun 2028",
+    joined: "2023", contract: "Jun 2028",
     apps: 17, goals: 3, assists: 0, saves: 0, cleanSheets: 0, rating: 73,
-    onLoan: false, espnId: 231167, photo: LOCAL("mason-mount"),
+    onLoan: false, photo: LOCAL("mason-mount"),
     bio: "Creative English midfielder signed from Chelsea. Technical and industrious with an eye for goal.",
   },
   {
     id: 18, number: 8, name: "Bruno", surname: "Fernandes",
     pos: "CAM", cat: "MID", country: "Portugal", flag: "🇵🇹",
     born: "Sep 8, 1994", age: 31, height: "1.79 m", weight: "69 kg",
-    foot: "Right", joined: "2020", contract: "Jun 2026",
+    joined: "2020", contract: "Jun 2026",
     apps: 26, goals: 7, assists: 14, saves: 0, cleanSheets: 0, rating: 86,
     captain: true,
-    onLoan: false, espnId: 124091, photo: LOCAL("bruno-fernandes"),
+    onLoan: false, photo: LOCAL("bruno-fernandes"),
     bio: "Club captain and creative engine. Set a new Man United PL assist record this season. Three-time Sir Matt Busby Player of the Year.",
   },
   {
     id: 19, number: 18, name: "", surname: "Casemiro",
     pos: "DM", cat: "MID", country: "Brazil", flag: "🇧🇷",
     born: "Feb 23, 1992", age: 34, height: "1.85 m", weight: "84 kg",
-    foot: "Right", joined: "2022", contract: "Jun 2026",
+    joined: "2022", contract: "Jun 2026",
     apps: 27, goals: 6, assists: 2, saves: 0, cleanSheets: 0, rating: 74,
-    onLoan: false, espnId: 173666, photo: LOCAL("casemiro"),
+    onLoan: false, photo: LOCAL("casemiro"),
     bio: "Defensive midfield enforcer and Brazilian international. Five-time Champions League winner with Real Madrid.",
   },
   {
     id: 20, number: 25, name: "Manuel", surname: "Ugarte",
     pos: "DM", cat: "MID", country: "Uruguay", flag: "🇺🇾",
     born: "Apr 11, 2001", age: 24, height: "1.82 m", weight: "80 kg",
-    foot: "Right", joined: "2024", contract: "Jun 2029",
+    joined: "2024", contract: "Jun 2029",
     apps: 19, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 77,
-    onLoan: false, espnId: 241468, photo: LOCAL("manuel-ugarte"),
+    onLoan: false, photo: LOCAL("manuel-ugarte"),
     bio: "Tenacious Uruguayan holding midfielder. Excels at breaking up play and winning back possession.",
   },
   {
     id: 21, number: 37, name: "Kobbie", surname: "Mainoo",
     pos: "CM", cat: "MID", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Apr 19, 2005", age: 20, height: "1.77 m", weight: "68 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2027",
+    joined: "Academy", contract: "Jun 2027",
     apps: 20, goals: 0, assists: 2, saves: 0, cleanSheets: 0, rating: 79,
-    onLoan: false, espnId: 328466, photo: LOCAL("kobbie-mainoo"),
+    onLoan: false, photo: LOCAL("kobbie-mainoo"),
     bio: "Academy product and England international. Scored the winner in the 2024 FA Cup Final.",
   },
   {
     id: 22, number: 38, name: "Jack", surname: "Fletcher",
     pos: "CM", cat: "MID", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Mar 5, 2006", age: 18, height: "1.81 m", weight: "72 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2027",
+    joined: "Academy", contract: "Jun 2027",
     apps: 3, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 65,
-    onLoan: false, espnId: 205081, photo: LOCAL("jack-fletcher"),
+    onLoan: false, photo: LOCAL("jack-fletcher"),
     bio: "Talented young Academy midfielder who has made his first team debut this season.",
   },
   {
     id: 23, number: 39, name: "Tyler", surname: "Fletcher",
     pos: "CM", cat: "MID", country: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     born: "Jun 12, 2006", age: 18, height: "1.80 m", weight: "70 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2027",
+    joined: "Academy", contract: "Jun 2027",
     apps: 1, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 64,
-    onLoan: false, espnId: 393138, photo: LOCAL("tyler-fletcher"),
+    onLoan: false, photo: LOCAL("tyler-fletcher"),
     bio: "Young Scottish midfielder from the Academy who made his senior debut this season.",
   },
   {
     id: 24, number: 48, name: "Jack", surname: "Moorhouse",
     pos: "CM", cat: "MID", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Feb 8, 2004", age: 20, height: "1.80 m", weight: "72 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2026",
+    joined: "Academy", contract: "Jun 2026",
     apps: 0, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 64,
-    onLoan: false, espnId: 369884, photo: LOCAL("jack-moorhouse"),
+    onLoan: false, photo: LOCAL("jack-moorhouse"),
     bio: "Academy midfielder who has been training with the first team squad this season.",
   },
-
   // FORWARDS
   {
     id: 25, number: 10, name: "Matheus", surname: "Cunha",
     pos: "ST", cat: "FWD", country: "Brazil", flag: "🇧🇷",
     born: "Jun 27, 1999", age: 26, height: "1.81 m", weight: "76 kg",
-    foot: "Right", joined: "2025", contract: "Jun 2030",
+    joined: "2025", contract: "Jun 2030",
     apps: 26, goals: 6, assists: 2, saves: 0, cleanSheets: 0, rating: 80,
-    onLoan: false, espnId: 259902, photo: LOCAL("matheus-cunha"),
+    onLoan: false, photo: LOCAL("matheus-cunha"),
     bio: "Dynamic Brazilian forward signed from Wolves. Known for his dribbling and creativity in tight spaces.",
   },
   {
     id: 26, number: 11, name: "Joshua", surname: "Zirkzee",
     pos: "ST", cat: "FWD", country: "Netherlands", flag: "🇳🇱",
     born: "May 22, 2001", age: 24, height: "1.93 m", weight: "85 kg",
-    foot: "Right", joined: "2024", contract: "Jun 2029",
+    joined: "2024", contract: "Jun 2029",
     apps: 18, goals: 2, assists: 1, saves: 0, cleanSheets: 0, rating: 72,
-    onLoan: false, espnId: 276327, photo: LOCAL("joshua-zirkzee"),
+    onLoan: false, photo: LOCAL("joshua-zirkzee"),
     bio: "Tall Dutch forward with exceptional technique and link-up play. Signed from Bologna for £36.5m.",
   },
   {
     id: 27, number: 16, name: "Amad", surname: "Diallo",
     pos: "RW", cat: "FWD", country: "Côte d'Ivoire", flag: "🇨🇮",
     born: "Jul 11, 2002", age: 23, height: "1.74 m", weight: "63 kg",
-    foot: "Right", joined: "2021", contract: "Jun 2028",
+    joined: "2021", contract: "Jun 2028",
     apps: 23, goals: 2, assists: 2, saves: 0, cleanSheets: 0, rating: 80,
-    onLoan: false, espnId: 291630, photo: LOCAL("amad-diallo"),
+    onLoan: false, photo: LOCAL("amad-diallo"),
     bio: "Electrifying Ivorian winger with tricky footwork. One of United's most dangerous attackers.",
   },
   {
     id: 28, number: 19, name: "Bryan", surname: "Mbeumo",
     pos: "RW", cat: "FWD", country: "Cameroon", flag: "🇨🇲",
     born: "Aug 7, 1999", age: 26, height: "1.74 m", weight: "68 kg",
-    foot: "Left", joined: "2025", contract: "Jun 2030",
+    joined: "2025", contract: "Jun 2030",
     apps: 24, goals: 9, assists: 3, saves: 0, cleanSheets: 0, rating: 81,
-    onLoan: false, espnId: 271170, photo: LOCAL("bryan-mbeumo"),
+    onLoan: false, photo: LOCAL("bryan-mbeumo"),
     bio: "Top scorer this season with 9 goals. Cameroon international signed from Brentford — clinical and direct.",
   },
   {
     id: 29, number: 30, name: "Benjamin", surname: "Sesko",
     pos: "ST", cat: "FWD", country: "Slovenia", flag: "🇸🇮",
     born: "May 31, 2003", age: 22, height: "1.95 m", weight: "83 kg",
-    foot: "Right", joined: "2025", contract: "Jun 2030",
+    joined: "2025", contract: "Jun 2030",
     apps: 24, goals: 8, assists: 1, saves: 0, cleanSheets: 0, rating: 79,
-    onLoan: false, espnId: 289155, photo: LOCAL("benjamin-sesko"),
+    onLoan: false, photo: LOCAL("benjamin-sesko"),
     bio: "Towering Slovenian striker signed from RB Leipzig. 8 goals in 24 appearances — clinical in the box.",
   },
   {
     id: 30, number: 32, name: "Chido", surname: "Obi",
     pos: "ST", cat: "FWD", country: "Denmark", flag: "🇩🇰",
     born: "Apr 23, 2007", age: 18, height: "1.88 m", weight: "78 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2026",
+    joined: "Academy", contract: "Jun 2026",
     apps: 0, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 67,
-    onLoan: false, espnId: 375738, photo: LOCAL("chido-obi"),
+    onLoan: false, photo: LOCAL("chido-obi"),
     bio: "Exciting teenage striker from the Academy. Exceptional physical presence and raw goal-scoring ability.",
   },
   {
     id: 31, number: 61, name: "Shea", surname: "Lacey",
     pos: "LW", cat: "FWD", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Sep 3, 2006", age: 18, height: "1.70 m", weight: "65 kg",
-    foot: "Left", joined: "Academy", contract: "Jun 2027",
+    joined: "Academy", contract: "Jun 2027",
     apps: 2, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 64,
-    onLoan: false, espnId: 358180, photo: LOCAL("shea-lacey"),
+    onLoan: false, photo: LOCAL("shea-lacey"),
     bio: "Pacey young winger from the Academy who has made his senior debut this season.",
   },
   {
     id: 32, number: 70, name: "Bendito", surname: "Mantato",
     pos: "ST", cat: "FWD", country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     born: "Nov 15, 2006", age: 18, height: "1.82 m", weight: "75 kg",
-    foot: "Right", joined: "Academy", contract: "Jun 2027",
+    joined: "Academy", contract: "Jun 2027",
     apps: 1, goals: 0, assists: 0, saves: 0, cleanSheets: 0, rating: 64,
-    onLoan: false, espnId: 379856, photo: LOCAL("bendito-mantato"),
+    onLoan: false, photo: LOCAL("bendito-mantato"),
     bio: "Young Academy striker who made his first team appearance this season.",
   },
 ];
@@ -451,29 +454,19 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
 
         {/* ── LEFT PANEL ── */}
         <div style={{ position: "relative", overflow: "hidden", minHeight: 560 }}>
-
-          {/* Full-bleed photo */}
           {player.photo && (
             <img src={player.photo} alt={player.surname}
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }}
               onError={e => { e.currentTarget.style.display = "none"; }}
             />
           )}
-
-          {/* Gradient overlays */}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.92) 75%, rgba(0,0,0,0.98) 100%)" }} />
           <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, transparent 60%, rgba(0,0,0,0.4) 100%)` }} />
-
-          {/* Position color top accent */}
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg, ${pc.bg}, transparent)` }} />
-
-          {/* Large faded number */}
           <div style={{ position: "absolute", top: -10, right: -8, fontSize: 160, fontWeight: 900,
             color: "rgba(255,255,255,0.06)", lineHeight: 1, userSelect: "none", fontStyle: "italic" }}>
             {player.number}
           </div>
-
-          {/* Top badges */}
           <div style={{ position: "absolute", top: 16, left: 16, display: "flex", flexDirection: "column", gap: 6, zIndex: 2 }}>
             <div style={{ padding: "4px 12px", borderRadius: 5, fontSize: 10, fontWeight: 800,
               letterSpacing: 2, background: pc.bg, color: pc.text, textTransform: "uppercase",
@@ -496,8 +489,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
               </div>
             )}
           </div>
-
-          {/* Placeholder if no photo */}
           {!player.photo && (
             <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center", gap: 10,
@@ -509,15 +500,11 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
               <span style={{ fontSize: 9, color: "rgba(255,255,255,0.12)", letterSpacing: 2, lineHeight: 1.8, textAlign: "center" }}>FOTO<br/>DUKE U SHTUAR</span>
             </div>
           )}
-
-          {/* Bottom content overlay */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "24px 20px", zIndex: 2 }}>
             {player.name && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", letterSpacing: 1, marginBottom: 2 }}>{player.name}</div>}
             <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1, letterSpacing: -1,
               textShadow: "0 2px 12px rgba(0,0,0,0.9)" }}>{player.surname || player.name}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.38)", marginTop: 5, marginBottom: 16 }}>{player.flag} {player.country}</div>
-
-            {/* Rating row */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 4,
                 background: "rgba(0,0,0,0.6)", border: "1px solid rgba(204,0,0,0.3)",
@@ -528,8 +515,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
               <div style={{ height: 1, flex: 1, background: "rgba(255,255,255,0.08)" }} />
               <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", letterSpacing: 1 }}>#{player.number}</span>
             </div>
-
-            {/* Buy shirt */}
             <button onClick={() => navigate("/Store")} style={{
               width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               background: "linear-gradient(135deg, #CC0000, #990000)",
@@ -550,15 +535,11 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
 
         {/* ── RIGHT PANEL ── */}
         <div style={{ display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
-
-          {/* Surname watermark */}
           <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)",
             fontSize: 100, fontWeight: 900, color: "rgba(204,0,0,0.04)", whiteSpace: "nowrap",
             userSelect: "none", letterSpacing: -4, pointerEvents: "none", zIndex: 0 }}>
             {(player.surname || player.name).toUpperCase()}
           </div>
-
-          {/* Tabs */}
           <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 28px", position: "relative", zIndex: 1 }}>
             {[["profile","PROFILI"],["stats","STATISTIKAT"]].map(([val,lbl]) => (
               <button key={val} onClick={() => setTab(val)} style={{
@@ -576,22 +557,17 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
               transition: "color 0.2s",
             }}>✕</button>
           </div>
-
           <div style={{ padding: "24px 28px", flex: 1, overflowY: "auto", position: "relative", zIndex: 1 }}>
-
-            {/* PROFILE TAB */}
             {tab === "profile" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, lineHeight: 1.8, margin: 0,
                   borderLeft: `3px solid ${pc.bg}`, paddingLeft: 14 }}>{player.bio}</p>
-
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {[
                     ["I lindur", player.born],
                     ["Mosha", `${player.age} vjeç`],
                     ["Gjatësia", player.height],
                     ["Pesha", player.weight],
-                    ["Këmba preferuare", player.foot],
                     ["Bashkuar", player.joined],
                     ["Kontrata deri", player.contract],
                     ["Numri", `#${player.number}`],
@@ -609,12 +585,8 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
                 </div>
               </div>
             )}
-
-            {/* STATS TAB */}
             {tab === "stats" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-
-                {/* Big stat cards */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
                   {(player.cat === "GK"
                     ? [{ label: "NDESHJE", value: player.apps, color: "#94a3b8" },
@@ -637,8 +609,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
                     </div>
                   ))}
                 </div>
-
-                {/* Stat bars */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <div style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", letterSpacing: 3, marginBottom: 2, textTransform: "uppercase" }}>Performanca 2025/26</div>
                   {player.cat === "GK" ? (
@@ -660,8 +630,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
               </div>
             )}
           </div>
-
-          {/* Nav */}
           <div style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
             padding: "14px 28px", borderTop: "1px solid rgba(255,255,255,0.05)",
@@ -700,7 +668,6 @@ function CarouselRow({ players: rowP, onSelect }) {
           fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center",
         }}>{lbl}</button>
       ))}
-
       <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", gap: 10, padding: "0 72px", overflow: "hidden" }}>
         {rowP.map((p, i) => {
           const off = ((i - active + rowP.length) % rowP.length);
@@ -737,27 +704,19 @@ function CarouselRow({ players: rowP, onSelect }) {
                 ? "0 0 35px rgba(204,0,0,0.45), 0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,80,80,0.12)"
                 : hoveredId === p.id ? "0 0 18px rgba(204,0,0,0.25), 0 12px 32px rgba(0,0,0,0.6)" : "0 8px 24px rgba(0,0,0,0.55)",
             }}>
-
-              {/* Top accent line */}
               {isA && (
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, zIndex: 5,
                   background: "linear-gradient(90deg, transparent 0%, #CC0000 25%, #ff5555 50%, #CC0000 75%, transparent 100%)",
                   borderRadius: "16px 16px 0 0",
                 }} />
               )}
-
-              {/* Diagonal shine overlay */}
               <div style={{
                 position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1,
                 background: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 35%, transparent 55%)",
               }} />
-
-              {/* Big number watermark */}
               <div style={{ position: "absolute", top: -12, right: -2, fontSize: isA?100:68, fontWeight: 900,
                 color: "rgba(204,0,0,0.13)", lineHeight: 1, userSelect: "none", fontStyle: "italic",
               }}>{p.number}</div>
-
-              {/* Photo */}
               {p.photo && (
                 <img src={p.photo} alt={p.surname} style={{
                   position: "absolute", inset: 0, width: "100%", height: "100%",
@@ -767,20 +726,14 @@ function CarouselRow({ players: rowP, onSelect }) {
                   onError={e => { e.currentTarget.style.display = "none"; }}
                 />
               )}
-
-              {/* Bottom gradient */}
               <div style={{ position: "absolute", inset: 0,
                 background: "linear-gradient(0deg, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.55) 40%, rgba(0,0,0,0.04) 75%)",
               }} />
-
-              {/* Pos badge */}
               <div style={{ position: "absolute", top: 10, left: 10, zIndex: 3,
                 padding: "2px 8px", borderRadius: 4, fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
                 background: pc.bg, color: pc.text, textTransform: "uppercase",
                 boxShadow: isA ? "0 2px 8px rgba(0,0,0,0.6)" : "none",
               }}>{p.pos}</div>
-
-              {/* Rating + Captain badges (active only) */}
               {isA && (
                 <div style={{ position: "absolute", top: 10, right: 10, zIndex: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
                   <div style={{ background: "rgba(0,0,0,0.75)", border: "1px solid rgba(204,0,0,0.45)", borderRadius: 6, padding: "3px 8px", textAlign: "center" }}>
@@ -794,8 +747,6 @@ function CarouselRow({ players: rowP, onSelect }) {
                   )}
                 </div>
               )}
-
-              {/* On loan badge */}
               {p.onLoan && !isA && (
                 <div style={{ position: "absolute", top: 10, right: 10, zIndex: 3,
                   padding: "2px 7px", borderRadius: 4, fontSize: 8, fontWeight: 700, letterSpacing: 1,
@@ -803,13 +754,11 @@ function CarouselRow({ players: rowP, onSelect }) {
                   border: "1px solid rgba(255,255,255,0.18)", textTransform: "uppercase",
                 }}>ON LOAN</div>
               )}
-
               <div style={{ position: "relative", zIndex: 2 }}>
                 {isA && p.name && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.38)", marginBottom: 1 }}>{p.name}</div>}
                 <div style={{ fontSize: isA?20:13, fontWeight: 900, lineHeight: 1.1, color: "white",
                   textShadow: isA ? "0 2px 10px rgba(0,0,0,0.9)" : "none",
                 }}>{p.surname || p.name}</div>
-
                 {isA && (
                   <>
                     <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 2, marginBottom: 10 }}>{p.flag} {p.country}</div>
@@ -835,8 +784,6 @@ function CarouselRow({ players: rowP, onSelect }) {
           );
         })}
       </div>
-
-      {/* Dots */}
       <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 20 }}>
         {rowP.map((_,i) => (
           <div key={i} onClick={() => setActive(i)} style={{
@@ -851,16 +798,16 @@ function CarouselRow({ players: rowP, onSelect }) {
 }
 
 // ── SEASON HIGHLIGHTS ─────────────────────────────────────────────────────────
-function SeasonHighlights({ players }) {
-  if (!players.length) return null;
-  const topScorer  = players.reduce((a, b) => b.goals   > a.goals   ? b : a);
-  const topAssists = players.reduce((a, b) => b.assists > a.assists ? b : a);
-  const topRating  = players.reduce((a, b) => b.rating  > a.rating  ? b : a);
+function SeasonHighlights({ players: pl }) {
+  if (!pl.length) return null;
+  const topScorer  = pl.reduce((a, b) => b.goals   > a.goals   ? b : a);
+  const topAssists = pl.reduce((a, b) => b.assists > a.assists ? b : a);
+  const topRating  = pl.reduce((a, b) => b.rating  > a.rating  ? b : a);
 
   const items = [
-    { label: "GOLEADOR",  sublabel: "Gola sezoni",    player: topScorer,  stat: topScorer.goals,    statLabel: "GOLA"    },
-    { label: "ASISTUES",  sublabel: "Asiste sezoni",  player: topAssists, stat: topAssists.assists,  statLabel: "ASISTE"  },
-    { label: "VLERËSIMI", sublabel: "Rating sezonal", player: topRating,  stat: topRating.rating,   statLabel: "RATING"  },
+    { label: "GOLEADOR",  player: topScorer,  stat: topScorer.goals,    statLabel: "GOLA"    },
+    { label: "ASISTUES",  player: topAssists, stat: topAssists.assists,  statLabel: "ASISTE"  },
+    { label: "VLERËSIMI", player: topRating,  stat: topRating.rating,   statLabel: "RATING"  },
   ];
 
   return (
@@ -874,14 +821,9 @@ function SeasonHighlights({ players }) {
           position: "relative", overflow: "hidden",
           boxShadow: "0 8px 28px rgba(0,0,0,0.45)",
         }}>
-          {/* Left accent */}
           <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "#CC0000", borderRadius: "14px 0 0 14px" }} />
-
-          {/* Shine */}
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
             background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)" }} />
-
-          {/* Photo */}
           <div style={{ width: 54, height: 54, borderRadius: 10, overflow: "hidden", flexShrink: 0,
             border: "1px solid rgba(204,0,0,0.3)", background: "rgba(255,255,255,0.03)" }}>
             {player.photo && (
@@ -891,15 +833,11 @@ function SeasonHighlights({ players }) {
               />
             )}
           </div>
-
-          {/* Info */}
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 9, letterSpacing: 2.5, color: "#CC0000", fontWeight: 800, marginBottom: 3, textTransform: "uppercase" }}>{label}</div>
             <div style={{ fontSize: 15, fontWeight: 900, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{player.surname}</div>
             <div style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", marginTop: 2 }}>{player.flag} {player.country}</div>
           </div>
-
-          {/* Stat */}
           <div style={{ textAlign: "center", flexShrink: 0 }}>
             <div style={{ fontSize: 38, fontWeight: 900, color: "#CC0000", lineHeight: 1 }}>{stat}</div>
             <div style={{ fontSize: 8, color: "rgba(255,255,255,0.22)", letterSpacing: 2, marginTop: 2, textTransform: "uppercase" }}>{statLabel}</div>
@@ -931,7 +869,24 @@ export default function Players() {
 
   useEffect(() => {
     axios.get("http://localhost:5001/players")
-      .then(r => { if (r.data.length) setPlayers(r.data.map(mapPlayer)); })
+      .then(r => {
+        if (r.data.length) {
+          setPlayers(prev => prev.map(staticPlayer => {
+            const db = r.data.find(dp => dp.id === staticPlayer.id);
+            if (!db) return staticPlayer;
+            return {
+              ...staticPlayer,
+              photo:       db.foto_url      || staticPlayer.photo,
+              apps:        db.apps          ?? staticPlayer.apps,
+              goals:       db.goals         ?? staticPlayer.goals,
+              assists:     db.assists       ?? staticPlayer.assists,
+              saves:       db.saves         ?? staticPlayer.saves,
+              cleanSheets: db.clean_sheets  ?? staticPlayer.cleanSheets,
+              rating:      db.rating        ?? staticPlayer.rating,
+            };
+          }));
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -942,23 +897,21 @@ export default function Players() {
   const avgRating = Math.round(players.reduce((s, p) => s + p.rating, 0) / players.length);
 
   return (
-    <div className="mu-wrap">
-      <Navbar />
-      <div style={{
-        background: `
-          radial-gradient(ellipse at 85% 10%, rgba(204,0,0,0.45) 0%, transparent 40%),
-          radial-gradient(ellipse at 15% 80%, rgba(140,0,0,0.3) 0%, transparent 40%),
-          linear-gradient(160deg, #3a0000 0%, #1c0000 50%, #0d0000 100%)
-        `,
-        minHeight: "100vh", color: "white", fontFamily: "Arial, sans-serif", position: "relative", overflowX: "hidden",
-      }}>
+    <div style={{
+      background: `
+        radial-gradient(ellipse at 85% 10%, rgba(204,0,0,0.45) 0%, transparent 40%),
+        radial-gradient(ellipse at 15% 80%, rgba(140,0,0,0.3) 0%, transparent 40%),
+        linear-gradient(160deg, #3a0000 0%, #1c0000 50%, #0d0000 100%)
+      `,
+      minHeight: "100vh", color: "white", fontFamily: "Arial, sans-serif", position: "relative", overflowX: "hidden",
+    }}>
+      <div style={{ position: "absolute", top: -180, right: -180, width: 650, height: 650, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.12)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: -80, right: -80, width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.08)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: 100, left: -200, width: 700, height: 700, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.07)", pointerEvents: "none" }} />
 
-        {/* Decorative circles */}
-        <div style={{ position: "absolute", top: -180, right: -180, width: 650, height: 650, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.12)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: -80, right: -80, width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.08)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: 100, left: -200, width: 700, height: 700, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.07)", pointerEvents: "none" }} />
-
-  
+      <div style={{ background: "#cc0000" }}>
+        <Navbar />
+      </div>
 
       {/* HEADER */}
       <div style={{
@@ -1031,7 +984,6 @@ export default function Players() {
         );
         if (!group.length) return null;
         return (
-          
           <div key={sec.cat} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
             <SectionHeader title={sec.title} count={group.length} num={sec.num} />
             <CarouselRow players={group} onSelect={setSelected} />
@@ -1039,7 +991,6 @@ export default function Players() {
         );
       })}
 
-      {/* MODAL */}
       {selected && (
         <PlayerModal
           player={selected}
@@ -1048,7 +999,6 @@ export default function Players() {
           onNext={() => setSelected(players[(modalIdx + 1) % players.length])}
         />
       )}
-      </div>
     </div>
   );
 }
