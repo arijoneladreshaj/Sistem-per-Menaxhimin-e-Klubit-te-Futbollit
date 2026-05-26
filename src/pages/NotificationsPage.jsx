@@ -33,34 +33,35 @@ export default function NotificationsPage() {
 
   const fetchAll = async () => {
     try {
-
-      const [nRes, tRes, aRes, matchRes] = await Promise.all([
-        api.get("/api/notifications/my"),
-        api.get("/api/training"),
-        api.get("/api/training/my-attendance"),
-        api.get("/api/ndeshjet/next-upcoming"),
-      ]);
-
+      const nRes = await api.get("/api/notifications/my");
       setNotifs(nRes.data);
 
-      const today = new Date(); today.setHours(0, 0, 0, 0);
-      setSessions(
-        tRes.data
-          .filter(s => new Date(s.data_stervitjes) >= today)
-          .sort((a, b) => new Date(a.data_stervitjes) - new Date(b.data_stervitjes))
-      );
+      if (isPlayer) {
+        const [tRes, aRes, matchRes] = await Promise.all([
+          api.get("/api/training"),
+          api.get("/api/training/my-attendance"),
+          api.get("/api/ndeshjet/next-upcoming"),
+        ]);
 
-      const map = {};
-      aRes.data.forEach(a => { map[a.training_id] = a.statusi; });
-      setAttendance(map);
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        setSessions(
+          tRes.data
+            .filter(s => new Date(s.data_stervitjes) >= today)
+            .sort((a, b) => new Date(a.data_stervitjes) - new Date(b.data_stervitjes))
+        );
 
-      const m = matchRes.data;
-      setNextMatch(m);
-      if (m) {
-        try {
-          const lRes = await api.get(`/api/lineup/${m.id}`);
-          setLineup(lRes.data);
-        } catch {}
+        const map = {};
+        aRes.data.forEach(a => { map[a.training_id] = a.statusi; });
+        setAttendance(map);
+
+        const m = matchRes.data;
+        setNextMatch(m);
+        if (m) {
+          try {
+            const lRes = await api.get(`/api/lineup/${m.id}`);
+            setLineup(lRes.data);
+          } catch {}
+        }
       }
     } catch {}
     finally { setLoading(false); }
@@ -110,7 +111,10 @@ export default function NotificationsPage() {
         {/* TABS */}
         <div style={{ display: "flex", borderBottom: "1px solid #2a2a2a", marginBottom: 24 }}>
 
-          {[["notifs", "Njoftimet", unread], ["stervitje", "Prezenca", 0], ["ndeshja", "Ndeshja", 0]].map(([key, label, badge]) => (
+          {(isPlayer
+            ? [["notifs", "Njoftimet", unread], ["stervitje", "Prezenca", 0], ["ndeshja", "Ndeshja", 0]]
+            : [["notifs", "Njoftimet", unread]]
+          ).map(([key, label, badge]) => (
             <button
               key={key}
               onClick={() => setTab(key)}

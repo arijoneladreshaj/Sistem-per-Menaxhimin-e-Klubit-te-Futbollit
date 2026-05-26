@@ -118,18 +118,22 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
            @cmimi_adult, @cmimi_koncesion, @cmimi_youth, @cmimi_under14,
            @deadline_earlybird, @perfitesite)
       `);
-    // Notification për "sezonet"
-    const prefRes = await pool.request()
-      .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%sezonet%'`);
-    for (const row of prefRes.recordset) {
-      await pool.request()
-        .input("uid", sql.Int,      row.user_id)
-        .input("tit", sql.NVarChar, "Sezon i ri")
-        .input("msg", sql.NVarChar, `Sezoni ${emertimi} u shtua`)
-        .query(`INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@uid, @tit, @msg)`);
-    }
-
     res.json({ message: "Sezoni u shtua" });
+
+    try {
+      const prefRes = await pool.request()
+        .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%sezonet%'`);
+      console.log(`[Notification sezonet] ${prefRes.recordset.length} users`);
+      for (const row of prefRes.recordset) {
+        await pool.request()
+          .input("uid", sql.Int,      row.user_id)
+          .input("tit", sql.NVarChar, "Sezon i ri")
+          .input("msg", sql.NVarChar, `Sezoni ${emertimi} u shtua`)
+          .query(`INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETDATE())`);
+      }
+    } catch (notifErr) {
+      console.error("[Notification sezonet error]", notifErr.message);
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

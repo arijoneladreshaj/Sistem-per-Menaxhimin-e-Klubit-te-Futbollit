@@ -94,17 +94,22 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
         )
       `);
 
-    const prefRes = await pool.request()
-      .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%lajme%'`);
-    for (const row of prefRes.recordset) {
-      await pool.request()
-        .input("uid", sql.Int,      row.user_id)
-        .input("tit", sql.NVarChar, "Lajm i ri")
-        .input("msg", sql.NVarChar, titulli)
-        .query(`INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@uid, @tit, @msg)`);
-    }
-
     res.json({ message: "Lajmi u shtua" });
+
+    try {
+      const prefRes = await pool.request()
+        .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%lajme%'`);
+      console.log(`[Notification lajme] ${prefRes.recordset.length} users`);
+      for (const row of prefRes.recordset) {
+        await pool.request()
+          .input("uid", sql.Int,      row.user_id)
+          .input("tit", sql.NVarChar, "Lajm i ri")
+          .input("msg", sql.NVarChar, titulli)
+          .query(`INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETDATE())`);
+      }
+    } catch (notifErr) {
+      console.error("[Notification lajme error]", notifErr.message);
+    }
 
   } catch (err) {
 

@@ -111,26 +111,30 @@ router.post("/", verifyToken, async (req, res) => {
             (@match_id, @user_id, @sektori, @numri_uleses, @emri_bleresit, @mbiemri_bleresit, @cmimi, @is_vip, @statusi)
         `);
     }
-    // Notification për "bileta" — vetëm kur admin/menaxher shton bileta
+    res.json({ success: true, message: "Biletat u ruajtën me sukses" });
+
     const isAdmin = ["admin","menaxher"].includes(req.user.role?.toLowerCase());
     if (isAdmin) {
-      const matchRes = await pool.request()
-        .input("mid", sql.Int, match_id)
-        .query("SELECT ekipi_kundershtare FROM Matches WHERE id = @mid");
-      const kundershtari = matchRes.recordset[0]?.ekipi_kundershtare || "kundërshtari";
+      try {
+        const matchRes = await pool.request()
+          .input("mid", sql.Int, match_id)
+          .query("SELECT ekipi_kundershtare FROM Matches WHERE id = @mid");
+        const kundershtari = matchRes.recordset[0]?.ekipi_kundershtare || "kundërshtari";
 
-      const prefRes = await pool.request()
-        .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%bileta%'`);
-      for (const row of prefRes.recordset) {
-        await pool.request()
-          .input("uid", sql.Int,      row.user_id)
-          .input("tit", sql.NVarChar, "Bileta të reja")
-          .input("msg", sql.NVarChar, `Bileta disponueshme për Man United vs ${kundershtari}`)
-          .query(`INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@uid, @tit, @msg)`);
+        const prefRes = await pool.request()
+          .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%bileta%'`);
+        console.log(`[Notification bileta] ${prefRes.recordset.length} users`);
+        for (const row of prefRes.recordset) {
+          await pool.request()
+            .input("uid", sql.Int,      row.user_id)
+            .input("tit", sql.NVarChar, "Bileta të reja")
+            .input("msg", sql.NVarChar, `Bileta disponueshme për Man United vs ${kundershtari}`)
+            .query(`INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETDATE())`);
+        }
+      } catch (notifErr) {
+        console.error("[Notification bileta error]", notifErr.message);
       }
     }
-
-    res.json({ success: true, message: "Biletat u ruajtën me sukses" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
