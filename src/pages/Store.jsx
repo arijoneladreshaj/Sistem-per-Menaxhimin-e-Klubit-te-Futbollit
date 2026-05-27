@@ -35,7 +35,7 @@ function CartSidebar({ cart, onClose, onRemove, onClear, onCheckout }) {
   return (
     <>
       <div onClick={onClose} className="position-fixed top-0 start-0 w-100 h-100" style={{background:'rgba(0,0,0,0.65)',zIndex:1000}} />
-      <div className="position-fixed top-0 end-0 h-100 d-flex flex-column" style={{width:380,zIndex:1001,background:'#1a0000',borderLeft:`3px solid rgba(255,255,255,0.15)`}}>
+      <div className="position-fixed top-0 end-0 h-100 d-flex flex-column" style={{width:380,zIndex:1001,background:'#111',borderLeft:`3px solid rgba(255,255,255,0.15)`}}>
         <div className="d-flex align-items-center justify-content-between px-4 py-3" style={{background:NAV_BG,borderBottom:'1px solid rgba(255,255,255,0.1)'}}>
           <div className="d-flex align-items-center gap-2">
             <i className="bi bi-cart3 text-white fs-5"></i>
@@ -166,7 +166,7 @@ function AddressModal({ cart, onClose, onConfirm }) {
           <div style={{display:"flex",justifyContent:"space-between",color:"#888",fontSize:13,marginBottom:6}}><span>Dërgesa</span><span style={{color: shipping===0?"#4ade80":"#fff"}}>{shipping===0?"FALAS":`€${shipping.toFixed(2)}`}</span></div>
           <div style={{display:"flex",justifyContent:"space-between",color:"#fff",fontWeight:700,fontSize:15}}><span>Total</span><span>€{total.toFixed(2)}</span></div>
         </div>
-        <button onClick={submit} disabled={loading} style={{width:"100%",background:"#DA291C",color:"#fff",border:"none",borderRadius:8,padding:"12px",fontWeight:700,fontSize:15,cursor:"pointer"}}>
+        <button onClick={submit} disabled={loading} style={{width:"100%",background:"#cc0000",color:"#fff",border:"none",borderRadius:8,padding:"12px",fontWeight:700,fontSize:15,cursor:"pointer"}}>
           {loading ? "Duke ruajtur..." : "Konfirmo Porosinë"}
         </button>
       </div>
@@ -180,7 +180,7 @@ function SizeModal({ product, onConfirm, onClose }) {
   return (
     <>
       <div onClick={onClose} className="position-fixed top-0 start-0 w-100 h-100" style={{background:'rgba(0,0,0,0.7)',zIndex:1000}} />
-      <div className="position-fixed p-4" style={{top:'50%',left:'50%',transform:'translate(-50%,-50%)',zIndex:1002,width:360,background:'#1a0000',border:'1px solid rgba(255,255,255,0.12)'}}>
+      <div className="position-fixed p-4" style={{top:'50%',left:'50%',transform:'translate(-50%,-50%)',zIndex:1002,width:360,background:'#111',border:'1px solid rgba(255,255,255,0.12)'}}>
         <div className="d-flex align-items-center justify-content-between mb-3">
           <div>
             <div style={{fontFamily:FONT_H,fontSize:24,color:'#fff',letterSpacing:1}}>{product.name}</div>
@@ -251,7 +251,7 @@ function ProductCard({ product, onAdd, onWishlist, wishlisted }) {
           )}
           <button onClick={() => onWishlist(product.id)}
             className="position-absolute top-0 end-0 m-2 d-flex align-items-center justify-content-center border-0"
-            style={{width:30,height:30,background:wishlisted?'#DA291C':'rgba(0,0,0,0.5)',color:'#fff',borderRadius:'50%',cursor:'pointer',border:'none'}}>
+            style={{width:30,height:30,background:wishlisted?'#cc0000':'rgba(0,0,0,0.5)',color:'#fff',borderRadius:'50%',cursor:'pointer',border:'none'}}>
             <i className={`bi ${wishlisted?'bi-heart-fill':'bi-heart'}`} style={{fontSize:13}}></i>
           </button>
           <button onClick={() => onAdd(product)}
@@ -410,7 +410,7 @@ const handleDelete = async (id) => {
     if (sortBy==='name-asc')   list = [...list].sort((a,b)=>a.name.localeCompare(b.name));
     if (sortBy==='sale')       list = list.filter(p=>p.oldPrice);
     return list;
-  }, [activeCat,activeSubs,search,maxPrice,sortBy]);
+  }, [activeCat,activeSubs,search,maxPrice,sortBy,products]);
 
   const cartCount = cart.reduce((s,i)=>s+i.qty,0);
 
@@ -488,7 +488,7 @@ const handleDelete = async (id) => {
             {title:'RENDIT', content:(
               <select className="w-100 border-0" value={sortBy} onChange={e=>setSortBy(e.target.value)}
                 style={{background:'rgba(255,255,255,0.08)',color:'#fff',fontFamily:FONT_B,fontSize:12,fontWeight:600,padding:'8px 10px',outline:'none',cursor:'pointer'}}>
-                {SORT_OPTIONS.map(o=><option key={o.value} value={o.value} style={{background:'#1a0000'}}>{o.label}</option>)}
+                {SORT_OPTIONS.map(o=><option key={o.value} value={o.value} style={{background:'#111'}}>{o.label}</option>)}
               </select>
             )},
             {title:'ÇMIMI MAX', content:(
@@ -570,21 +570,12 @@ const handleDelete = async (id) => {
         </main>
       </div>
 
-      {/* TICKER */}
-      <div className="d-flex align-items-center overflow-hidden" style={{background:'rgba(0,0,0,0.42)',borderTop:'1px solid rgba(255,255,255,0.08)',padding:'10px 0',marginTop:24}}>
-        <span className="flex-shrink-0 mx-3" style={{background:RED,color:'#fff',fontSize:10,fontWeight:700,letterSpacing:2,textTransform:'uppercase',padding:'4px 16px'}}>LIVE</span>
-        <div style={{color:'rgba(255,255,255,0.6)',fontSize:12,fontWeight:600,letterSpacing:0.5,whiteSpace:'nowrap',overflow:'hidden',display:'flex',gap:60}}>
-          {['Man United 2–1 Arsenal · PL','Ndeshja: Chelsea · E Shtunë 20:00','Tabela: United 3. vend · 58 pikë','Transferim: Rashford kthehet në formë'].map((t,i)=>(
-            <span key={i}>{t}</span>
-          ))}
-        </div>
-      </div>
 
       {/* WISHLIST PANEL */}
       {wishlistOpen && (
         <div style={{position:'fixed',top:0,right:0,width:360,height:'100vh',background:'#111',borderLeft:'1px solid #222',zIndex:9000,display:'flex',flexDirection:'column'}}>
           <div style={{padding:'20px 20px 16px',borderBottom:'1px solid #222',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <span style={{color:'#fff',fontWeight:700,fontSize:16}}>Të preferuarat <span style={{color:'#DA291C'}}>({wishlist.length})</span></span>
+            <span style={{color:'#fff',fontWeight:700,fontSize:16}}>Të preferuarat <span style={{color:'#cc0000'}}>({wishlist.length})</span></span>
             <button onClick={()=>setWishlistOpen(false)} style={{background:'transparent',border:'none',color:'#888',fontSize:20,cursor:'pointer'}}>×</button>
           </div>
           <div style={{flex:1,overflowY:'auto',padding:'16px'}}>
@@ -596,7 +587,7 @@ const handleDelete = async (id) => {
                   <img src={p.img} alt={p.name} style={{width:56,height:56,objectFit:'cover',borderRadius:6,background:'#1a1a1a'}} />
                   <div style={{flex:1,minWidth:0}}>
                     <div style={{color:'#fff',fontSize:13,fontWeight:600,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{p.name}</div>
-                    <div style={{color:'#DA291C',fontSize:13,fontWeight:700,marginTop:2}}>£{p.price}</div>
+                    <div style={{color:'#cc0000',fontSize:13,fontWeight:700,marginTop:2}}>£{p.price}</div>
                   </div>
                   <button onClick={()=>toggleWishlist(p.id)} style={{background:'transparent',border:'none',color:'#f87171',fontSize:18,cursor:'pointer'}}>
                     <i className="bi bi-heart-fill"></i>
@@ -620,7 +611,7 @@ const handleDelete = async (id) => {
       {/* TOAST */}
       {toast&&(
         <div className="position-fixed d-flex align-items-center gap-3"
-          style={{bottom:24,right:24,background:'#1a0000',border:'1px solid rgba(255,255,255,0.12)',borderLeft:'4px solid #fff',padding:'14px 18px',zIndex:9999,boxShadow:'0 8px 32px rgba(0,0,0,0.5)'}}>
+          style={{bottom:24,right:24,background:'#111',border:'1px solid rgba(255,255,255,0.12)',borderLeft:'4px solid #fff',padding:'14px 18px',zIndex:9999,boxShadow:'0 8px 32px rgba(0,0,0,0.5)'}}>
           <i className="bi bi-check-circle-fill" style={{color:'#4ade80',fontSize:18}}></i>
           <span style={{color:'#fff',fontSize:13,fontFamily:FONT_B,fontWeight:600}}>{toast}</span>
         </div>

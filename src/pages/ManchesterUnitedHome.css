@@ -23,10 +23,10 @@ body {
   justify-content: space-between;
   padding: 0 40px;
   height: 64px;
-  background: rgba(0, 0, 0, 0.45);
+  background: #cc0000;
   position: relative;
   z-index: 20;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .mu-nav-left {
@@ -63,6 +63,18 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.mu-nav-links li {
+  list-style: none;
+}
+
+.mu-nav-links li::before,
+.mu-nav-links li::after,
+.mu-nav-links a::before,
+.mu-nav-links a::after {
+  content: none;
+  display: none;
 }
 
 .mu-nav-links a {
@@ -105,7 +117,7 @@ body {
 
 .mu-hero {
   position: relative;
-  min-height: 536px;
+  min-height: 680px;
   display: flex;
   align-items: center;
   overflow: hidden;

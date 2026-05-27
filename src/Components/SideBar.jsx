@@ -19,6 +19,7 @@ const navLinks = [
       { label: "Stërvitjet",  path: "/training",          badge: 4,    roles: ["Admin","Trajner"] },
       { label: "Biletat",     path: "/DashboardBiletat",  badge: null, roles: ["Admin","Menaxher"] },
       { label: "Përdoruesit", path: "/DashboardUsers",    badge: null, roles: ["Admin"] },
+      { label: "Mesazhet",   path: "/messages",          badge: null, roles: ["Admin"] },
     ],
   },
   {

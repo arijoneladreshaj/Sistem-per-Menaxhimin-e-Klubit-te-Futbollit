@@ -48,6 +48,7 @@ const DashboardTransferimet = lazy(() => import("./pages/Dashboard/DashboardTran
 const NotificationsPage     = lazy(() => import("./pages/NotificationsPage"));
 const LineupPage            = lazy(() => import("./pages/Dashboard/LineupPage"));
 const PublicLineupPage      = lazy(() => import("./pages/PublicLineupPage"));
+const DashboardMessages     = lazy(() => import("./pages/Dashboard/DashboardMessages"));
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("accessToken");
@@ -173,6 +174,14 @@ export default function App() {
               element={
                 <PrivateRoute roles={["Admin"]}>
                   <DashboardUsers />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <PrivateRoute roles={["Admin"]}>
+                  <DashboardMessages />
                 </PrivateRoute>
               }
             />

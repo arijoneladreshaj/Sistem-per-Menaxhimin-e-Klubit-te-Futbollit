@@ -34,5 +34,8 @@ app.use("/api/orders",               require("./Routes/Orders"));
 app.use("/api/admin/users",   require("./Routes/AdminUsers"));
 app.use("/api/notifications", require("./Routes/Notifications"));
 app.use("/api/lineup",        require("./Routes/Lineup"));
+app.use("/api/homepage",      require("./Routes/HomepageContent"));
+app.use("/api/newsletter",    require("./Routes/Newsletter"));
+app.use("/api/contact",       require("./Routes/ContactMessages"));
 
 app.listen(5001, () => console.log("Server ne port 5001"));
