@@ -9,7 +9,7 @@ const api = axios.create({
   baseURL: "http://localhost:5001",
 });
 
-// Para çdo kërkese — shto access token automatikisht
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {
