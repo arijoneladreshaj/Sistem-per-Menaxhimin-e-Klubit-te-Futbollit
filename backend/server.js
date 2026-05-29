@@ -38,4 +38,7 @@ app.use("/api/homepage",      require("./Routes/HomepageContent"));
 app.use("/api/newsletter",    require("./Routes/Newsletter"));
 app.use("/api/contact",       require("./Routes/ContactMessages"));
 
+
+app.use("/api/clubs", require("./Routes/Clubs"));
+
 app.listen(5001, () => console.log("Server ne port 5001"));
