@@ -18,7 +18,7 @@ const ProfilePage = lazy(() => import("./pages/ProfilePages/ProfilePage"));
 const Store = lazy(() => import("./pages/Store"));
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const Staff = lazy(() => import("./pages/Dashboard/Staff"));
-const Players = lazy(() => import("./Players"));
+const Players = lazy(() => import("./pages/Players"));
 const DashboardNdeshjet = lazy(
   () => import("./pages/Dashboard/DashboardNdeshjet"),
 );

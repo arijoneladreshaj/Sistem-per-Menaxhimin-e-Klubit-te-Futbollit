@@ -304,9 +304,8 @@ export default function Store() {
   const [activeSeason, setActiveSeason] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/seasons/active")
-      .then(r => r.json())
-      .then(d => { if (d?.emertimi) setActiveSeason(d); })
+    api.get("/api/seasons/active")
+      .then(r => { if (r.data?.emertimi) setActiveSeason(r.data); })
       .catch(() => {});
 
     if (user.id) {

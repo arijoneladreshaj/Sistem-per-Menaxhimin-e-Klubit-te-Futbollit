@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axiosInstance";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 const MU_CREST = "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg";
@@ -64,7 +64,7 @@ export default function Footer() {
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/homepage")
+    api.get("/api/homepage")
       .then(res => setFc(res.data || {}))
       .catch(() => {});
   }, []);
@@ -72,7 +72,7 @@ export default function Footer() {
   const f = (key) => fc[key] || FOOTER_DEFAULTS[key] || "";
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/ndeshjet")
+    api.get("/api/ndeshjet")
       .then(res => {
         const today = new Date(); today.setHours(0, 0, 0, 0);
         const nxt = res.data
@@ -87,7 +87,7 @@ export default function Footer() {
     const { emri, email, mesazhi } = contactForm;
     if (!emri || !email || !mesazhi) return;
     try {
-      await axios.post("http://localhost:5001/api/contact", contactForm);
+      await api.post("/api/contact", contactForm);
       setContactForm({ emri: "", email: "", mesazhi: "" });
       setToastMsg("Mesazhi u dërgua me sukses!"); setToastOk(true);
     } catch (err) {

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Navbar from "./Components/NavBar";
-import "./pages/ManchesterUnitedHome.css";
+import api from "../api/axiosInstance";
+import Navbar from "../Components/NavBar";
+import "./ManchesterUnitedHome.css";
 
 // ── FOTO helper ───────────────────────────────────────────────────────────────
 const LOCAL = (slug) => `/players/${slug}.png`;
@@ -400,7 +400,6 @@ function ratingColor(r) {
   return "#94a3b8";
 }
 
-// ── STAT BAR ──────────────────────────────────────────────────────────────────
 function StatBar({ value, max, color = "#CC0000" }) {
   return (
     <div style={{ background: "rgba(255,255,255,0.07)", borderRadius: 99, height: 4, flex: 1, overflow: "hidden" }}>
@@ -419,7 +418,6 @@ function StatRow({ label, value, max, color = "#CC0000" }) {
   );
 }
 
-// ── PLAYER MODAL ──────────────────────────────────────────────────────────────
 function PlayerModal({ player, onClose, onPrev, onNext }) {
   const [tab, setTab] = useState("profile");
   const navigate = useNavigate();
@@ -451,8 +449,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
         minHeight: 560, position: "relative",
         boxShadow: "0 0 60px rgba(204,0,0,0.2), 0 40px 80px rgba(0,0,0,0.8)",
       }}>
-
-        {/* ── LEFT PANEL ── */}
         <div style={{ position: "relative", overflow: "hidden", minHeight: 560 }}>
           {player.photo && (
             <img src={player.photo} alt={player.surname}
@@ -497,7 +493,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
                 <circle cx="27" cy="13" r="11" fill="rgba(204,0,0,0.18)" />
                 <path d="M4 62c0-13 8-22 23-22s23 9 23 22" stroke="rgba(204,0,0,0.18)" strokeWidth="3" fill="none" strokeLinecap="round" />
               </svg>
-              <span style={{ fontSize: 9, color: "rgba(255,255,255,0.12)", letterSpacing: 2, lineHeight: 1.8, textAlign: "center" }}>FOTO<br/>DUKE U SHTUAR</span>
             </div>
           )}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "24px 20px", zIndex: 2 }}>
@@ -523,17 +518,11 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
               border: "none", cursor: "pointer", textTransform: "uppercase",
               boxShadow: "0 4px 20px rgba(204,0,0,0.4)",
             }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <path d="M16 10a4 4 0 01-8 0"/>
-              </svg>
               BLEJ FANELLËN #{player.number}
             </button>
           </div>
         </div>
 
-        {/* ── RIGHT PANEL ── */}
         <div style={{ display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
           <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)",
             fontSize: 100, fontWeight: 900, color: "rgba(204,0,0,0.04)", whiteSpace: "nowrap",
@@ -554,7 +543,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
               marginLeft: "auto", padding: "20px 0 18px",
               background: "none", border: "none", cursor: "pointer",
               color: "rgba(255,255,255,0.2)", fontSize: 22, lineHeight: 1,
-              transition: "color 0.2s",
             }}>✕</button>
           </div>
           <div style={{ padding: "24px 28px", flex: 1, overflowY: "auto", position: "relative", zIndex: 1 }}>
@@ -576,7 +564,6 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
                       background: "rgba(255,255,255,0.02)",
                       border: "1px solid rgba(255,255,255,0.05)",
                       borderRadius: 8, padding: "10px 14px",
-                      transition: "border-color 0.2s",
                     }}>
                       <div style={{ fontSize: 9, color: "rgba(255,255,255,0.25)", letterSpacing: 2, marginBottom: 4, textTransform: "uppercase" }}>{label}</div>
                       <div style={{ fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.88)" }}>{value}</div>
@@ -597,13 +584,11 @@ function PlayerModal({ player, onClose, onPrev, onNext }) {
                        { label: "ASISTE", value: player.assists, color: "#3b82f6" }]
                   ).map(s => (
                     <div key={s.label} style={{
-                      background: `linear-gradient(135deg, rgba(${s.color === "#CC0000" ? "204,0,0" : s.color === "#10b981" ? "16,185,129" : s.color === "#3b82f6" ? "59,130,246" : "148,163,184"},0.1) 0%, rgba(0,0,0,0.3) 100%)`,
+                      background: `rgba(0,0,0,0.3)`,
                       border: `1px solid ${s.color}30`,
                       borderRadius: 12, padding: "18px 12px", textAlign: "center",
                       position: "relative", overflow: "hidden",
                     }}>
-                      <div style={{ position: "absolute", bottom: -10, right: -4, fontSize: 60, fontWeight: 900,
-                        color: `${s.color}12`, lineHeight: 1, userSelect: "none" }}>{s.value}</div>
                       <div style={{ fontSize: 46, fontWeight: 900, color: s.color, lineHeight: 1, position: "relative" }}>{s.value}</div>
                       <div style={{ fontSize: 8, color: "rgba(255,255,255,0.3)", letterSpacing: 2, marginTop: 6, textTransform: "uppercase" }}>{s.label}</div>
                     </div>
@@ -651,7 +636,6 @@ const navBtn = {
   borderRadius: 6, cursor: "pointer", fontSize: 10, letterSpacing: 1.5, fontWeight: 700,
 };
 
-// ── CAROUSEL ROW ──────────────────────────────────────────────────────────────
 function CarouselRow({ players: rowP, onSelect }) {
   const [active, setActive] = useState(Math.floor(rowP.length / 2));
   const [hoveredId, setHoveredId] = useState(null);
@@ -693,16 +677,13 @@ function CarouselRow({ players: rowP, onSelect }) {
                 ? "1px solid rgba(204,0,0,0.65)"
                 : hoveredId === p.id ? "1px solid rgba(204,0,0,0.3)" : "1px solid rgba(255,255,255,0.05)",
               cursor: "pointer", overflow: "hidden",
-              transition: "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease",
-              willChange: "transform, opacity",
+              transition: "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s ease, box-shadow 0.3s ease",
               transform: `scale(${isA ? 1 : isN ? (hoveredId === p.id ? 0.88 : 0.84) : (hoveredId === p.id ? 0.76 : 0.72)}) translateY(${isA?0:isN?22:40}px)`,
               opacity: isA ? 1 : hoveredId === p.id ? (isN ? 0.85 : 0.55) : (isN ? 0.65 : 0.35),
               zIndex: isA ? 10 : hoveredId === p.id ? 6 : isN ? 5 : 1,
               display: "flex", flexDirection: "column", justifyContent: "flex-end",
               padding: 14, position: "relative",
-              boxShadow: isA
-                ? "0 0 35px rgba(204,0,0,0.45), 0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,80,80,0.12)"
-                : hoveredId === p.id ? "0 0 18px rgba(204,0,0,0.25), 0 12px 32px rgba(0,0,0,0.6)" : "0 8px 24px rgba(0,0,0,0.55)",
+              boxShadow: isA ? "0 0 35px rgba(204,0,0,0.45), 0 20px 60px rgba(0,0,0,0.8)" : "0 8px 24px rgba(0,0,0,0.55)",
             }}>
               {isA && (
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, zIndex: 5,
@@ -710,10 +691,6 @@ function CarouselRow({ players: rowP, onSelect }) {
                   borderRadius: "16px 16px 0 0",
                 }} />
               )}
-              <div style={{
-                position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1,
-                background: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 35%, transparent 55%)",
-              }} />
               <div style={{ position: "absolute", top: -12, right: -2, fontSize: isA?100:68, fontWeight: 900,
                 color: "rgba(204,0,0,0.13)", lineHeight: 1, userSelect: "none", fontStyle: "italic",
               }}>{p.number}</div>
@@ -732,7 +709,6 @@ function CarouselRow({ players: rowP, onSelect }) {
               <div style={{ position: "absolute", top: 10, left: 10, zIndex: 3,
                 padding: "2px 8px", borderRadius: 4, fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
                 background: pc.bg, color: pc.text, textTransform: "uppercase",
-                boxShadow: isA ? "0 2px 8px rgba(0,0,0,0.6)" : "none",
               }}>{p.pos}</div>
               {isA && (
                 <div style={{ position: "absolute", top: 10, right: 10, zIndex: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
@@ -741,24 +717,15 @@ function CarouselRow({ players: rowP, onSelect }) {
                     <div style={{ fontSize: 7, color: "rgba(255,255,255,0.3)", letterSpacing: 1, marginTop: 1 }}>RTG</div>
                   </div>
                   {p.captain && (
-                    <div style={{ background: "linear-gradient(135deg, #b8860b, #ffd700)", borderRadius: 6, padding: "3px 10px", textAlign: "center", boxShadow: "0 2px 8px rgba(255,215,0,0.45)" }}>
+                    <div style={{ background: "linear-gradient(135deg, #b8860b, #ffd700)", borderRadius: 6, padding: "3px 10px", textAlign: "center" }}>
                       <div style={{ fontSize: 11, fontWeight: 900, color: "#000", lineHeight: 1, letterSpacing: 1 }}>C</div>
                     </div>
                   )}
                 </div>
               )}
-              {p.onLoan && !isA && (
-                <div style={{ position: "absolute", top: 10, right: 10, zIndex: 3,
-                  padding: "2px 7px", borderRadius: 4, fontSize: 8, fontWeight: 700, letterSpacing: 1,
-                  background: "rgba(0,0,0,0.65)", color: "rgba(255,255,255,0.6)",
-                  border: "1px solid rgba(255,255,255,0.18)", textTransform: "uppercase",
-                }}>ON LOAN</div>
-              )}
               <div style={{ position: "relative", zIndex: 2 }}>
                 {isA && p.name && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.38)", marginBottom: 1 }}>{p.name}</div>}
-                <div style={{ fontSize: isA?20:13, fontWeight: 900, lineHeight: 1.1, color: "white",
-                  textShadow: isA ? "0 2px 10px rgba(0,0,0,0.9)" : "none",
-                }}>{p.surname || p.name}</div>
+                <div style={{ fontSize: isA?20:13, fontWeight: 900, lineHeight: 1.1, color: "white" }}>{p.surname || p.name}</div>
                 {isA && (
                   <>
                     <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 2, marginBottom: 10 }}>{p.flag} {p.country}</div>
@@ -775,7 +742,6 @@ function CarouselRow({ players: rowP, onSelect }) {
                       border: "1px solid rgba(204,0,0,0.5)",
                       color: "#ff8888", padding: "7px 0", borderRadius: 6,
                       fontSize: 10, fontWeight: 700, letterSpacing: 1.5, cursor: "pointer", width: "100%",
-                      boxShadow: "0 4px 14px rgba(204,0,0,0.2)",
                     }}>SHIKO PROFILIN</button>
                   </>
                 )}
@@ -797,7 +763,6 @@ function CarouselRow({ players: rowP, onSelect }) {
   );
 }
 
-// ── SEASON HIGHLIGHTS ─────────────────────────────────────────────────────────
 function SeasonHighlights({ players: pl }) {
   if (!pl.length) return null;
   const topScorer  = pl.reduce((a, b) => b.goals   > a.goals   ? b : a);
@@ -805,9 +770,9 @@ function SeasonHighlights({ players: pl }) {
   const topRating  = pl.reduce((a, b) => b.rating  > a.rating  ? b : a);
 
   const items = [
-    { label: "GOLEADOR",  player: topScorer,  stat: topScorer.goals,    statLabel: "GOLA"    },
-    { label: "ASISTUES",  player: topAssists, stat: topAssists.assists,  statLabel: "ASISTE"  },
-    { label: "VLERËSIMI", player: topRating,  stat: topRating.rating,   statLabel: "RATING"  },
+    { label: "GOLEADOR",  player: topScorer,  stat: topScorer.goals,   statLabel: "GOLA"   },
+    { label: "ASISTUES",  player: topAssists, stat: topAssists.assists, statLabel: "ASISTE" },
+    { label: "VLERËSIMI", player: topRating,  stat: topRating.rating,  statLabel: "RATING" },
   ];
 
   return (
@@ -819,11 +784,8 @@ function SeasonHighlights({ players: pl }) {
           borderRadius: 14, padding: "16px 20px",
           display: "flex", alignItems: "center", gap: 14,
           position: "relative", overflow: "hidden",
-          boxShadow: "0 8px 28px rgba(0,0,0,0.45)",
         }}>
           <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "#CC0000", borderRadius: "14px 0 0 14px" }} />
-          <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
-            background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)" }} />
           <div style={{ width: 54, height: 54, borderRadius: 10, overflow: "hidden", flexShrink: 0,
             border: "1px solid rgba(204,0,0,0.3)", background: "rgba(255,255,255,0.03)" }}>
             {player.photo && (
@@ -834,7 +796,7 @@ function SeasonHighlights({ players: pl }) {
             )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 9, letterSpacing: 2.5, color: "#CC0000", fontWeight: 800, marginBottom: 3, textTransform: "uppercase" }}>{label}</div>
+            <div style={{ fontSize: 9, letterSpacing: 2.5, color: "#CC0000", fontWeight: 800, marginBottom: 3 }}>{label}</div>
             <div style={{ fontSize: 15, fontWeight: 900, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{player.surname}</div>
             <div style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", marginTop: 2 }}>{player.flag} {player.country}</div>
           </div>
@@ -848,7 +810,6 @@ function SeasonHighlights({ players: pl }) {
   );
 }
 
-// ── SECTION HEADER ────────────────────────────────────────────────────────────
 function SectionHeader({ title, count, num }) {
   return (
     <div style={{ padding: "28px 52px 0", display: "flex", alignItems: "center", gap: 14 }}>
@@ -860,7 +821,6 @@ function SectionHeader({ title, count, num }) {
   );
 }
 
-// ── MAIN ──────────────────────────────────────────────────────────────────────
 export default function Players() {
   const [players, setPlayers] = useState(_staticPlayers);
   const [filter, setFilter]   = useState("ALL");
@@ -868,7 +828,7 @@ export default function Players() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:5001/players")
+    api.get("/players")
       .then(r => {
         if (r.data.length) {
           setPlayers(prev => prev.map(staticPlayer => {
@@ -892,7 +852,6 @@ export default function Players() {
 
   const modalIdx = selected ? players.findIndex(p => p.id === selected.id) : -1;
   const sections = filter === "ALL" ? SECTION_MAP : SECTION_MAP.filter(s => s.cat === filter);
-
   const nationalities = new Set(players.map(p => p.country)).size;
   const avgRating = Math.round(players.reduce((s, p) => s + p.rating, 0) / players.length);
 
@@ -905,20 +864,14 @@ export default function Players() {
       `,
       minHeight: "100vh", color: "white", fontFamily: "Arial, sans-serif", position: "relative", overflowX: "hidden",
     }}>
-      <div style={{ position: "absolute", top: -180, right: -180, width: 650, height: 650, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.12)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", top: -80, right: -80, width: 420, height: 420, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.08)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: 100, left: -200, width: 700, height: 700, borderRadius: "50%", border: "1px solid rgba(204,0,0,0.07)", pointerEvents: "none" }} />
-
       <div className="mu-wrap" style={{ minHeight: "auto" }}>
         <Navbar />
       </div>
 
-      {/* HEADER */}
       <div style={{
         background: "linear-gradient(135deg,#0e0000 0%,#6B0000 55%,#CC0000 100%)",
         padding: "48px 52px 36px", position: "relative", overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", top: -100, right: -100, width: 500, height: 500, border: "1px solid rgba(255,255,255,0.03)", borderRadius: "50%" }}/>
         <div style={{ fontSize: 11, letterSpacing: 4, color: "rgba(255,255,255,0.4)", marginBottom: 10, textTransform: "uppercase" }}>Sezoni 2025/26 · Old Trafford</div>
         <div style={{ fontSize: 72, fontWeight: 900, letterSpacing: -3, lineHeight: 1, textTransform: "uppercase" }}>Lojtarët</div>
         <div style={{ fontSize: 12, marginTop: 10, color: "rgba(255,255,255,0.3)", letterSpacing: 2 }}>MANCHESTER UNITED F.C.</div>
@@ -932,7 +885,6 @@ export default function Players() {
         </div>
       </div>
 
-      {/* FILTER BAR */}
       <div style={{
         display: "flex", gap: 8, flexWrap: "wrap", padding: "18px 52px",
         background: "rgba(0,0,0,0.35)", borderBottom: "1px solid rgba(255,255,255,0.05)", alignItems: "center",
@@ -959,10 +911,8 @@ export default function Players() {
             style={{
               background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
               borderRadius: 20, padding: "8px 16px 8px 34px", color: "white", fontSize: 12,
-              outline: "none", width: 200, transition: "border-color 0.2s",
+              outline: "none", width: 200,
             }}
-            onFocus={e => { e.target.style.borderColor = "rgba(204,0,0,0.5)"; }}
-            onBlur={e => { e.target.style.borderColor = "rgba(255,255,255,0.12)"; }}
           />
           {search && (
             <button onClick={() => setSearch("")} style={{
@@ -975,7 +925,6 @@ export default function Players() {
 
       <SeasonHighlights players={players} />
 
-      {/* SECTIONS */}
       {sections.map(sec => {
         const q = search.toLowerCase();
         const group = players.filter(p =>

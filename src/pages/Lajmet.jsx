@@ -66,8 +66,7 @@ export default function Lajmet() {
 
   useEffect(() => {
     fetchLajmet();
-    fetch("http://localhost:5001/api/seasons/active")
-      .then(r=>r.json()).then(d=>{ if(d?.emertimi) setActiveSeason(d); }).catch(()=>{});
+    api.get("/api/seasons/active").then(r => { if (r.data?.emertimi) setActiveSeason(r.data); }).catch(() => {});
   }, []);
 
   const fetchLajmet = async () => {

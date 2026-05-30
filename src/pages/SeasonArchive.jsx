@@ -37,9 +37,8 @@ export default function SeasonArchive() {
   const [loadingMatches, setLoadingMatches] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/seasons")
-      .then(r => r.json())
-      .then(d => { setSeasons(d); if (d.length > 0) selectSeason(d[0]); })
+    api.get("/api/seasons")
+      .then(r => { setSeasons(r.data); if (r.data.length > 0) selectSeason(r.data[0]); })
       .catch(() => {});
     api.get("/api/players")
       .then(r => setPlayers(Array.isArray(r.data) ? r.data : []))
@@ -56,8 +55,8 @@ export default function SeasonArchive() {
     } catch {}
     setLoadingMatches(false);
     try {
-      const r = await fetch(`http://localhost:5001/api/seasons/${s.id}/standings`);
-      const data = await r.json();
+      const r = await api.get(`/api/seasons/${s.id}/standings`);
+      const data = r.data;
       console.log("standings:", data);
       setStandings(Array.isArray(data) ? data : []);
     } catch(e) { console.error("standings error:", e); }

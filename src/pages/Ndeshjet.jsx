@@ -5,7 +5,7 @@ import "./ManchesterUnitedHome.css";
 import "./Ndeshjet.css";
 import Navbar from "../Components/NavBar";
 
-const API = "http://localhost:5001/api/ndeshjet";
+const API = "/api/ndeshjet";
 
 const LOGOS = {
   "Man United":
@@ -233,10 +233,7 @@ export default function Ndeshjet() {
     api.get(API)
       .then(res => setApiMatches(res.data))
       .catch(err => console.error(err));
-    fetch("http://localhost:5001/api/seasons/active")
-      .then(r => r.json())
-      .then(d => { if (d?.emertimi) setActiveSeason(d); })
-      .catch(() => {});
+    api.get("/api/seasons/active").then(r => { if (r.data?.emertimi) setActiveSeason(r.data); }).catch(() => {});
   }, []);
 
   const converted = apiMatches.map(convertApiMatch);

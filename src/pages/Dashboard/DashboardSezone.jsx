@@ -4,7 +4,7 @@ import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
 import "./Dashboard.css";
 
-const API = "http://localhost:5001/api/seasons";
+const API = "/api/seasons";
 
 const KOMPETICIONET = ["Premier League", "FA Cup", "Champions League", "Europa League", "Tjetër"];
 const STATUSET = ["Aktiv", "Mbyllur", "Ardhshëm"];

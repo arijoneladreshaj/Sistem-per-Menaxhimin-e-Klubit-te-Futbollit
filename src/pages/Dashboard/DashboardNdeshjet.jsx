@@ -17,7 +17,7 @@ if (!document.getElementById("mu-dash-fonts")) {
   document.head.appendChild(l);
 }
 
-const API = "http://localhost:5001/api/ndeshjet";
+const API = "/api/ndeshjet";
 
 const LOGOS = {
   "Man United":
@@ -269,7 +269,7 @@ export default function DashboardNdeshjet() {
 
   useEffect(() => {
     fetchMatches();
-    api.get("http://localhost:5001/api/seasons/active")
+    api.get("/api/seasons/active")
       .then(res => setActiveSeason(res.data))
       .catch(() => {});
   }, []);

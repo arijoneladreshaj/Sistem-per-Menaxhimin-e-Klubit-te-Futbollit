@@ -84,14 +84,11 @@ export default function ManchesterUnitedHome() {
     api.get("/api/homepage").then(r => setContent(r.data || {})).catch(() => {});
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/seasons/active")
-      .then(r => r.json()).then(d => { if (d?.emertimi) setActiveSeason(d); }).catch(() => {});
-    fetch("http://localhost:5001/api/players")
-      .then(r => r.json()).then(d => setPlayers(Array.isArray(d) ? d : [])).catch(() => {});
+    api.get("/api/seasons/active").then(r => { if (r.data?.emertimi) setActiveSeason(r.data); }).catch(() => {});
+    api.get("/api/players").then(r => setPlayers(Array.isArray(r.data) ? r.data : [])).catch(() => {});
     fetchLajme();
     fetchContent();
-    fetch("http://localhost:5001/api/ndeshjet")
-      .then(r => r.json()).then(d => setMatches(Array.isArray(d) ? d : [])).catch(() => {});
+    api.get("/api/ndeshjet").then(r => setMatches(Array.isArray(r.data) ? r.data : [])).catch(() => {});
   }, []);
 
   const c = (key, fallback = "") => content[key] || fallback;
