@@ -1,6 +1,8 @@
 const express = require("express");
 const router  = express.Router();
 const { sql, poolPromise } = require("../db");
+const { verifyToken, requireRole } = require("../middleware/authMiddleware");
+const DASHBOARD_ROLES = ["Admin", "Trajner", "Menaxher"];
 
 const MONTHS = ["Jan","Shk","Mar","Pri","Maj","Qer","Kor","Gus","Sht","Tet","Nën","Dhj"];
 const DAYS   = ["Die","Hën","Mar","Mër","Enj","Pre","Sht"];
@@ -12,7 +14,7 @@ const TRAINING_COLORS = {
   "Pushim":    "#fbbf24",
 };
 
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, requireRole(...DASHBOARD_ROLES), async (req, res) => {
   try {
     const pool = await poolPromise;
 

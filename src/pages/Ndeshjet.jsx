@@ -54,6 +54,7 @@ function MatchRow({ match, onBuyTicket, onShowLineup }) {
       <div className="nd-date">
         <div className="nd-date-day">{match.day}</div>
         <div className="nd-date-num">{match.date}</div>
+        {match.time && <div className="nd-date-ko">KO {match.time}</div>}
       </div>
 
       {/* Competition */}
@@ -188,7 +189,16 @@ function convertApiMatch(m) {
     home: "Man United",
     away: m.ekipi_kundershtare,
     logo_kundershtarit: m.logo_kundershtarit || null,
-    score: isPlayed ? `${h} – ${a}` : (m.ora ? String(m.ora).slice(0, 5) : "TBD"),
+    score: isPlayed ? `${h} – ${a}` : "VS",
+    time: !isPlayed ? (() => {
+      if (!m.ora) return null;
+      const s = String(m.ora);
+      if (s.includes("T")) {
+        const d = new Date(m.ora);
+        return `${String(d.getUTCHours()).padStart(2,"0")}:${String(d.getUTCMinutes()).padStart(2,"0")}`;
+      }
+      return s.slice(0, 5);
+    })() : null,
     result,
     venue: m.stadiumi || "",
     ticketsAvailable: !isPlayed,

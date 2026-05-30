@@ -106,6 +106,7 @@ function MatchRow({ match, onBuyTicket, onEdit, onDelete }) {
       <div className="nd-date">
         <div className="nd-date-day">{match.day}</div>
         <div className="nd-date-num">{match.date}</div>
+        {match.time && <div className="nd-date-ko">KO {match.time}</div>}
       </div>
 
       {/* Competition */}
@@ -314,6 +315,16 @@ export default function DashboardNdeshjet() {
     "Dhjetor",
   ];
 
+  const parseOra = (ora) => {
+    if (!ora) return null;
+    const s = String(ora);
+    if (s.includes("T")) {
+      const d = new Date(ora);
+      return `${String(d.getUTCHours()).padStart(2,"0")}:${String(d.getUTCMinutes()).padStart(2,"0")}`;
+    }
+    return s.slice(0, 5);
+  };
+
   const convertApiMatch = (m) => {
     const dateObj = m.data_ndeshjes ? new Date(m.data_ndeshjes) : null;
     const isPlayed = m.statusi === "Luajtur";
@@ -337,11 +348,8 @@ export default function DashboardNdeshjet() {
       home: "Man United",
       away: m.ekipi_kundershtare,
       logo_kundershtarit: m.logo_kundershtarit || null,
-      score: isPlayed
-        ? `${h} – ${a}`
-        : m.ora
-          ? String(m.ora).slice(0, 5)
-          : "TBD",
+      score: isPlayed ? `${h} – ${a}` : "VS",
+      time: !isPlayed ? parseOra(m.ora) : null,
       result,
       venue: m.stadiumi || "",
       ticketsAvailable: !isPlayed,
@@ -390,7 +398,7 @@ export default function DashboardNdeshjet() {
         club_id: raw.club_id || 1,
         ekipi_kundershtare: raw.ekipi_kundershtare || "",
         data_ndeshjes: raw.data_ndeshjes?.split("T")[0] || "",
-        ora: raw.ora ? String(raw.ora).slice(0, 5) : "",
+        ora: parseOra(raw.ora) || "",
         stadiumi: raw.stadiumi || "",
         lloji_kompeticionit: raw.lloji_kompeticionit || "Ligë",
         rezultati_shtepia: raw.rezultati_shtepia ?? 0,

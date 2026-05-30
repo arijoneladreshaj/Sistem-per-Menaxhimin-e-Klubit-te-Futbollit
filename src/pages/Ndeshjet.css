@@ -125,6 +125,15 @@
   margin-top: 4px;
 }
 
+.nd-date-ko {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #DA291C;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
 /* ── Competition badge ── */
 .nd-comp {
   width: 130px;

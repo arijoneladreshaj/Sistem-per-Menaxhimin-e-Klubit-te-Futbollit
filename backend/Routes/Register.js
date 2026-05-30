@@ -50,6 +50,17 @@ router.post("/register", async (req, res) => {
       .input("user_id", sql.Int, newUserId)
       .query(`INSERT INTO UserPreferences (user_id, topics) VALUES (@user_id, '[]')`);
 
+    const roleRes = await pool.request()
+      .input("name", sql.NVarChar, "user")
+      .query("SELECT id FROM Roles WHERE name = @name");
+    const roleId = roleRes.recordset[0]?.id;
+    if (roleId) {
+      await pool.request()
+        .input("user_id", sql.Int, newUserId)
+        .input("role_id", sql.Int, roleId)
+        .query("INSERT INTO UserRoles (user_id, role_id) VALUES (@user_id, @role_id)");
+    }
+
     res.json({ success: true, message: "Useri u regjistrua me sukses" });
 
   } catch (err) {

@@ -109,6 +109,17 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
         .query("UPDATE Users SET player_id = @player_id WHERE id = @user_id");
     }
 
+    const roleRes = await pool.request()
+      .input("name", sql.NVarChar, role)
+      .query("SELECT id FROM Roles WHERE name = @name");
+    const roleId = roleRes.recordset[0]?.id;
+    if (roleId) {
+      await pool.request()
+        .input("user_id", sql.Int, newUser.id)
+        .input("role_id", sql.Int, roleId)
+        .query("INSERT INTO UserRoles (user_id, role_id) VALUES (@user_id, @role_id)");
+    }
+
     res.status(201).json({ success: true, user: newUser });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -184,6 +195,20 @@ router.put("/:id/role", verifyToken, requireAdmin, async (req, res) => {
       .input("id",   sql.Int,      id)
       .input("role", sql.NVarChar, role)
       .query("UPDATE Users SET role = @role WHERE id = @id");
+
+    const roleRes = await pool.request()
+      .input("name", sql.NVarChar, role)
+      .query("SELECT id FROM Roles WHERE name = @name");
+    const roleId = roleRes.recordset[0]?.id;
+    if (roleId) {
+      await pool.request()
+        .input("user_id", sql.Int, id)
+        .input("role_id", sql.Int, roleId)
+        .query(`
+          DELETE FROM UserRoles WHERE user_id = @user_id;
+          INSERT INTO UserRoles (user_id, role_id) VALUES (@user_id, @role_id);
+        `);
+    }
 
     res.json({ success: true, message: "Roli u ndryshua" });
   } catch (err) {
