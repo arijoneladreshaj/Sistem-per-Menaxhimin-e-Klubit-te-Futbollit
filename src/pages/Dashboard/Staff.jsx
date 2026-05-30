@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
 import api from "../../api/axiosInstance";
+import "./Dashboard.css";
 import {
   Container, Row, Col, Card, Button, Modal, Form, Badge, Alert
 } from "react-bootstrap";
