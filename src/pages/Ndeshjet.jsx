@@ -26,14 +26,6 @@ const RESULT_COLOR_CLASS = {
 };
 
 
-const TICKER_ITEMS = [
-  "Man United  2 – 1  Arsenal · Premier League",
-  "Transferim: Rashford kthehet në formë",
-  "Ndeshja e ardhshme: Chelsea · E Shtunë 20:00",
-  "Tabela: United  3. vend me 58 pikë",
-  "Goli i javës: Bruno Fernandes vs Tottenham",
-];
-
 /* ── Team Logo ── */
 function TeamLogo({ name, logoUrl }) {
   const src = logoUrl || LOGOS[name];
@@ -302,19 +294,6 @@ export default function Ndeshjet() {
       </div>
 
 
-      <div className="mu-ticker">
-        <span className="mu-ticker-label">Live</span>
-        <div
-          className="mu-ticker-track"
-          style={{ animation: "ndeshjetTicker 30s linear infinite" }}
-        >
-          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-            <span key={i} className="mu-ticker-item">
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

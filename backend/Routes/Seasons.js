@@ -196,6 +196,45 @@ router.patch("/:id/activate", verifyToken, requireAdmin, async (req, res) => {
   }
 });
 
+// GET standings for a season
+router.get("/:id/standings", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("id", sql.Int, req.params.id)
+      .query("SELECT * FROM Standings WHERE season_id = @id ORDER BY (fituar*3 + barazim) DESC, (gola_f - gola_m) DESC");
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// PUT standings (admin - zëvendëso të gjitha rreshtat e sezonit)
+router.put("/:id/standings", verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const rows = req.body; // array of { ekipi, ndeshje, fituar, barazim, humbur, gola_f, gola_m, is_us }
+    await pool.request().input("id", sql.Int, req.params.id)
+      .query("DELETE FROM Standings WHERE season_id = @id");
+    for (const r of rows) {
+      await pool.request()
+        .input("sid",     sql.Int,       req.params.id)
+        .input("ekipi",   sql.NVarChar,  r.ekipi)
+        .input("ndeshje", sql.Int,       r.ndeshje || 0)
+        .input("fituar",  sql.Int,       r.fituar  || 0)
+        .input("barazim", sql.Int,       r.barazim || 0)
+        .input("humbur",  sql.Int,       r.humbur  || 0)
+        .input("gola_f",  sql.Int,       r.gola_f  || 0)
+        .input("gola_m",  sql.Int,       r.gola_m  || 0)
+        .input("is_us",   sql.Bit,       r.is_us   || 0)
+        .query("INSERT INTO Standings (season_id,ekipi,ndeshje,fituar,barazim,humbur,gola_f,gola_m,is_us) VALUES (@sid,@ekipi,@ndeshje,@fituar,@barazim,@humbur,@gola_f,@gola_m,@is_us)");
+    }
+    res.json({ message: "Standings u ruajtën" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // DELETE
 router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
   try {

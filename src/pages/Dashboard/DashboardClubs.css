@@ -1,0 +1,295 @@
+.clb-page {
+  min-height: 100vh;
+  background: #0d0d0d;
+  color: #ddd;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+
+.clb-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #222;
+}
+
+.clb-topbar h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.clb-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clb-search {
+  padding: 8px 14px;
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #ddd;
+  font-size: 13px;
+  outline: none;
+  width: 200px;
+}
+
+.clb-search::placeholder { color: #555; }
+
+.clb-search:focus { border-color: #da291c; }
+
+.clb-btn-add {
+  background: #da291c;
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clb-btn-add:hover { background: #b71c1c; }
+
+.clb-hero {
+  padding: 40px 28px 30px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.clb-season {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.clb-title {
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.clb-content { padding: 28px; }
+
+.clb-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.clb-card {
+  background: #131313;
+  border: 1px solid #1e1e1e;
+  border-radius: 8px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+
+.clb-card:hover { border-color: #333; }
+
+.clb-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.clb-card-header h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.clb-city {
+  font-size: 12px;
+  color: #da291c;
+  margin: 0;
+  font-weight: 600;
+}
+
+.clb-logo { flex-shrink: 0; }
+
+.clb-logo-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #da291c;
+}
+
+.clb-logo-placeholder {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #da291c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.clb-card .meta {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.clb-card .meta span { color: #bbb; }
+
+/* Actions */
+.clb-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #1e1e1e;
+}
+
+.clb-btn-edit {
+  flex: 1;
+  padding: 7px;
+  background: rgba(255, 179, 0, 0.1);
+  color: #ffb300;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clb-btn-edit:hover { background: rgba(255, 179, 0, 0.2); }
+
+.clb-btn-delete {
+  flex: 1;
+  padding: 7px;
+  background: rgba(218, 41, 28, 0.1);
+  color: #da291c;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clb-btn-delete:hover { background: rgba(218, 41, 28, 0.2); }
+
+.clb-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #444;
+  font-size: 14px;
+}
+
+
+.clb-form-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.clb-form-card {
+  background: #151515;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 28px;
+  width: 90%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.clb-form-card h3 {
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.clb-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.clb-full { grid-column: 1 / -1; }
+
+.clb-form-card label {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.clb-form-card input {
+  width: 100%;
+  padding: 10px 12px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 5px;
+  color: #ddd;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.clb-form-card input:focus { border-color: #da291c; }
+
+.clb-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.clb-btn-cancel {
+  padding: 9px 18px;
+  background: none;
+  color: #888;
+  border: 1px solid #333;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.clb-btn-cancel:hover {
+  color: #ccc;
+  border-color: #555;
+}
+
+
+.clb-logo-preview-wrap { text-align: center; }
+
+.clb-logo-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #da291c;
+}
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+}

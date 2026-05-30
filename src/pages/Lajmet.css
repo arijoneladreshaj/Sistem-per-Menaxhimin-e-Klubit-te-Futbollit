@@ -1,111 +1,282 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap");
 
-.lajmet-page {
-  background-color: #1a1a1a;
-  min-height: 100vh;
+/* ── HERO ── */
+.lj-hero {
+  background: #cc0000;
+  padding: 36px 0 28px;
+  border-bottom: 3px solid rgba(0,0,0,0.18);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
 }
-
-.lajmet-hero {
-  background: linear-gradient(135deg, #da291c 0%, #8b0000 60%, #1a1a1a 100%);
-  padding: 60px 0 40px;
+.lj-hero__inner {
+  padding: 0 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  text-align: left;
 }
-
-.lajmet-hero h1 {
-  font-size: clamp(48px, 8vw, 80px);
-  font-weight: 900;
-  letter-spacing: -2px;
+.lj-hero__eyebrow {
+  display: block;
+  color: rgba(255,255,255,0.65);
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.lj-hero__title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 72px);
+  color: #fff;
+  letter-spacing: 4px;
   line-height: 1;
+  margin: 0;
 }
+.lj-hero__btn {
+  background: #fff;
+  color: #cc0000;
+  border: none;
+  padding: 11px 24px;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+.lj-hero__btn:hover { opacity: 0.88; }
 
-.lajmet-tab-btn {
+/* ── TABS ── */
+.lj-tabs {
+  background: #7a0000;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.lj-tabs__inner {
+  padding: 0 40px;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.lj-tabs__inner::-webkit-scrollbar {
+  display: none;
+}
+.lj-tab {
   background: none;
   border: none;
-  border-bottom: 3px solid transparent;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 16px 20px;
-  font-size: 13px;
+  border-bottom: 2px solid transparent;
+  color: rgba(255,255,255,0.5);
+  padding: 15px 20px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+.lj-tab:hover { color: #fff; }
+.lj-tab--active { border-bottom-color: #fff; color: #fff; }
+
+/* ── CONTENT AREA ── */
+.lj-content {
+  background: #fff;
+  min-height: 60vh;
+  padding: 36px 0 60px;
+}
+.lj-empty {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 60px 32px;
+  color: #555;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* ── GRID ── */
+.lj-grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.lj-grid__featured {
+  grid-column: 1 / -1;
+}
+.lj-grid__featured .nc__imgwrap {
+  height: 420px;
+}
+
+/* ── NEWS CARD ── */
+.nc {
+  background: #cc0000;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.22s, box-shadow 0.22s;
+  display: flex;
+  flex-direction: column;
+}
+.nc:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.14);
+}
+
+/* ── IMAGE WRAP ── */
+.nc__imgwrap {
+  position: relative;
+  overflow: hidden;
+  height: 200px;
+  background: #1a0000;
+  flex-shrink: 0;
+}
+.nc--tall .nc__imgwrap {
+  height: 340px;
+}
+.nc__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+.nc:hover .nc__img { transform: scale(1.05); }
+
+.nc__img--fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a0000 0%, #2d0000 60%, #111 100%);
+}
+
+.nc__badge {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  font-family: 'Barlow', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 4px 11px;
+}
+
+.nc__admin {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+}
+.nc__admin button {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.18s;
+}
+.nc__admin button:hover { background: rgba(204,0,0,0.8); }
+
+/* ── TEXT BODY ── */
+.nc__body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.nc__date {
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.nc__title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.nc__title--lg {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(22px, 2.2vw, 28px);
+  letter-spacing: 1px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.nc__desc {
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.65;
+  margin: 0 0 16px;
+  flex: 1;
+}
+.nc__btn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.7);
+  color: #fff;
+  padding: 7px 18px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s;
+  margin-top: auto;
 }
-
-.lajmet-tab-btn:hover {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.lajmet-tab-btn.active {
-  border-bottom-color: #da291c;
+.nc__btn:hover {
+  background: rgba(0,0,0,0.2);
   color: #fff;
 }
 
-.lajmet-hero-card {
-  height: 420px;
-  cursor: pointer;
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .lj-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lj-grid__featured {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .nc--tall .nc__imgwrap { height: 260px; }
 }
-
-.lajmet-hero-card img {
-  opacity: 0.5;
-  transition: opacity 0.3s;
-}
-
-.lajmet-hero-card:hover img {
-  opacity: 0.65;
-}
-
-.lajmet-overlay {
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-}
-
-.badge-transferime { background-color: #e74c3c !important; }
-.badge-ndeshje { background-color: #2ecc71 !important; }
-.badge-lendime { background-color: #f39c12 !important; }
-.badge-klubi { background-color: #3498db !important; }
-.badge-akademia { background-color: #9b59b6 !important; }
-
-.lajmet-card {
-  background: rgba(255, 255, 255, 0.05);
-  cursor: pointer;
-  transition: transform 0.2s, background 0.2s;
-}
-
-.lajmet-card:hover {
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.lajmet-card-img {
-  height: 200px;
-}
-
-.lajmet-card:hover .lajmet-card-img img {
-  transform: scale(1.05);
-}
-
-.lajmet-card-img img {
-  transition: transform 0.3s;
-}
-
-.lajmet-card p {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.admin-btn {
-  background: linear-gradient(135deg, #d00000, #ff3b3b);
-  color: white;
-  border: none;
-  padding: 12px 22px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 15px;
-  transition: all 0.25s ease;
-  box-shadow: 0 6px 18px rgba(255, 0, 0, 0.25);
-}
-
-.admin-btn:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #ff1f1f, #ff5c5c);
-  box-shadow: 0 10px 22px rgba(255, 0, 0, 0.35);
+@media (max-width: 580px) {
+  .lj-grid {
+    grid-template-columns: 1fr;
+    padding: 0 12px;
+  }
+  .lj-hero__inner { padding: 0 16px; }
+  .lj-tabs__inner { padding: 0 12px; }
 }

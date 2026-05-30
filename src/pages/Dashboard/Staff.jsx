@@ -7,7 +7,7 @@ import {
 } from "react-bootstrap";
 import "./Staff.css";
 
-const API = "http://localhost:5001/api/staff";
+const API = "/api/staff";
 
 const ROLET = ["Trajner", "Menaxher"];
 
@@ -79,9 +79,11 @@ export default function StaffPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-         console.log(form);
-      if (editId) await api.put(`${API}/${editId}`, form);
-      else await api.post(API, form);
+       
+const payload = { ...form, data_punesimit: form.data_punesimit || null };
+console.log(payload);
+if (editId) await api.put(`${API}/${editId}`, payload);
+else await api.post(API, payload);
       setShow(false); fetchStaff();
       setMsg(editId ? "U ndryshua me sukses!" : "U shtua me sukses!");
     } catch (e) { console.log(e); }
