@@ -91,19 +91,7 @@ exports.getStats = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const {
-      emertimi,
-      viti_fillimit,
-      viti_perfundimit,
-      kompeticionit,
-      statusi,
-      cmimi_adult,
-      cmimi_koncesion,
-      cmimi_youth,
-      cmimi_under14,
-      deadline_earlybird,
-      perfitesite,
-    } = req.body;
+    const { emertimi, viti_fillimit, viti_perfundimit, kompeticionit, statusi } = req.body;
     const pool = await poolPromise;
     if (statusi === "Aktiv")
       await pool
@@ -112,19 +100,14 @@ exports.create = async (req, res) => {
 
     await pool
       .request()
-      .input("emertimi", sql.NVarChar, emertimi)
-      .input("viti_fillimit", sql.Date, viti_fillimit)
-      .input("viti_perfundimit", sql.Date, viti_perfundimit)
-      .input("kompeticionit", sql.NVarChar, kompeticionit || "")
-      .input("statusi", sql.NVarChar, statusi || "Ardhshëm")
-      .input("cmimi_adult", sql.Decimal, cmimi_adult || null)
-      .input("cmimi_koncesion", sql.Decimal, cmimi_koncesion || null)
-      .input("cmimi_youth", sql.Decimal, cmimi_youth || null)
-      .input("cmimi_under14", sql.Decimal, cmimi_under14 || null)
-      .input("deadline_earlybird", sql.Date, deadline_earlybird || null)
-      .input("perfitesite", sql.NVarChar, perfitesite || "").query(`
-        INSERT INTO Seasons (emertimi, viti_fillimit, viti_perfundimit, kompeticionit, statusi, cmimi_adult, cmimi_koncesion, cmimi_youth, cmimi_under14, deadline_earlybird, perfitesite)
-        VALUES (@emertimi, @viti_fillimit, @viti_perfundimit, @kompeticionit, @statusi, @cmimi_adult, @cmimi_koncesion, @cmimi_youth, @cmimi_under14, @deadline_earlybird, @perfitesite)
+      .input("emertimi",          sql.NVarChar, emertimi)
+      .input("viti_fillimit",     sql.Date,     viti_fillimit)
+      .input("viti_perfundimit",  sql.Date,     viti_perfundimit)
+      .input("kompeticionit",     sql.NVarChar, kompeticionit || "")
+      .input("statusi",           sql.NVarChar, statusi || "Ardhshëm")
+      .query(`
+        INSERT INTO Seasons (emertimi, viti_fillimit, viti_perfundimit, kompeticionit, statusi)
+        VALUES (@emertimi, @viti_fillimit, @viti_perfundimit, @kompeticionit, @statusi)
       `);
     res.json({ message: "Sezoni u shtua" });
 
@@ -154,47 +137,26 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const {
-      emertimi,
-      viti_fillimit,
-      viti_perfundimit,
-      kompeticionit,
-      statusi,
-      cmimi_adult,
-      cmimi_koncesion,
-      cmimi_youth,
-      cmimi_under14,
-      deadline_earlybird,
-      perfitesite,
-    } = req.body;
+    const { emertimi, viti_fillimit, viti_perfundimit, kompeticionit, statusi } = req.body;
     const pool = await poolPromise;
     if (statusi === "Aktiv")
       await pool
         .request()
         .input("id", sql.Int, req.params.id)
-        .query(
-          "UPDATE Seasons SET statusi='Mbyllur' WHERE statusi='Aktiv' AND id != @id",
-        );
+        .query("UPDATE Seasons SET statusi='Mbyllur' WHERE statusi='Aktiv' AND id != @id");
 
     await pool
       .request()
-      .input("id", sql.Int, req.params.id)
-      .input("emertimi", sql.NVarChar, emertimi)
-      .input("viti_fillimit", sql.Date, viti_fillimit)
-      .input("viti_perfundimit", sql.Date, viti_perfundimit)
-      .input("kompeticionit", sql.NVarChar, kompeticionit || "")
-      .input("statusi", sql.NVarChar, statusi || "Ardhshëm")
-      .input("cmimi_adult", sql.Decimal, cmimi_adult || null)
-      .input("cmimi_koncesion", sql.Decimal, cmimi_koncesion || null)
-      .input("cmimi_youth", sql.Decimal, cmimi_youth || null)
-      .input("cmimi_under14", sql.Decimal, cmimi_under14 || null)
-      .input("deadline_earlybird", sql.Date, deadline_earlybird || null)
-      .input("perfitesite", sql.NVarChar, perfitesite || "").query(`
+      .input("id",                sql.Int,      req.params.id)
+      .input("emertimi",          sql.NVarChar, emertimi)
+      .input("viti_fillimit",     sql.Date,     viti_fillimit)
+      .input("viti_perfundimit",  sql.Date,     viti_perfundimit)
+      .input("kompeticionit",     sql.NVarChar, kompeticionit || "")
+      .input("statusi",           sql.NVarChar, statusi || "Ardhshëm")
+      .query(`
         UPDATE Seasons SET
           emertimi=@emertimi, viti_fillimit=@viti_fillimit, viti_perfundimit=@viti_perfundimit,
-          kompeticionit=@kompeticionit, statusi=@statusi, cmimi_adult=@cmimi_adult,
-          cmimi_koncesion=@cmimi_koncesion, cmimi_youth=@cmimi_youth, cmimi_under14=@cmimi_under14,
-          deadline_earlybird=@deadline_earlybird, perfitesite=@perfitesite
+          kompeticionit=@kompeticionit, statusi=@statusi
         WHERE id=@id
       `);
     res.json({ message: "Sezoni u ndryshua" });
