@@ -80,6 +80,7 @@ function Login() {
           <label>Username ose Email</label>
           <input
             type="text"
+            autoComplete="off"
             placeholder="Shkruaj username-in..."
             value={username}
             onChange={(e) => {
@@ -99,6 +100,7 @@ function Login() {
           <label>Fjalëkalimi</label>
           <input
             type="password"
+            autoComplete="new-password"
             placeholder="Shkruaj fjalëkalimin..."
             value={password}
             onChange={(e) => {
