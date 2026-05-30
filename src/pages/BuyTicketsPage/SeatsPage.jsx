@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import "./SeatsPage.css";
 import { SECTOR_CONFIG, isVipSeat, getSeatPrice } from "./SectorConfig/sectorConfig";
 
@@ -19,7 +19,7 @@ export default function SeatsPage() {
 
   useEffect(() => {
     if (!matchId || !sectorId) return;
-    axios.get(`http://localhost:5001/api/tickets/booked/${matchId}/${sectorId}`)
+    api.get(`/api/tickets/booked/${matchId}/${sectorId}`)
       .then(res => setBooked(new Set(res.data)))
       .catch(() => setBooked(new Set()))
       .finally(() => setLoading(false));
@@ -93,7 +93,7 @@ export default function SeatsPage() {
       </div>
 
       <div className="sp-selected-section">
-        <div className="sp-selected-title">Selected Seats:</div>
+        <div className="sp-selected-title">Ulëset e zgjedhura:</div>
         {selected.length === 0 ? (
           <p className="sp-selected-empty">Asnjë ulëse e zgjedhur</p>
         ) : (
@@ -135,7 +135,7 @@ export default function SeatsPage() {
             navigate("/CartPage");
           }}
         >
-          Proceed to Cart →
+          Vazhdo te Shporta →
         </button>
       </div>
     </div>

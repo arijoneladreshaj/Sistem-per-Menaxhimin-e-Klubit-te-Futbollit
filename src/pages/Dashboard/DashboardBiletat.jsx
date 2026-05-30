@@ -9,8 +9,8 @@ import {
   getSeatPrice,
 } from "../BuyTicketsPage/SectorConfig/sectorConfig";
 
-const API = "http://localhost:5001/api/tickets";
-const MATCHES_API = "http://localhost:5001/api/ndeshjet";
+const API = "/api/tickets";
+const MATCHES_API = "/api/ndeshjet";
 
 const STATUSET = ["E shitur", "E rezervuar", "E lire"];
 const SEKTORET = ["lindje", "perendim", "veri", "jug"];
@@ -297,7 +297,7 @@ export default function DashboardBiletat() {
                       <option value="">Të gjitha ndeshjet</option>
                       {matches.map(m => (
                         <option key={m.id} value={m.id}>
-                          Man United vs {m.ekipi_kundershtare} — {new Date(m.data_ndeshjes).toLocaleDateString("sq-AL")}
+                          Man United vs {m.ekipi_kundershtare} — {new Date(m.data_ndeshjes.slice(0,10) + "T12:00:00").toLocaleDateString("sq-AL")}
                         </option>
                       ))}
                     </select>
@@ -462,9 +462,7 @@ export default function DashboardBiletat() {
                         </td>
                         <td style={{ color: "#aaa" }}>
                           {t.data_ndeshjes
-                            ? new Date(t.data_ndeshjes).toLocaleDateString(
-                                "sq-AL",
-                              )
+                            ? new Date(t.data_ndeshjes.slice(0,10) + "T12:00:00").toLocaleDateString("sq-AL")
                             : "—"}
                         </td>
                         <td>
@@ -589,7 +587,7 @@ export default function DashboardBiletat() {
                     {matches.map((m) => (
                       <option key={m.id} value={m.id}>
                         Man United vs {m.ekipi_kundershtare} —{" "}
-                        {new Date(m.data_ndeshjes).toLocaleDateString("sq-AL")}
+                        {new Date(m.data_ndeshjes.slice(0,10) + "T12:00:00").toLocaleDateString("sq-AL")}
                       </option>
                     ))}
                   </select>

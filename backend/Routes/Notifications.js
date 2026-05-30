@@ -15,7 +15,11 @@ router.get("/my", verifyToken, async (req, res) => {
         WHERE user_id = @user_id
         ORDER BY is_read ASC, created_at DESC
       `);
-    res.json(result.recordset);
+    const notifs = result.recordset.map(n => ({
+      ...n,
+      created_at: n.created_at ? new Date(n.created_at).toISOString() : null
+    }));
+    res.json(notifs);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

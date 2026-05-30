@@ -64,6 +64,7 @@ function Training() {
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm("A jeni të sigurt që dëshironi ta fshini këtë stërvitje?")) return;
     try {
       await api.delete(`/api/training/${id}`);
       fetchTrainings();

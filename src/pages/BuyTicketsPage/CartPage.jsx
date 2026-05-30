@@ -48,7 +48,7 @@ export default function CartPage() {
         <button className="cp-back" onClick={() => navigate(-1)}>
           ← Kthehu
         </button>
-        <h1 className="cp-title">Your Cart</h1>
+        <h1 className="cp-title">Shporta</h1>
       </div>
 
       <div className="container">
@@ -77,14 +77,14 @@ export default function CartPage() {
                         className="btn btn-danger btn-sm cp-remove"
                         onClick={() => removeSeat(seat.id)}
                       >
-                        Remove
+                        Fshij
                       </button>
                     </div>
 
                     {/* Emri dhe Mbiemri */}
                     <div className="row g-2 mt-2">
                       <div className="col-sm-6">
-                        <label className="cp-label">Seat First Name:</label>
+                        <label className="cp-label">Emri:</label>
                         <input
                           type="text"
                           className="form-control cp-input"
@@ -100,7 +100,7 @@ export default function CartPage() {
                         />
                       </div>
                       <div className="col-sm-6">
-                        <label className="cp-label">Seat Last Name:</label>
+                        <label className="cp-label">Mbiemri:</label>
                         <input
                           type="text"
                           className="form-control cp-input"

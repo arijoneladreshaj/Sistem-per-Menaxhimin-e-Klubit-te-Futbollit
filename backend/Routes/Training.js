@@ -136,7 +136,7 @@ router.post("/", verifyToken, requireRole(...TRAJNER_ROLES), async (req, res) =>
         .input("user_id", sql.Int,      u.id)
         .input("titulli", sql.NVarChar, titulli)
         .input("mesazhi", sql.NVarChar, mesazhi)
-        .query("INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@user_id, @titulli, @mesazhi)");
+        .query("INSERT INTO Notifications (user_id, titulli, mesazhi, created_at) VALUES (@user_id, @titulli, @mesazhi, GETUTCDATE())");
     }
 
     res.json({ message: "Stervitja u shtua" });

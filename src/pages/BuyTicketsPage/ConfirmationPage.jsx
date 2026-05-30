@@ -2,43 +2,65 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
 import api from "../../api/axiosInstance";
+import Navbar from "../../Components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ConfirmationPage.css";
 
 export default function ConfirmationPage() {
   const navigate = useNavigate();
   const { cart, total, clearCart } = useCart();
-  const [order, setOrder] = useState(null);
+  const [order,   setOrder]   = useState(null);
+  const [error,   setError]   = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (cart.length === 0) return;
+    if (cart.length === 0) { setLoading(false); return; }
 
     // Parandalon dyfishimin nga React StrictMode
     const cartKey = "confirmationSaved_" + cart.map(s => s.id).sort().join(",");
-    if (sessionStorage.getItem(cartKey)) return;
+    if (sessionStorage.getItem(cartKey)) { setLoading(false); return; }
     sessionStorage.setItem(cartKey, "1");
 
-    const newOrder = {
-      id: Date.now(),
-      date: new Date().toLocaleDateString("sq-AL"),
-      time: new Date().toLocaleTimeString("sq-AL"),
-      seats: cart,
-      total,
-    };
+    const savedSeats = [...cart];
+    const savedTotal = total;
+    const matchId    = savedSeats[0]?.matchId;
 
-    setOrder(newOrder);
-
-    // Ruaj në databazë
-    const matchId = cart[0]?.matchId;
-    if (matchId) {
-      api.post("/api/tickets", {
-        match_id: Number(matchId),
-        seats: cart,
-      }).catch(err => console.error("Gabim duke ruajtur biletat:", err));
-    }
-
-    clearCart();
+    api.post("/api/tickets", { match_id: Number(matchId), seats: savedSeats })
+      .then(res => {
+        setOrder({
+          id:    res.data.orderRef,
+          date:  new Date().toLocaleDateString("sq-AL"),
+          time:  new Date().toLocaleTimeString("sq-AL"),
+          seats: savedSeats,
+          total: savedTotal,
+        });
+        clearCart();
+      })
+      .catch(() => {
+        sessionStorage.removeItem(cartKey);
+        setError("Ndodhi një gabim gjatë blerjes. Ju lutem provoni përsëri.");
+      })
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return (
+      <div className="cf-empty">
+        <p>Duke procesuar porosinë...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="cf-empty">
+        <p style={{ color: "#f87171" }}>{error}</p>
+        <button className="btn btn-danger" onClick={() => navigate(-1)}>
+          Kthehu
+        </button>
+      </div>
+    );
+  }
 
   if (!order) {
     return (
@@ -59,7 +81,11 @@ export default function ConfirmationPage() {
   }, {});
 
   return (
-    <div className="cf-page">
+    <div>
+      <div style={{ background: "#cc0000" }}>
+        <Navbar />
+      </div>
+      <div className="cf-page">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-7">
@@ -139,6 +165,7 @@ export default function ConfirmationPage() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

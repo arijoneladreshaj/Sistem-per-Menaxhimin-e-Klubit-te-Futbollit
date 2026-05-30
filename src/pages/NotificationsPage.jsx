@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/axiosInstance";
+import Navbar from "../Components/NavBar";
 
 const STATUS_STYLE = {
   "Po vij":       { bg: "#1a3a1a", color: "#4ade80", border: "#4ade80" },
@@ -12,13 +12,7 @@ const POZ_COLOR = {
   Portier: "#facc15", "Mbrojtës": "#60a5fa", Mesfushor: "#4ade80", Sulmues: "#f87171",
 };
 
-const ROLI_STYLE = {
-  "Titular": { bg: "rgba(34,197,94,0.15)",  color: "#22c55e" },
-  "Rezerve": { bg: "rgba(234,179,8,0.15)",  color: "#eab308" },
-};
-
 export default function NotificationsPage() {
-  const navigate = useNavigate();
   const [tab,        setTab]       = useState("notifs");
   const [notifs,     setNotifs]    = useState([]);
   const [sessions,   setSessions]  = useState([]);
@@ -46,7 +40,7 @@ export default function NotificationsPage() {
         const today = new Date(); today.setHours(0, 0, 0, 0);
         setSessions(
           tRes.data
-            .filter(s => new Date(s.data_stervitjes) >= today)
+            .filter(s => new Date(s.data_stervitjes.slice(0, 10) + "T12:00:00") >= today)
             .sort((a, b) => new Date(a.data_stervitjes) - new Date(b.data_stervitjes))
         );
 
@@ -88,22 +82,14 @@ export default function NotificationsPage() {
     } catch {}
   };
 
-  const unread = notifs.filter(n => !n.is_read).length;
   const role = localStorage.getItem("role");
   const isPlayer = role === "Lojtari";
+  const unread = notifs.filter(n => !n.is_read).length;
 
   return (
     <div style={{ minHeight: "100vh", background: "#0a0a0a", color: "#fff", fontFamily: "sans-serif" }}>
-
-      {/* HEADER */}
-      <div style={{ background: "#141414", borderBottom: "1px solid #2a2a2a", padding: "0 24px", height: 56, display: "flex", alignItems: "center", gap: 16 }}>
-        <button
-          onClick={() => navigate(-1)}
-          style={{ background: "transparent", border: "none", color: "#888", cursor: "pointer", fontSize: 20, lineHeight: 1, padding: 0 }}
-        >
-          ←
-        </button>
-        <span style={{ fontWeight: 700, fontSize: 15 }}>Njoftimet</span>
+      <div style={{ background: "#cc0000" }}>
+        <Navbar />
       </div>
 
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "24px 16px" }}>
@@ -157,7 +143,11 @@ export default function NotificationsPage() {
                     </div>
                     <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>{n.mesazhi}</div>
                     <div style={{ fontSize: 11, color: "#444", marginTop: 6 }}>
-                      {new Date(n.created_at).toLocaleDateString("sq-AL", { day: "numeric", month: "long", year: "numeric" })}
+                      {new Date(n.created_at).toLocaleString("sq-AL", {
+                        day: "numeric", month: "long", year: "numeric",
+                        hour: "2-digit", minute: "2-digit",
+                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                      })}
                     </div>
                   </div>
                 ))}
@@ -178,7 +168,7 @@ export default function NotificationsPage() {
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                         <div>
                           <div style={{ fontWeight: 600, fontSize: 15, textTransform: "capitalize" }}>
-                            {new Date(s.data_stervitjes).toLocaleDateString("sq-AL", { weekday: "long", day: "numeric", month: "long" })}
+                            {new Date(s.data_stervitjes.slice(0, 10) + "T12:00:00").toLocaleDateString("sq-AL", { weekday: "long", day: "numeric", month: "long" })}
                           </div>
                           <div style={{ color: "#888", fontSize: 12, marginTop: 2 }}>
                             {s.ora_fillimit?.slice(0,5)} – {s.ora_perfundimit?.slice(0,5)}
@@ -237,7 +227,7 @@ export default function NotificationsPage() {
                     Man United <span style={{ color: "#DA291C" }}>vs</span> {nextMatch.ekipi_kundershtare}
                   </div>
                   <div style={{ color: "#888", fontSize: 13, marginTop: 4 }}>
-                    {new Date(nextMatch.data_ndeshjes).toLocaleDateString("sq-AL", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                    {new Date(nextMatch.data_ndeshjes + "T12:00:00").toLocaleDateString("sq-AL", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                     {nextMatch.ora && ` · ${String(nextMatch.ora).slice(0, 5)}`}
                     {nextMatch.stadiumi && ` · ${nextMatch.stadiumi}`}
                   </div>
@@ -280,12 +270,6 @@ export default function NotificationsPage() {
                                 <div style={{ fontSize: 11, color: POZ_COLOR[p.pozicioni] || "#888", marginTop: 1 }}>
                                   {p.pozicioni}{p.slot_id ? ` · ${p.slot_id}` : ""}
                                 </div>
-                              </div>
-                              <div style={{ display: "flex", gap: 8, fontSize: 12, color: "#888" }}>
-                                {p.gola > 0 && <span>⚽{p.gola}</span>}
-                                {p.asistime > 0 && <span>🅰{p.asistime}</span>}
-                                {p.karton_verdhe > 0 && <span>🟨{p.karton_verdhe}</span>}
-                                {p.karton_kuq > 0 && <span>🟥{p.karton_kuq}</span>}
                               </div>
                             </div>
                           ))}

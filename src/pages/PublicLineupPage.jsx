@@ -1,64 +1,11 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api from "../api/axiosInstance";
 import "./PublicLineupPage.css";
+import Navbar from "../Components/NavBar";
+import { FORMATIONS } from "../Components/formations";
 
 const RED = "#DA291C";
-
-const FORMATIONS = {
-  "4-4-2": [
-    { id: "GK",  x: 50, y: 85, poz: "Portier"   },
-    { id: "LB",  x: 12, y: 68, poz: "Mbrojtës"  },
-    { id: "CB1", x: 35, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", x: 65, y: 68, poz: "Mbrojtës"  },
-    { id: "RB",  x: 88, y: 68, poz: "Mbrojtës"  },
-    { id: "LM",  x: 12, y: 46, poz: "Mesfushor" },
-    { id: "CM1", x: 35, y: 46, poz: "Mesfushor" },
-    { id: "CM2", x: 65, y: 46, poz: "Mesfushor" },
-    { id: "RM",  x: 88, y: 46, poz: "Mesfushor" },
-    { id: "ST1", x: 35, y: 20, poz: "Sulmues"   },
-    { id: "ST2", x: 65, y: 20, poz: "Sulmues"   },
-  ],
-  "4-3-3": [
-    { id: "GK",  x: 50, y: 85, poz: "Portier"   },
-    { id: "LB",  x: 12, y: 68, poz: "Mbrojtës"  },
-    { id: "CB1", x: 35, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", x: 65, y: 68, poz: "Mbrojtës"  },
-    { id: "RB",  x: 88, y: 68, poz: "Mbrojtës"  },
-    { id: "CM1", x: 25, y: 48, poz: "Mesfushor" },
-    { id: "CM2", x: 50, y: 48, poz: "Mesfushor" },
-    { id: "CM3", x: 75, y: 48, poz: "Mesfushor" },
-    { id: "LW",  x: 15, y: 22, poz: "Sulmues"   },
-    { id: "ST",  x: 50, y: 18, poz: "Sulmues"   },
-    { id: "RW",  x: 85, y: 22, poz: "Sulmues"   },
-  ],
-  "3-5-2": [
-    { id: "GK",  x: 50, y: 85, poz: "Portier"   },
-    { id: "CB1", x: 25, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", x: 50, y: 68, poz: "Mbrojtës"  },
-    { id: "CB3", x: 75, y: 68, poz: "Mbrojtës"  },
-    { id: "LWB", x: 8,  y: 50, poz: "Mesfushor" },
-    { id: "CM1", x: 30, y: 48, poz: "Mesfushor" },
-    { id: "CM2", x: 50, y: 48, poz: "Mesfushor" },
-    { id: "CM3", x: 70, y: 48, poz: "Mesfushor" },
-    { id: "RWB", x: 92, y: 50, poz: "Mesfushor" },
-    { id: "ST1", x: 35, y: 20, poz: "Sulmues"   },
-    { id: "ST2", x: 65, y: 20, poz: "Sulmues"   },
-  ],
-  "4-2-3-1": [
-    { id: "GK",  x: 50, y: 85, poz: "Portier"   },
-    { id: "LB",  x: 12, y: 68, poz: "Mbrojtës"  },
-    { id: "CB1", x: 35, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", x: 65, y: 68, poz: "Mbrojtës"  },
-    { id: "RB",  x: 88, y: 68, poz: "Mbrojtës"  },
-    { id: "DM1", x: 35, y: 54, poz: "Mesfushor" },
-    { id: "DM2", x: 65, y: 54, poz: "Mesfushor" },
-    { id: "LW",  x: 15, y: 36, poz: "Mesfushor" },
-    { id: "AM",  x: 50, y: 36, poz: "Mesfushor" },
-    { id: "RW",  x: 85, y: 36, poz: "Mesfushor" },
-    { id: "ST",  x: 50, y: 18, poz: "Sulmues"   },
-  ],
-};
 
 const POZ_COLOR = {
   Portier:   "#facc15",
@@ -66,15 +13,6 @@ const POZ_COLOR = {
   Mesfushor: "#4ade80",
   Sulmues:   "#f87171",
 };
-
-const monthNames = ["Janar","Shkurt","Mars","Prill","Maj","Qershor","Korrik","Gusht","Shtator","Tetor","Nëntor","Dhjetor"];
-const dayNames   = ["E Diel","E Hënë","E Martë","E Mërkurë","E Enjte","E Premte","E Shtunë"];
-
-function fmtDate(d) {
-  if (!d) return "";
-  const dt = new Date(d);
-  return `${dayNames[dt.getDay()]}, ${dt.getDate()} ${monthNames[dt.getMonth()]} ${dt.getFullYear()}`;
-}
 
 function PitchLines() {
   return (
@@ -135,7 +73,6 @@ function PlayerToken({ slot, player }) {
 
 export default function PublicLineupPage() {
   const { matchId } = useParams();
-  const navigate    = useNavigate();
 
   const [match,     setMatch]     = useState(null);
   const [lineup,    setLineup]    = useState({});
@@ -168,38 +105,15 @@ export default function PublicLineupPage() {
   const titularet11  = Object.values(lineup);
   const titularCount = titularet11.length;
   const hasLineup    = titularCount > 0 || bench.length > 0;
-  const totalGola    = titularet11.reduce((s, p) => s + (p.gola     || 0), 0);
-  const totalAsist   = titularet11.reduce((s, p) => s + (p.asistime || 0), 0);
 
   return (
     <div className="plp-page">
 
-      {/* ══ HEADER ══ */}
-      <div className="plp-header">
-        <button onClick={() => navigate(-1)} className="plp-back-btn">←</button>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg"
-          alt="MUFC"
-          className="plp-header-logo"
-        />
-        <div className="plp-header-info">
-          {match ? (
-            <>
-              <div className="plp-match-title">
-                Man United <span>vs</span> {match.ekipi_kundershtare}
-              </div>
-              <div className="plp-match-sub">
-                {fmtDate(match.data_ndeshjes)}
-                {match.ora      && ` · ${String(match.ora).slice(0, 5)}`}
-                {match.stadiumi && ` · ${match.stadiumi}`}
-              </div>
-            </>
-          ) : (
-            <div className="plp-match-title">Formacioni</div>
-          )}
-        </div>
-        <div className="plp-formation-badge">{formation}</div>
+      {/* ══ NAVBAR ══ */}
+      <div style={{ background: "#cc0000" }}>
+        <Navbar />
       </div>
+
 
       {/* ══ LOADING ══ */}
       {loading && (
@@ -226,8 +140,6 @@ export default function PublicLineupPage() {
             {[
               { val: `${titularCount}/11`, label: "Titular", color: "#22c55e", icon: "👤" },
               { val: bench.length,         label: "Bankë",   color: "#eab308", icon: "🪑" },
-              { val: totalGola,            label: "Gola",    color: "#60a5fa", icon: "⚽" },
-              { val: totalAsist,           label: "Asiste",  color: "#a78bfa", icon: "🅰" },
             ].map(s => (
               <div key={s.label} className="plp-stat-item">
                 <div className="plp-stat-val" style={{ color: s.color }}>{s.val}</div>
@@ -327,32 +239,6 @@ export default function PublicLineupPage() {
                           <div className="plp-player-info">
                             <div className="plp-player-name">{p.emri} {p.mbiemri}</div>
                             <div className="plp-player-pos" style={{ color: pc }}>{p.pozicioni} · {slot.id}</div>
-                          </div>
-                          <div className="plp-player-stats">
-                            {p.gola > 0 && (
-                              <div className="plp-stat-badge">
-                                <div className="plp-stat-badge-icon">⚽</div>
-                                <div className="plp-stat-badge-val" style={{ color: "#4ade80" }}>{p.gola}</div>
-                              </div>
-                            )}
-                            {p.asistime > 0 && (
-                              <div className="plp-stat-badge">
-                                <div className="plp-stat-badge-icon">🅰</div>
-                                <div className="plp-stat-badge-val" style={{ color: "#60a5fa" }}>{p.asistime}</div>
-                              </div>
-                            )}
-                            {p.karton_verdhe > 0 && (
-                              <div className="plp-stat-badge">
-                                <div className="plp-stat-badge-icon">🟨</div>
-                                <div className="plp-stat-badge-val" style={{ color: "#eab308" }}>{p.karton_verdhe}</div>
-                              </div>
-                            )}
-                            {p.karton_kuq > 0 && (
-                              <div className="plp-stat-badge">
-                                <div className="plp-stat-badge-icon">🟥</div>
-                                <div className="plp-stat-badge-val" style={{ color: "#ef4444" }}>{p.karton_kuq}</div>
-                              </div>
-                            )}
                           </div>
                         </div>
                       );

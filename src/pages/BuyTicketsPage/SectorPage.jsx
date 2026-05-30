@@ -40,6 +40,11 @@ export default function ZgjidhoSektorin() {
 
   return (
     <div className="zs-page">
+      <div style={{ width: "100%", maxWidth: 680 }}>
+        <button className="zs-back" onClick={() => navigate("/ndeshjet")}>
+          ← Kthehu
+        </button>
+      </div>
       <p className="zs-instruction">Ju lutem zgjidhni sektorin</p>
 
       <div className="zs-center">

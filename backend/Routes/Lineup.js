@@ -3,7 +3,7 @@ const router   = express.Router();
 const { sql, poolPromise }         = require("../db");
 const { verifyToken, requireRole } = require("../middleware/authMiddleware");
 
-// GET /api/lineup/:match_id — formacioni + lojtaret me statistika
+// GET /api/lineup/:match_id — formacioni + lojtaret
 router.get("/:match_id", verifyToken, async (req, res) => {
   try {
     const pool = await poolPromise;
@@ -14,25 +14,17 @@ router.get("/:match_id", verifyToken, async (req, res) => {
       .query(`
         SELECT
           ml.slot_id, ml.player_id, ml.roli, ml.formacioni,
-          p.emri, p.mbiemri, p.numri_faneles, p.pozicioni,
-          ISNULL(p.goals,   0)  AS gola,
-          ISNULL(p.assists, 0)  AS asistime,
-          ISNULL(p.apps,    0)  AS ndeshje,
-          ISNULL(p.rating,  70) AS rating
+          p.emri, p.mbiemri, p.numri_faneles, p.pozicioni
         FROM MatchLineup ml
         JOIN Players p ON p.id = ml.player_id
         WHERE ml.match_id = @match_id
       `);
 
-    // Te gjithe lojtaret aktiv me statistikat (per selectorin)
+    // Te gjithe lojtaret aktiv (per selectorin)
     const playersRes = await pool.request().query(`
       SELECT
         p.id AS player_id,
-        p.emri, p.mbiemri, p.numri_faneles, p.pozicioni,
-        ISNULL(p.goals,   0)  AS gola,
-        ISNULL(p.assists, 0)  AS asistime,
-        ISNULL(p.apps,    0)  AS ndeshje,
-        ISNULL(p.rating,  70) AS rating
+        p.emri, p.mbiemri, p.numri_faneles, p.pozicioni
       FROM Players p
       WHERE p.statusi = 'Aktiv'
       ORDER BY
@@ -97,22 +89,29 @@ router.put("/:match_id", verifyToken, requireRole("Admin", "Trajner"), async (re
         `);
     }
 
-    // Dergo njoftime te lojtaret
+    // Dergo njoftim te te gjithe lojtaret
     const matchRes = await pool.request()
       .input("id", sql.Int, matchId)
-      .query("SELECT ekipi_kundershtare FROM Matches WHERE id = @id");
+      .query("SELECT ekipi_kundershtare, data_ndeshjes, ora FROM Matches WHERE id = @id");
 
-    const kundershtar = matchRes.recordset[0]?.ekipi_kundershtare || "kundershtar";
+    const match       = matchRes.recordset[0];
+    const kundershtar = match?.ekipi_kundershtare || "kundershtar";
+    const data        = match?.data_ndeshjes
+      ? new Date(match.data_ndeshjes).toLocaleDateString("sq-AL", { day: "numeric", month: "long", timeZone: "UTC" })
+      : null;
+    const ora         = match?.ora ? String(match.ora).slice(0, 5) : null;
+    const koha        = [data, ora].filter(Boolean).join(" · ");
 
-    const usersRes = await pool.request()
+    // Dergo njoftim te te gjithe lojtaret
+    const lojtaretRes = await pool.request()
       .query("SELECT id FROM Users WHERE role = 'Lojtari'");
 
-    for (const u of usersRes.recordset) {
+    for (const u of lojtaretRes.recordset) {
       await pool.request()
         .input("user_id", sql.Int,          u.id)
         .input("titulli", sql.NVarChar(200), `Formacioni u publikua: Man United vs ${kundershtar}`)
-        .input("mesazhi", sql.NVarChar(500), `Trajneri publikoi formacionin per ndeshjen kunder ${kundershtar}. Shiko seksionin "Ndeshja" ne njoftime.`)
-        .query("INSERT INTO Notifications (user_id, titulli, mesazhi) VALUES (@user_id, @titulli, @mesazhi)");
+        .input("mesazhi", sql.NVarChar(500), `Trajneri publikoi formacionin për ndeshjen kundër ${kundershtar}${koha ? ` · ${koha}` : ""}. Shiko tab-in "Ndeshja" për detaje.`)
+        .query("INSERT INTO Notifications (user_id, titulli, mesazhi, created_at) VALUES (@user_id, @titulli, @mesazhi, GETUTCDATE())");
     }
 
     res.json({ success: true, message: "Formacioni u ruajt" });

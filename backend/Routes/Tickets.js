@@ -111,7 +111,8 @@ router.post("/", verifyToken, async (req, res) => {
             (@match_id, @user_id, @sektori, @numri_uleses, @emri_bleresit, @mbiemri_bleresit, @cmimi, @is_vip, @statusi)
         `);
     }
-    res.json({ success: true, message: "Biletat u ruajtën me sukses" });
+    const orderRef = Math.floor(100000 + Math.random() * 900000);
+    res.json({ success: true, message: "Biletat u ruajtën me sukses", orderRef });
 
     const isAdmin = ["admin","menaxher"].includes(req.user.role?.toLowerCase());
     if (isAdmin) {
@@ -129,7 +130,7 @@ router.post("/", verifyToken, async (req, res) => {
             .input("uid", sql.Int,      row.user_id)
             .input("tit", sql.NVarChar, "Bileta të reja")
             .input("msg", sql.NVarChar, `Bileta disponueshme për Man United vs ${kundershtari}`)
-            .query(`INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETDATE())`);
+            .query(`INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETUTCDATE())`);
         }
       } catch (notifErr) {
         console.error("[Notification bileta error]", notifErr.message);

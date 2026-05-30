@@ -5,8 +5,10 @@
 
 import axios from "axios";
 
+const BASE_URL = "http://localhost:5001";
+
 const api = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: BASE_URL,
 });
 
 // Para çdo kërkese — shto access token automatikisht
@@ -59,7 +61,7 @@ api.interceptors.response.use(
 
       try {
         // axios direkt (jo api) — kalon interceptorin, shmang deadlock
-        const res = await axios.post("http://localhost:5001/refresh", { refreshToken });
+        const res = await axios.post(`${BASE_URL}/refresh`, { refreshToken });
         const newToken = res.data.accessToken;
 
         localStorage.setItem("accessToken", newToken);

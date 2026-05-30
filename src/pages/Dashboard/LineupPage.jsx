@@ -2,68 +2,13 @@ import { useState, useEffect } from "react";
 import api from "../../api/axiosInstance";
 import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
+import { FORMATIONS } from "../../Components/formations";
 import "./Dashboard.css";
 
 const RED   = "#DA291C";
 const DARK  = "#0d0d0d";
 const FH    = "'Bebas Neue', sans-serif";
 const FB    = "'Barlow', sans-serif";
-
-/* ─── Formacionet ────────────────────────────────────────────── */
-const FORMATIONS = {
-  "4-4-2": [
-    { id: "GK",  label: "Portier",    x: 50, y: 85, poz: "Portier"   },
-    { id: "LB",  label: "Mbrojtës",   x: 12, y: 68, poz: "Mbrojtës"  },
-    { id: "CB1", label: "Qendër",     x: 35, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", label: "Qendër",     x: 65, y: 68, poz: "Mbrojtës"  },
-    { id: "RB",  label: "Mbrojtës",   x: 88, y: 68, poz: "Mbrojtës"  },
-    { id: "LM",  label: "Mesfushor",  x: 12, y: 46, poz: "Mesfushor" },
-    { id: "CM1", label: "Qendër",     x: 35, y: 46, poz: "Mesfushor" },
-    { id: "CM2", label: "Qendër",     x: 65, y: 46, poz: "Mesfushor" },
-    { id: "RM",  label: "Mesfushor",  x: 88, y: 46, poz: "Mesfushor" },
-    { id: "ST1", label: "Sulmues",    x: 35, y: 20, poz: "Sulmues"   },
-    { id: "ST2", label: "Sulmues",    x: 65, y: 20, poz: "Sulmues"   },
-  ],
-  "4-3-3": [
-    { id: "GK",  label: "Portier",    x: 50, y: 85, poz: "Portier"   },
-    { id: "LB",  label: "Mbrojtës",   x: 12, y: 68, poz: "Mbrojtës"  },
-    { id: "CB1", label: "Qendër",     x: 35, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", label: "Qendër",     x: 65, y: 68, poz: "Mbrojtës"  },
-    { id: "RB",  label: "Mbrojtës",   x: 88, y: 68, poz: "Mbrojtës"  },
-    { id: "CM1", label: "Mesfushor",  x: 25, y: 48, poz: "Mesfushor" },
-    { id: "CM2", label: "Qendër",     x: 50, y: 48, poz: "Mesfushor" },
-    { id: "CM3", label: "Mesfushor",  x: 75, y: 48, poz: "Mesfushor" },
-    { id: "LW",  label: "Krahësor",   x: 15, y: 22, poz: "Sulmues"   },
-    { id: "ST",  label: "Sulmues",    x: 50, y: 18, poz: "Sulmues"   },
-    { id: "RW",  label: "Krahësor",   x: 85, y: 22, poz: "Sulmues"   },
-  ],
-  "3-5-2": [
-    { id: "GK",  label: "Portier",    x: 50, y: 85, poz: "Portier"   },
-    { id: "CB1", label: "Qendër",     x: 25, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", label: "Qendër",     x: 50, y: 68, poz: "Mbrojtës"  },
-    { id: "CB3", label: "Qendër",     x: 75, y: 68, poz: "Mbrojtës"  },
-    { id: "LWB", label: "Krahësor",   x: 8,  y: 50, poz: "Mesfushor" },
-    { id: "CM1", label: "Mesfushor",  x: 30, y: 48, poz: "Mesfushor" },
-    { id: "CM2", label: "Qendër",     x: 50, y: 48, poz: "Mesfushor" },
-    { id: "CM3", label: "Mesfushor",  x: 70, y: 48, poz: "Mesfushor" },
-    { id: "RWB", label: "Krahësor",   x: 92, y: 50, poz: "Mesfushor" },
-    { id: "ST1", label: "Sulmues",    x: 35, y: 20, poz: "Sulmues"   },
-    { id: "ST2", label: "Sulmues",    x: 65, y: 20, poz: "Sulmues"   },
-  ],
-  "4-2-3-1": [
-    { id: "GK",  label: "Portier",    x: 50, y: 85, poz: "Portier"   },
-    { id: "LB",  label: "Mbrojtës",   x: 12, y: 68, poz: "Mbrojtës"  },
-    { id: "CB1", label: "Qendër",     x: 35, y: 68, poz: "Mbrojtës"  },
-    { id: "CB2", label: "Qendër",     x: 65, y: 68, poz: "Mbrojtës"  },
-    { id: "RB",  label: "Mbrojtës",   x: 88, y: 68, poz: "Mbrojtës"  },
-    { id: "DM1", label: "Mbrojtës",   x: 35, y: 54, poz: "Mesfushor" },
-    { id: "DM2", label: "Mbrojtës",   x: 65, y: 54, poz: "Mesfushor" },
-    { id: "LW",  label: "Krahësor",   x: 15, y: 36, poz: "Mesfushor" },
-    { id: "AM",  label: "Sulmues-M",  x: 50, y: 36, poz: "Mesfushor" },
-    { id: "RW",  label: "Krahësor",   x: 85, y: 36, poz: "Mesfushor" },
-    { id: "ST",  label: "Sulmues",    x: 50, y: 18, poz: "Sulmues"   },
-  ],
-};
 
 const POZ_COLOR = {
   Portier: "#facc15", "Mbrojtës": "#60a5fa", Mesfushor: "#4ade80", Sulmues: "#f87171",
@@ -182,22 +127,6 @@ function PlayerCard({ p, isAssigned, isActive, onClick }) {
           {p.pozicioni}
         </div>
       </div>
-      {/* Statistikat */}
-      <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-        <StatBadge val={p.gola}          icon="⚽" color="#4ade80" />
-        <StatBadge val={p.asistime}      icon="🅰"  color="#60a5fa" />
-        <StatBadge val={p.karton_verdhe} icon="🟨" color="#eab308" />
-        {p.karton_kuq > 0 && <StatBadge val={p.karton_kuq} icon="🟥" color="#ef4444" />}
-      </div>
-    </div>
-  );
-}
-
-function StatBadge({ val, icon, color }) {
-  return (
-    <div style={{ textAlign: "center", minWidth: 22 }}>
-      <div style={{ fontSize: 11 }}>{icon}</div>
-      <div style={{ fontFamily: FH, fontSize: 13, color, lineHeight: 1 }}>{val}</div>
     </div>
   );
 }
@@ -357,9 +286,6 @@ export default function LineupPage() {
 
   /* ─── Statistikat e titulareve ─── */
   const titularet11 = Object.values(lineup).length;
-  const goalsTot    = Object.values(lineup).reduce((s, p) => s + (p.gola || 0), 0);
-  const yellows     = Object.values(lineup).reduce((s, p) => s + (p.karton_verdhe || 0), 0);
-  const reds        = Object.values(lineup).reduce((s, p) => s + (p.karton_kuq || 0), 0);
 
   /* ─── Formatimi i dates ─── */
   const fmtDate = (d) => {
@@ -421,11 +347,8 @@ export default function LineupPage() {
                 {/* Statistika te shpejta */}
                 <div style={{ display: "flex", gap: 20 }}>
                   {[
-                    { val: `${titularet11}/11`, label: "Titular",  color: "#22c55e" },
-                    { val: bench.length,        label: "Bankë",    color: "#eab308" },
-                    { val: goalsTot,            label: "Gola",     color: "#60a5fa" },
-                    { val: yellows,             label: "🟨",       color: "#eab308" },
-                    { val: reds,                label: "🟥",       color: "#ef4444" },
+                    { val: `${titularet11}/11`, label: "Titular", color: "#22c55e" },
+                    { val: bench.length,        label: "Bankë",   color: "#eab308" },
                   ].map(s => (
                     <div key={s.label} style={{ textAlign: "center" }}>
                       <div style={{ fontFamily: FH, fontSize: 22, color: s.color }}>{s.val}</div>

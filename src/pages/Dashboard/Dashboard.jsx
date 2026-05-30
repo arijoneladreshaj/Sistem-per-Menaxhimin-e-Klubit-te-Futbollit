@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [activeSeason, setActiveSeason] = useState(null);
 
   useEffect(() => {
-    api.get("http://localhost:5001/api/seasons/active")
+    api.get("/api/seasons/active")
       .then(res => setActiveSeason(res.data))
       .catch(() => {});
   }, []);
