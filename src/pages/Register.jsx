@@ -97,7 +97,7 @@ function Register() {
         <p className="club-subtitle">"United we stand."</p>
       </div>
 
-      <div className="card">
+      <form className="card" onSubmit={handleRegister} autoComplete="off">
         <div className="card-top">
           <div className="red-bar"></div>
           <div className="welcome">Krijo Llogari!</div>
@@ -204,7 +204,7 @@ function Register() {
           )}
         </div>
 
-        <button className="btn-login" onClick={handleRegister}>
+        <button type="submit" className="btn-login">
           REGJISTROHU
         </button>
         {errors.general && <span className="error">{errors.general}</span>}
@@ -216,7 +216,7 @@ function Register() {
         <div className="footer">
           Ke llogari? <Link to="/login">Kyçu këtu</Link>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

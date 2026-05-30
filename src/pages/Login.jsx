@@ -19,7 +19,6 @@ function Login() {
   };
 
  const handleLogin = async (e) => {
-
   e.preventDefault();
 
   const newErrors = validate();
@@ -71,7 +70,7 @@ function Login() {
         <p className="club-subtitle">"United we stand."</p>
       </div>
 
-      <div className="card">
+      <form className="card" onSubmit={handleLogin} autoComplete="off">
         <div className="card-top">
           <div className="red-bar"></div>
           <div className="welcome">Mirë se erdhe!</div>
@@ -119,7 +118,7 @@ function Login() {
           <a href="#">Ke harruar fjalëkalimin?</a>
         </div> */}
 
-        <button type="button" className="btn-login" onClick={handleLogin}>
+        <button type="submit" className="btn-login">
           KYÇU
         </button>
         {errors.general && <span className="error">{errors.general}</span>}
@@ -131,7 +130,7 @@ function Login() {
           Nuk ke llogari?
           <Link to="/register"> Krijo një të re</Link>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

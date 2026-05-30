@@ -73,29 +73,57 @@ exports.create = async (req, res) => {
       return res.status(400).json({ error: "Të dhënat mungojnë" });
 
     const pool = await poolPromise;
-    for (const seat of seats) {
-      await pool
-        .request()
-        .input("match_id", sql.Int, match_id)
-        .input("user_id", sql.Int, user_id)
-        .input("sektori", sql.NVarChar, seat.sectorId || seat.sectorName)
-        .input("numri_uleses", sql.Int, seat.seatNumber)
-        .input("emri_bleresit", sql.NVarChar, seat.firstName || null)
-        .input("mbiemri_bleresit", sql.NVarChar, seat.lastName || null)
-        .input("cmimi", sql.Decimal, seat.price)
-        .input("is_vip", sql.Bit, seat.isVip ? 1 : 0)
-        .input("statusi", sql.NVarChar, seat.statusi || "E shitur")
-        .query(
-          "INSERT INTO Tickets (match_id,user_id,sektori,numri_uleses,emri_bleresit,mbiemri_bleresit,cmimi,is_vip,statusi) VALUES (@match_id,@user_id,@sektori,@numri_uleses,@emri_bleresit,@mbiemri_bleresit,@cmimi,@is_vip,@statusi)",
-        );
+    const transaction = new sql.Transaction(pool);
+    await transaction.begin();
+
+    try {
+      for (const seat of seats) {
+        const sectorId   = seat.sectorId || seat.sectorName;
+        const seatNumber = seat.seatNumber;
+
+        // Kontroll atomik: kyç rreshtin para INSERT për të parandaluar double-booking
+        const checkReq = new sql.Request(transaction);
+        const existing = await checkReq
+          .input("match_id",      sql.Int,      match_id)
+          .input("sektori",       sql.NVarChar, sectorId)
+          .input("numri_uleses",  sql.Int,      seatNumber)
+          .query(`
+            SELECT id FROM Tickets WITH (UPDLOCK, HOLDLOCK)
+            WHERE match_id = @match_id AND sektori = @sektori AND numri_uleses = @numri_uleses
+              AND statusi IN ('E rezervuar', 'E shitur')
+          `);
+
+        if (existing.recordset.length > 0)
+          throw Object.assign(
+            new Error(`Ulësja ${seatNumber} në sektorin ${sectorId} është tashmë e zënë`),
+            { conflict: true }
+          );
+
+        const insertReq = new sql.Request(transaction);
+        await insertReq
+          .input("match_id",          sql.Int,      match_id)
+          .input("user_id",           sql.Int,      user_id)
+          .input("sektori",           sql.NVarChar, sectorId)
+          .input("numri_uleses",      sql.Int,      seatNumber)
+          .input("emri_bleresit",     sql.NVarChar, seat.firstName || null)
+          .input("mbiemri_bleresit",  sql.NVarChar, seat.lastName  || null)
+          .input("cmimi",             sql.Decimal,  seat.price)
+          .input("is_vip",            sql.Bit,      seat.isVip ? 1 : 0)
+          .input("statusi",           sql.NVarChar, seat.statusi || "E shitur")
+          .query(
+            "INSERT INTO Tickets (match_id,user_id,sektori,numri_uleses,emri_bleresit,mbiemri_bleresit,cmimi,is_vip,statusi) VALUES (@match_id,@user_id,@sektori,@numri_uleses,@emri_bleresit,@mbiemri_bleresit,@cmimi,@is_vip,@statusi)"
+          );
+      }
+
+      await transaction.commit();
+    } catch (txErr) {
+      await transaction.rollback();
+      if (txErr.conflict) return res.status(409).json({ error: txErr.message });
+      throw txErr;
     }
 
     const orderRef = Math.floor(100000 + Math.random() * 900000);
-    res.json({
-      success: true,
-      message: "Biletat u ruajtën me sukses",
-      orderRef,
-    });
+    res.json({ success: true, message: "Biletat u ruajtën me sukses", orderRef });
 
     const isAdmin = MENAXHER_ROLES.map((r) => r.toLowerCase()).includes(
       req.user.role?.toLowerCase(),
@@ -110,21 +138,15 @@ exports.create = async (req, res) => {
           matchRes.recordset[0]?.ekipi_kundershtare || "kundërshtari";
         const prefRes = await pool
           .request()
-          .query(
-            `SELECT user_id FROM UserPreferences WHERE topics LIKE '%bileta%'`,
-          );
+          .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%bileta%'`);
         for (const row of prefRes.recordset) {
           await pool
             .request()
             .input("uid", sql.Int, row.user_id)
             .input("tit", sql.NVarChar, "Bileta të reja")
-            .input(
-              "msg",
-              sql.NVarChar,
-              `Bileta disponueshme për Man United vs ${kundershtari}`,
-            )
+            .input("msg", sql.NVarChar, `Bileta disponueshme për Man United vs ${kundershtari}`)
             .query(
-              `INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETUTCDATE())`,
+              `INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETUTCDATE())`
             );
         }
       } catch (notifErr) {
@@ -132,7 +154,8 @@ exports.create = async (req, res) => {
       }
     }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("[tickets.create]", err);
+    res.status(500).json({ error: "Gabim intern i serverit" });
   }
 };
 
