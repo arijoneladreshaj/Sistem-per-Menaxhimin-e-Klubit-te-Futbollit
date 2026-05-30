@@ -1,4 +1,4 @@
-const { sql, poolPromise } = require("./db");
+const { sql, poolPromise } = require("../config/db");
 
 const CAT_TO_POZ = { GK: "Portier", DEF: "Mbrojtës", MID: "Mesfushor", FWD: "Sulmues" };
 
@@ -66,22 +66,22 @@ async function seed() {
   }
 
   for (const p of PLAYERS) {
-    const emri     = p.name || p.surname;
-    const mbiemri  = p.surname;
+    const emri    = p.name || p.surname;
+    const mbiemri = p.surname;
     const pozicioni = CAT_TO_POZ[p.cat];
 
     await pool.request()
-      .input("club_id",       sql.Int,            1)
-      .input("emri",          sql.NVarChar(100),  emri)
-      .input("mbiemri",       sql.NVarChar(100),  mbiemri)
-      .input("data_lindjes",  sql.Date,           parseBorn(p.born))
-      .input("kombesia",      sql.NVarChar(100),  p.country || null)
-      .input("pozicioni",     sql.NVarChar(20),   pozicioni)
-      .input("numri_faneles", sql.TinyInt,        p.number || null)
-      .input("pesha",         sql.Decimal(5, 2),  parseWeight(p.weight))
-      .input("gjatesia",      sql.Decimal(5, 2),  parseHeight(p.height))
-      .input("statusi",       sql.NVarChar(20),   "Aktiv")
-      .input("vlera_tregut",  sql.Decimal(15, 2), 0)
+      .input("club_id",       sql.Int,           1)
+      .input("emri",          sql.NVarChar(100), emri)
+      .input("mbiemri",       sql.NVarChar(100), mbiemri)
+      .input("data_lindjes",  sql.Date,          parseBorn(p.born))
+      .input("kombesia",      sql.NVarChar(100), p.country || null)
+      .input("pozicioni",     sql.NVarChar(20),  pozicioni)
+      .input("numri_faneles", sql.TinyInt,       p.number || null)
+      .input("pesha",         sql.Decimal(5, 2), parseWeight(p.weight))
+      .input("gjatesia",      sql.Decimal(5, 2), parseHeight(p.height))
+      .input("statusi",       sql.NVarChar(20),  "Aktiv")
+      .input("vlera_tregut",  sql.Decimal(15,2), 0)
       .query(`
         INSERT INTO Players
           (club_id, emri, mbiemri, data_lindjes, kombesia, pozicioni, numri_faneles, pesha, gjatesia, statusi, vlera_tregut)
