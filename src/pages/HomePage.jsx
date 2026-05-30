@@ -74,25 +74,6 @@ export default function ManchesterUnitedHome() {
   const [pageForm,     setPageForm]     = useState({});
   const [newField,     setNewField]     = useState({ key: "", value: "" });
 
-  useEffect(() => {
-    const el = tickerRef.current;
-    if (!el) return;
-    const totalWidth = el.scrollWidth / 2;
-    let last = null;
-
-    const step = (ts) => {
-      if (last !== null) {
-        offsetRef.current += (ts - last) * 0.04;
-        if (offsetRef.current >= totalWidth) offsetRef.current = 0;
-        setTickerOffset(Math.round(offsetRef.current));
-      }
-      last = ts;
-      animRef.current = requestAnimationFrame(step);
-    };
-
-    animRef.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animRef.current);
-  }, []);
 
   const fetchLajme = () =>
     api.get(LAJME_API)
