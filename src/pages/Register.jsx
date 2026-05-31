@@ -62,9 +62,7 @@ function Register() {
         password: formData.password,
       });
 
-     navigate("/login");
-
-      navigate("/preferences");
+      navigate("/login");
     } catch (err) {
       const msg = err.response?.data?.message || "Gabim gjatë regjistrimit";
       setErrors({ general: msg });

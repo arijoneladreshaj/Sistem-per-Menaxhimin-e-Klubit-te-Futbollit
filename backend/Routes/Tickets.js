@@ -1,16 +1,224 @@
 const express = require("express");
 const router  = express.Router();
+const { sql, poolPromise } = require("../db");
 const { verifyToken, requireRole } = require("../middleware/authMiddleware");
-const ticketsController = require("../controllers/ticketsController");
-
+const { sendTicketConfirmation } = require("../emailService");
 const MENAXHER_ROLES = ["Admin", "Menaxher"];
 
-router.get("/booked/:matchId/:sektori",       verifyToken,                                   ticketsController.getBooked);
-router.get("/my",        verifyToken,                                            ticketsController.getMy);
-router.get("/",          verifyToken, requireRole(...MENAXHER_ROLES),            ticketsController.getAll);
-router.get("/match/:matchId", verifyToken, requireRole(...MENAXHER_ROLES),       ticketsController.getByMatch);
-router.post("/",         verifyToken,                                            ticketsController.create);
-router.put("/:id",       verifyToken, requireRole(...MENAXHER_ROLES),            ticketsController.update);
-router.delete("/:id",    verifyToken,                                            ticketsController.remove);
+// ── PUBLIKE ────────────────────────────────────────────────────
+
+// GET /api/tickets/booked/:matchId/:sektori — ulëset e zëna (pa token)
+router.get("/booked/:matchId/:sektori", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("match_id", sql.Int,      req.params.matchId)
+      .input("sektori",  sql.NVarChar, req.params.sektori)
+      .query(`
+        SELECT numri_uleses FROM Tickets
+        WHERE match_id = @match_id AND sektori = @sektori
+        AND statusi IN ('E rezervuar', 'E shitur')
+      `);
+    res.json(result.recordset.map(r => r.numri_uleses));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── ME TOKEN ───────────────────────────────────────────────────
+
+// GET /api/tickets/my — biletat e userit të kyçur
+router.get("/my", verifyToken, async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("user_id", sql.Int, req.user.id)
+      .query(`
+        SELECT t.*, m.ekipi_kundershtare, m.data_ndeshjes, m.stadiumi
+        FROM Tickets t
+        LEFT JOIN Matches m ON t.match_id = m.id
+        WHERE t.user_id = @user_id
+        ORDER BY t.created_at DESC
+      `);
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/tickets — të gjitha biletat (admin)
+router.get("/", verifyToken, requireRole(...MENAXHER_ROLES), async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT t.*,
+             m.ekipi_kundershtare, m.data_ndeshjes, m.stadiumi,
+             u.emri AS user_emri, u.mbiemri AS user_mbiemri, u.email AS user_email
+      FROM Tickets t
+      LEFT JOIN Matches m ON t.match_id = m.id
+      LEFT JOIN Users   u ON t.user_id  = u.id
+      ORDER BY t.created_at DESC
+    `);
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/tickets/match/:matchId — biletat e një ndeshje (admin)
+router.get("/match/:matchId", verifyToken, requireRole(...MENAXHER_ROLES), async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("match_id", sql.Int, req.params.matchId)
+      .query(`
+        SELECT t.*, u.emri AS user_emri, u.mbiemri AS user_mbiemri
+        FROM Tickets t
+        LEFT JOIN Users u ON t.user_id = u.id
+        WHERE t.match_id = @match_id
+        ORDER BY t.sektori, t.numri_uleses
+      `);
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/tickets — blej bileta (user i loguar)
+router.post("/", verifyToken, async (req, res) => {
+  try {
+    const { match_id, seats, stripe_payment_id } = req.body;
+    const user_id = req.user.id;
+
+    if (!match_id || !seats || seats.length === 0)
+      return res.status(400).json({ error: "Të dhënat mungojnë" });
+
+    const pool = await poolPromise;
+    for (const seat of seats) {
+      await pool.request()
+        .input("match_id",          sql.Int,           match_id)
+        .input("user_id",           sql.Int,           user_id)
+        .input("sektori",           sql.NVarChar,      seat.sectorId || seat.sectorName)
+        .input("numri_uleses",      sql.Int,           seat.seatNumber)
+        .input("emri_bleresit",     sql.NVarChar,      seat.firstName || null)
+        .input("mbiemri_bleresit",  sql.NVarChar,      seat.lastName  || null)
+        .input("cmimi",             sql.Decimal,       seat.price)
+        .input("is_vip",            sql.Bit,           seat.isVip ? 1 : 0)
+        .input("statusi",           sql.NVarChar,      seat.statusi || "E shitur")
+        .input("stripe_payment_id", sql.NVarChar(100), stripe_payment_id || null)
+        .input("payment_status",    sql.NVarChar(20),  "Paguar")
+        .query(`
+          INSERT INTO Tickets
+            (match_id, user_id, sektori, numri_uleses, emri_bleresit, mbiemri_bleresit, cmimi, is_vip, statusi, stripe_payment_id, payment_status)
+          VALUES
+            (@match_id, @user_id, @sektori, @numri_uleses, @emri_bleresit, @mbiemri_bleresit, @cmimi, @is_vip, @statusi, @stripe_payment_id, @payment_status)
+        `);
+    }
+
+    const total = seats.reduce((sum, s) => sum + Number(s.price), 0);
+    res.json({ success: true, message: "Biletat u ruajtën me sukses" });
+
+    // Send email confirmation (fire-and-forget)
+    try {
+      const [userRes, matchRes] = await Promise.all([
+        pool.request().input("uid", sql.Int, user_id).query("SELECT email FROM Users WHERE id=@uid"),
+        pool.request().input("mid", sql.Int, match_id).query("SELECT ekipi_kundershtare, data_ndeshjes FROM Matches WHERE id=@mid"),
+      ]);
+      const userEmail    = userRes.recordset[0]?.email;
+      const kundershtari = matchRes.recordset[0]?.ekipi_kundershtare || "kundërshtari";
+      const data_ndeshjes = matchRes.recordset[0]?.data_ndeshjes;
+      if (userEmail) {
+        sendTicketConfirmation(userEmail, {
+          seats, total, kundershtari, data_ndeshjes,
+          paymentId: stripe_payment_id || "—",
+        }).catch(err => console.error("[Email ticket error]", err.message));
+      }
+    } catch (emailErr) {
+      console.error("[Email ticket lookup error]", emailErr.message);
+    }
+
+    const isAdmin = ["admin","menaxher"].includes(req.user.role?.toLowerCase());
+    if (isAdmin) {
+      try {
+        const matchRes = await pool.request()
+          .input("mid", sql.Int, match_id)
+          .query("SELECT ekipi_kundershtare FROM Matches WHERE id = @mid");
+        const kundershtari = matchRes.recordset[0]?.ekipi_kundershtare || "kundërshtari";
+
+        const prefRes = await pool.request()
+          .query(`SELECT user_id FROM UserPreferences WHERE topics LIKE '%bileta%'`);
+        console.log(`[Notification bileta] ${prefRes.recordset.length} users`);
+        for (const row of prefRes.recordset) {
+          await pool.request()
+            .input("uid", sql.Int,      row.user_id)
+            .input("tit", sql.NVarChar, "Bileta të reja")
+            .input("msg", sql.NVarChar, `Bileta disponueshme për Man United vs ${kundershtari}`)
+            .query(`INSERT INTO Notifications (user_id, titulli, mesazhi, is_read, created_at) VALUES (@uid, @tit, @msg, 0, GETDATE())`);
+        }
+      } catch (notifErr) {
+        console.error("[Notification bileta error]", notifErr.message);
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/tickets/:id — ndrysho biletën (admin)
+router.put("/:id", verifyToken, requireRole(...MENAXHER_ROLES), async (req, res) => {
+  try {
+    const { statusi, sektori, numri_uleses, emri_bleresit, mbiemri_bleresit, cmimi, is_vip, match_id } = req.body;
+    const pool = await poolPromise;
+    await pool.request()
+      .input("id",               sql.Int,      req.params.id)
+      .input("statusi",          sql.NVarChar, statusi          || null)
+      .input("sektori",          sql.NVarChar, sektori          || null)
+      .input("numri_uleses",     sql.Int,      numri_uleses     || null)
+      .input("emri_bleresit",    sql.NVarChar, emri_bleresit    || null)
+      .input("mbiemri_bleresit", sql.NVarChar, mbiemri_bleresit || null)
+      .input("cmimi",            sql.Decimal,  cmimi            || null)
+      .input("is_vip",           sql.Bit,      is_vip ? 1 : 0)
+      .input("match_id",         sql.Int,      match_id         || null)
+      .query(`
+        UPDATE Tickets SET
+          statusi          = COALESCE(@statusi,          statusi),
+          sektori          = COALESCE(@sektori,          sektori),
+          numri_uleses     = COALESCE(@numri_uleses,     numri_uleses),
+          emri_bleresit    = COALESCE(@emri_bleresit,    emri_bleresit),
+          mbiemri_bleresit = COALESCE(@mbiemri_bleresit, mbiemri_bleresit),
+          cmimi            = COALESCE(@cmimi,            cmimi),
+          is_vip           = @is_vip,
+          match_id         = COALESCE(@match_id,         match_id)
+        WHERE id = @id
+      `);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/tickets/:id — useri fshin biletat e veta, admin/menaxher fshijnë çdo biletë
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const isStaff = MENAXHER_ROLES.map(r => r.toLowerCase()).includes(req.user?.role?.toLowerCase());
+
+    if (!isStaff) {
+      const check = await pool.request()
+        .input("id",      sql.Int, req.params.id)
+        .input("user_id", sql.Int, req.user.id)
+        .query("SELECT id FROM Tickets WHERE id = @id AND user_id = @user_id");
+      if (!check.recordset[0])
+        return res.status(403).json({ error: "Nuk ke leje" });
+    }
+
+    await pool.request()
+      .input("id", sql.Int, req.params.id)
+      .query("DELETE FROM Tickets WHERE id = @id");
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;

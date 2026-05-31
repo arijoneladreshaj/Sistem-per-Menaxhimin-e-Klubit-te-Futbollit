@@ -9,10 +9,21 @@ import "./Dashboard.css";
 export default function Dashboard() {
   const navigate = useNavigate();
   const [activeSeason, setActiveSeason] = useState(null);
+  const [nextMatch,    setNextMatch]    = useState(null);
 
   useEffect(() => {
     api.get("/api/seasons/active")
       .then(res => setActiveSeason(res.data))
+      .catch(() => {});
+
+    api.get("/api/ndeshjet")
+      .then(res => {
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const nxt = res.data
+          .filter(m => new Date(m.data_ndeshjes) >= today && m.statusi !== "Luajtur")
+          .sort((a, b) => new Date(a.data_ndeshjes) - new Date(b.data_ndeshjes));
+        if (nxt.length > 0) setNextMatch(nxt[0]);
+      })
       .catch(() => {});
   }, []);
 
@@ -137,22 +148,33 @@ export default function Dashboard() {
               <div className="panel">
                 <div className="panel-header">
                   <div className="panel-title">Ndeshja Tjetër</div>
-                  <div className="panel-action" onClick={() => navigate("/Ndeshjet")}>Shiko →</div>
+                  <div className="panel-action" onClick={() => navigate("/dashboardNdeshjet")}>Shiko →</div>
                 </div>
                 <div className="next-match-body">
-                  <div className="next-match-comp">Premier League · Javë 33</div>
-                  <div className="next-match-teams">
-                    <div>
-                      <div className="team-crest">MU</div>
-                      <div className="team-label">Man United</div>
-                    </div>
-                    <div className="vs-label">VS</div>
-                    <div>
-                      <div className="team-crest team-crest--cfc">CFC</div>
-                      <div className="team-label">Chelsea</div>
-                    </div>
-                  </div>
-                  <div className="next-match-time">Sot · 20:00 · Old Trafford</div>
+                  {!nextMatch ? (
+                    <div style={{ color: "#666", fontSize: 12, padding: "8px 0" }}>Nuk ka ndeshje të planifikuara</div>
+                  ) : (
+                    <>
+                      <div className="next-match-comp">{nextMatch.lloji_kompeticionit || "—"}</div>
+                      <div className="next-match-teams">
+                        <div>
+                          <div className="team-crest">MU</div>
+                          <div className="team-label">Man United</div>
+                        </div>
+                        <div className="vs-label">VS</div>
+                        <div>
+                          <div className="team-crest team-crest--cfc">
+                            {nextMatch.ekipi_kundershtare?.slice(0, 3).toUpperCase()}
+                          </div>
+                          <div className="team-label">{nextMatch.ekipi_kundershtare}</div>
+                        </div>
+                      </div>
+                      <div className="next-match-time">
+                        {new Date(nextMatch.data_ndeshjes).toLocaleDateString("sq-AL", { weekday: "short", day: "2-digit", month: "short" })}
+                        {nextMatch.stadiumi ? ` · ${nextMatch.stadiumi}` : ""}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 

@@ -437,6 +437,7 @@ export default function DashboardBiletat() {
                     <th>VIP</th>
                     <th>Blerësi</th>
                     <th>Çmimi</th>
+                    <th>Pagesa</th>
                     <th>Statusi</th>
                     <th>Veprime</th>
                   </tr>
@@ -444,7 +445,7 @@ export default function DashboardBiletat() {
                 <tbody>
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={10} className="text-center text-muted py-4">
+                      <td colSpan={11} className="text-center text-muted py-4">
                         Nuk ka bileta
                       </td>
                     </tr>
@@ -497,6 +498,17 @@ export default function DashboardBiletat() {
                         </td>
                         <td style={{ color: "#4ade80", fontWeight: 600 }}>
                           €{Number(t.cmimi).toFixed(2)}
+                        </td>
+                        <td>
+                          {t.stripe_payment_id ? (
+                            <span style={{ background: "rgba(74,222,128,0.12)", color: "#4ade80", border: "1px solid rgba(74,222,128,0.25)", borderRadius: 4, padding: "3px 8px", fontSize: 11, fontWeight: 700, whiteSpace: "nowrap" }}>
+                              💳 Paguar
+                            </span>
+                          ) : (
+                            <span style={{ background: "rgba(255,255,255,0.06)", color: "#888", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "3px 8px", fontSize: 11, fontWeight: 700 }}>
+                              —
+                            </span>
+                          )}
                         </td>
                         <td>
                           <select

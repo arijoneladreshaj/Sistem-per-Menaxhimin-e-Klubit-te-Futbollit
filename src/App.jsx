@@ -50,6 +50,8 @@ const LineupPage            = lazy(() => import("./pages/Dashboard/LineupPage"))
 const PublicLineupPage      = lazy(() => import("./pages/PublicLineupPage"));
 const DashboardMessages     = lazy(() => import("./pages/Dashboard/DashboardMessages"));
 const DashboardClubs        = lazy(() => import("./pages/Dashboard/DashboardClubs"));
+const PaymentPage           = lazy(() => import("./pages/BuyTicketsPage/PaymentPage"));
+const StorePaymentPage      = lazy(() => import("./pages/StorePaymentPage"));
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("accessToken");
@@ -91,9 +93,11 @@ export default function App() {
             <Route path="/lajmet" element={<PrivateRoute><FooterLayout><Lajmet /></FooterLayout></PrivateRoute>} />
             <Route path="/Store" element={<PrivateRoute><FooterLayout><Store /></FooterLayout></PrivateRoute>} />
             <Route path="/StoreConfirmation" element={<PrivateRoute><FooterLayout><StoreConfirmation /></FooterLayout></PrivateRoute>} />
+            <Route path="/StorePaymentPage" element={<PrivateRoute><FooterLayout><StorePaymentPage /></FooterLayout></PrivateRoute>} />
             <Route path="/SectorPage/:matchId" element={<PrivateRoute><FooterLayout><SectorPage /></FooterLayout></PrivateRoute>} />
             <Route path="/SeatsPage/:matchId/:sectorId" element={<PrivateRoute><FooterLayout><SeatsPage /></FooterLayout></PrivateRoute>} />
             <Route path="/CartPage" element={<PrivateRoute><FooterLayout><CartPage /></FooterLayout></PrivateRoute>} />
+            <Route path="/PaymentPage" element={<PrivateRoute><FooterLayout><PaymentPage /></FooterLayout></PrivateRoute>} />
             <Route path="/ConfirmationPage" element={<PrivateRoute><FooterLayout><ConfirmationPage /></FooterLayout></PrivateRoute>} />
             <Route path="/ProfilePage" element={<PrivateRoute><FooterLayout><ProfilePage /></FooterLayout></PrivateRoute>} />
             <Route path="/sezonet" element={<PrivateRoute><FooterLayout><SeasonArchive /></FooterLayout></PrivateRoute>} />

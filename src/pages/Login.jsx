@@ -45,6 +45,10 @@ function Login() {
 
     if (["Admin", "Trajner", "Menaxher"].includes(data.user.role)) {
       navigate("/dashboard");
+    } else if (data.user.role === "Lojtari") {
+      navigate("/");
+    } else if (!data.hasPreferences) {
+      navigate("/preferences");
     } else {
       navigate("/");
     }

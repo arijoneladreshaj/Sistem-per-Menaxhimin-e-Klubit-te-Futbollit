@@ -4,7 +4,7 @@ import SideBar from "../../Components/SideBar";
 import TopBar from "../../Components/TopBar";
 import "./Dashboard.css";
 
-const ROLES = ["Trajner", "Menaxher", "Admin", "Lojtari"];
+const ROLES = ["user", "Trajner", "Menaxher", "Admin", "Lojtari"];
 
 const ROLE_COLOR = {
   Admin:    { bg: "#7f1d1d", color: "#fca5a5" },
@@ -176,6 +176,19 @@ export default function DashboardUsers() {
       <td style={{ fontWeight: 600 }}>{u.emri} {u.mbiemri}</td>
       <td style={{ color: "#aaa" }}>@{u.username}</td>
       <td style={{ color: "#aaa" }}>{u.email}</td>
+      <td>
+        <select
+          value={u.role}
+          onChange={e => handleRoleChange(u.id, e.target.value)}
+          style={{
+            background: ROLE_COLOR[u.role]?.bg || "#2a2a2a",
+            color: ROLE_COLOR[u.role]?.color || "#fff",
+            border: "none", borderRadius: 6, padding: "3px 8px", fontSize: 12, cursor: "pointer",
+          }}
+        >
+          {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+        </select>
+      </td>
       <td style={{ display: "flex", gap: 6 }}>
         <button style={btnEdit} onClick={() => openEdit(u)}>Edito</button>
         <button style={btnDel}  onClick={() => setDelId(u.id)}>Fshi</button>
@@ -230,10 +243,10 @@ export default function DashboardUsers() {
             </div>
             <div style={{ overflowX: "auto" }}>
               <table className="table table-dark table-hover mb-0" style={{ fontSize: 13 }}>
-                <TableHead showRole={false} />
+                <TableHead showRole={true} />
                 <tbody>
                   {fans.length === 0 ? (
-                    <tr><td colSpan={5} className="text-center text-muted py-4">Nuk ka përdorues</td></tr>
+                    <tr><td colSpan={6} className="text-center text-muted py-4">Nuk ka përdorues</td></tr>
                   ) : fans.map(u => <FanRow key={u.id} u={u} />)}
                 </tbody>
               </table>

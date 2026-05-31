@@ -793,7 +793,8 @@ export default function DashboardStore() {
                 { label: "DATA",     flex: 1   },
                 { label: "PRODUKTET",flex: 1.2 },
                 { label: "TOTALI",   flex: 1   },
-                { label: "DËRGESA", flex: 1   },
+                { label: "DËRGESA",  flex: 1   },
+                { label: "PAGESA",   flex: 1.2 },
                 { label: "STATUSI",  flex: 1.5 },
                 { label: "VEPRIME",  flex: 1   },
               ].map(col => (
@@ -857,6 +858,18 @@ export default function DashboardStore() {
                   {/* Dërgesa */}
                   <div style={{ flex: 1, fontFamily: FONT_B, fontSize: 13, color: Number(o.shipping) === 0 ? "#4ade80" : "rgba(255,255,255,0.5)" }}>
                     {Number(o.shipping) === 0 ? "FALAS" : `€${Number(o.shipping).toFixed(2)}`}
+                  </div>
+                  {/* Pagesa */}
+                  <div style={{ flex: 1.2 }}>
+                    {o.stripe_payment_id ? (
+                      <span style={{ background: "rgba(74,222,128,0.12)", color: "#4ade80", border: "1px solid rgba(74,222,128,0.25)", borderRadius: 4, padding: "3px 8px", fontSize: 11, fontFamily: FONT_B, fontWeight: 700 }}>
+                        💳 Online
+                      </span>
+                    ) : (
+                      <span style={{ background: "rgba(251,191,36,0.12)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.25)", borderRadius: 4, padding: "3px 8px", fontSize: 11, fontFamily: FONT_B, fontWeight: 700 }}>
+                        💵 Cash
+                      </span>
+                    )}
                   </div>
                   {/* Statusi */}
                   <div style={{ flex: 1.5 }}>
