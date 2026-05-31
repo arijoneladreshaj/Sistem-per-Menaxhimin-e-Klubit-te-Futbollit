@@ -33,9 +33,16 @@ exports.login = async (req, res) => {
       .input("expires_at", sql.DateTime, expires)
       .query("INSERT INTO RefreshTokens (user_id, token, expires_at) VALUES (@user_id, @token, @expires_at)");
 
+    const prefResult = await pool.request()
+      .input("uid", sql.Int, user.id)
+      .query("SELECT topics FROM UserPreferences WHERE user_id = @uid");
+    const topics = prefResult.recordset[0]?.topics ?? "[]";
+    const hasPreferences = JSON.parse(topics).length > 0;
+
     res.json({
       accessToken,
       refreshToken,
+      hasPreferences,
       user: { id: user.id, username: user.username, email: user.email, role: user.role, emri: user.emri, mbiemri: user.mbiemri, datelindja: user.datelindja || "" },
     });
   } catch (err) {

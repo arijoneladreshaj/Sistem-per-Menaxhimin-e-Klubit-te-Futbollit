@@ -70,6 +70,12 @@ export default function Navbar() {
           </button>
         )}
 
+        {!STAFF_ROLES.includes(role) && role !== PLAYER_ROLE && (
+          <button className="mu-btn-solid" onClick={() => navigate("/ndeshjet?tab=fixtures")}>
+            Bli Bileta
+          </button>
+        )}
+
         <div
           className="mu-avatar"
           onClick={() => {
@@ -81,12 +87,6 @@ export default function Navbar() {
           {user.emri?.[0] ?? ""}
           {user.mbiemri?.[0] ?? ""}
         </div>
-
-        {!STAFF_ROLES.includes(role) && role !== PLAYER_ROLE && (
-          <button className="mu-btn-solid" onClick={() => navigate("/ndeshjet?tab=fixtures")}>
-            Bli Bileta
-          </button>
-        )}
       </div>
     </nav>
   );
