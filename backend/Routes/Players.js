@@ -24,8 +24,8 @@ const upload = multer({
   },
 });
 
-router.get("/",                                                              playersController.getAll);
-router.get("/:id",                                                           playersController.getOne);
+router.get("/",     verifyToken,                                                          playersController.getAll);
+router.get("/:id",     verifyToken,                                                       playersController.getOne);
 router.post("/",          verifyToken, requireRole(...TRAJNER_ROLES),        playersController.create);
 router.put("/:id",        verifyToken, requireRole(...TRAJNER_ROLES),        playersController.update);
 router.post("/:id/photo", verifyToken, requireRole(...TRAJNER_ROLES), upload.single("foto"), playersController.uploadPhoto);

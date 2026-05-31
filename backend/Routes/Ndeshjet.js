@@ -3,7 +3,7 @@ const router  = express.Router();
 const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
 const ndeshjetController = require("../controllers/ndeshjetController");
 
-router.get("/",              ndeshjetController.getAll);
+router.get("/",   verifyToken,            ndeshjetController.getAll);
 router.get("/next-upcoming", ndeshjetController.getNextUpcoming);
 router.get("/:id",           ndeshjetController.getOne);
 router.post("/",   verifyToken, requireAdmin, ndeshjetController.create);
