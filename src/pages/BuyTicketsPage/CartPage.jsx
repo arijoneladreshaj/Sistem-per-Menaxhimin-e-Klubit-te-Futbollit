@@ -5,7 +5,7 @@ import "./CartPage.css";
 
 export default function CartPage() {
   const navigate = useNavigate();
-  const { cart, removeSeat, updatePassenger, total, clearCart } = useCart();
+  const { cart, removeSeat, updatePassenger, total } = useCart();
 
   const allNamed = cart.every((s) => s.firstName?.trim() && s.lastName?.trim());
 
@@ -149,9 +149,9 @@ export default function CartPage() {
               <button
                 className="btn btn-danger w-100 cp-checkout-btn"
                 disabled={!allNamed}
-                onClick={() => navigate("/ConfirmationPage")}
+                onClick={() => navigate("/PaymentPage")}
               >
-                Vazhdo me Porosinë →
+                Vazhdo me Pagesën →
               </button>
 
               <button

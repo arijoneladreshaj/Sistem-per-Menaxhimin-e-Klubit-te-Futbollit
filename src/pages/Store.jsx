@@ -118,6 +118,7 @@ function AddressModal({ cart, onClose, onConfirm }) {
   const [form, setForm] = useState({ emri: user.emri||"", mbiemri: user.mbiemri||"", email: user.email||"", telefoni: "", adresa: "", qyteti: "", shteti: "Kosovo" });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [payMethod, setPayMethod] = useState("online");
   const inp = { background:"#111", border:"1px solid #333", color:"#fff", borderRadius:6, padding:"9px 12px", width:"100%", fontSize:13 };
 
   const subtotal = cart.reduce((s,i) => s + i.price*i.qty, 0);
@@ -130,7 +131,7 @@ function AddressModal({ cart, onClose, onConfirm }) {
     if (!form.emri||!form.mbiemri||!form.adresa||!form.qyteti) return setErr("Plotëso të gjitha fushat!");
     setLoading(true);
     try {
-      const res = await onConfirm({ ...form, subtotal, shipping, total, items: cart });
+      const res = await onConfirm({ ...form, subtotal, shipping, total, items: cart, payMethod });
       if (!res.success) setErr(res.message || "Gabim!");
     } catch { setErr("Gabim gjatë ruajtjes!"); }
     setLoading(false);
@@ -161,13 +162,41 @@ function AddressModal({ cart, onClose, onConfirm }) {
             <div key={n}><label style={{color:"#666",fontSize:11,display:"block",marginBottom:4}}>{l} *</label><input name={n} value={form[n]} onChange={handle} style={inp} /></div>
           ))}
         </div>
+        {/* METODA E PAGESËS */}
+        <div style={{marginBottom:16}}>
+          <div style={{color:"#888",fontSize:11,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:10}}>Metoda e Pagesës</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            {[
+              { val:"online",   icon:"bi-credit-card-fill", label:"Online",     sub:"Stripe · Kartë" },
+              { val:"fizikisht",icon:"bi-cash-coin",        label:"Fizikisht",  sub:"Cash on Delivery" },
+            ].map(m => (
+              <div key={m.val} onClick={() => setPayMethod(m.val)} style={{
+                border: payMethod===m.val ? "1px solid #cc0000" : "1px solid #333",
+                background: payMethod===m.val ? "rgba(204,0,0,0.1)" : "#0d0d0d",
+                borderRadius:8, padding:"12px", cursor:"pointer", transition:"all 0.2s",
+                display:"flex", flexDirection:"column", gap:4,
+              }}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <i className={`bi ${m.icon}`} style={{color: payMethod===m.val?"#cc0000":"#666",fontSize:16}} />
+                  <span style={{color:"#fff",fontWeight:700,fontSize:13}}>{m.label}</span>
+                  {payMethod===m.val && <i className="bi bi-check-circle-fill" style={{color:"#cc0000",fontSize:13,marginLeft:"auto"}} />}
+                </div>
+                <span style={{color:"#555",fontSize:11}}>{m.sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div style={{borderTop:"1px solid #222",paddingTop:16,marginBottom:16}}>
           <div style={{display:"flex",justifyContent:"space-between",color:"#888",fontSize:13,marginBottom:6}}><span>Nëntotali</span><span>€{subtotal.toFixed(2)}</span></div>
           <div style={{display:"flex",justifyContent:"space-between",color:"#888",fontSize:13,marginBottom:6}}><span>Dërgesa</span><span style={{color: shipping===0?"#4ade80":"#fff"}}>{shipping===0?"FALAS":`€${shipping.toFixed(2)}`}</span></div>
           <div style={{display:"flex",justifyContent:"space-between",color:"#fff",fontWeight:700,fontSize:15}}><span>Total</span><span>€{total.toFixed(2)}</span></div>
         </div>
-        <button onClick={submit} disabled={loading} style={{width:"100%",background:"#cc0000",color:"#fff",border:"none",borderRadius:8,padding:"12px",fontWeight:700,fontSize:15,cursor:"pointer"}}>
-          {loading ? "Duke ruajtur..." : "Konfirmo Porosinë"}
+        <button onClick={submit} disabled={loading} style={{width:"100%",background:"#cc0000",color:"#fff",border:"none",borderRadius:8,padding:"12px",fontWeight:700,fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+          {loading ? "Duke procesuar..." : payMethod==="online"
+            ? <><i className="bi bi-lock-fill" /> Vazhdo me Pagesën Online</>
+            : <><i className="bi bi-cash-coin" /> Konfirmo Porosinë (COD)</>
+          }
         </button>
       </div>
     </>
@@ -377,15 +406,19 @@ const handleCheckout = () => {
 };
 
 const handleConfirmOrder = async (data) => {
-  try {
-    const res = await api.post("/api/orders", data);
-    setAddressOpen(false);
-    setCart([]);
-    navigate("/StoreConfirmation", { state: { orderId: res.data.orderId } });
-    return { success: true };
-  } catch (e) {
-    return { success: false, message: e.response?.data?.message || "Gabim!" };
+  setAddressOpen(false);
+  setCart([]);
+  if (data.payMethod === "fizikisht") {
+    try {
+      const res = await api.post("/api/orders", data);
+      navigate("/StoreConfirmation", { state: { orderId: res.data.orderId } });
+    } catch (e) {
+      return { success: false, message: e.response?.data?.message || "Gabim!" };
+    }
+  } else {
+    navigate("/StorePaymentPage", { state: { orderData: data } });
   }
+  return { success: true };
 };
 
 const handleDelete = async (id) => {

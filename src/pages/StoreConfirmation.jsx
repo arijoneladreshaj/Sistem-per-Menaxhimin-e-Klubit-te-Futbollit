@@ -128,16 +128,28 @@ export default function StoreConfirmationPage() {
             </div>
 
             {/* PAGESA */}
-            <div className="cf-payment-notice">
-              <div className="cf-notice-icon">💳</div>
-              <div>
-                <div className="cf-notice-title">Pagesa me Cash on Delivery</div>
-                <div className="cf-notice-sub">
-                  Paguani €{order.total.toFixed(2)} kur të merrni porosinë.
-                  Sillni numrin e porosisë #{order.id}.
+            {order.stripe_payment_id ? (
+              <div className="cf-payment-notice" style={{ borderColor: "rgba(74,222,128,0.3)", background: "rgba(74,222,128,0.05)" }}>
+                <div className="cf-notice-icon">✅</div>
+                <div>
+                  <div className="cf-notice-title" style={{ color: "#4ade80" }}>Pagesa u Krye me Sukses</div>
+                  <div className="cf-notice-sub">
+                    Pagesa online u konfirmua. ID: <strong style={{ color: "#fff" }}>{order.stripe_payment_id}</strong>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="cf-payment-notice">
+                <div className="cf-notice-icon">💵</div>
+                <div>
+                  <div className="cf-notice-title">Pagesa me Cash on Delivery</div>
+                  <div className="cf-notice-sub">
+                    Paguani €{order.total.toFixed(2)} kur të merrni porosinë.
+                    Sillni numrin e porosisë #{order.id}.
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* BUTONAT */}
             <div className="cf-actions">

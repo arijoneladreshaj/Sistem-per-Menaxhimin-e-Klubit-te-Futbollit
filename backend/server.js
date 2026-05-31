@@ -4,6 +4,10 @@ const cors    = require("cors");
 const app     = express();
 
 app.use(cors());
+
+// Stripe webhook duhet raw body — para express.json()
+app.use("/api/payments/webhook", express.raw({ type: "application/json" }));
+
 app.use(express.json());
 
 // Auth (publike)
@@ -33,6 +37,7 @@ app.use("/api/favorites",            require("./Routes/Favorites"));
 app.use("/api/orders",               require("./Routes/Orders"));
 app.use("/api/admin/users",   require("./Routes/AdminUsers"));
 app.use("/api/notifications", require("./Routes/Notifications"));
+app.use("/api/payments",     require("./Routes/Payments"));
 app.use("/api/lineup",        require("./Routes/Lineup"));
 app.use("/api/homepage",      require("./Routes/HomepageContent"));
 app.use("/api/newsletter",    require("./Routes/Newsletter"));
