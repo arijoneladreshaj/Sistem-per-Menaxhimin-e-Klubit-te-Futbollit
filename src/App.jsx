@@ -95,6 +95,7 @@ export default function App() {
             <Route path="/StoreConfirmation" element={<PrivateRoute><FooterLayout><StoreConfirmation /></FooterLayout></PrivateRoute>} />
             <Route path="/StorePaymentPage" element={<PrivateRoute><FooterLayout><StorePaymentPage /></FooterLayout></PrivateRoute>} />
             <Route path="/SectorPage/:matchId" element={<PrivateRoute><SectorPage /></PrivateRoute>} />
+            <Route path="/SectorPage" element={<Navigate to="/ndeshjet" replace />} />
             <Route path="/SeatsPage/:matchId/:sectorId" element={<PrivateRoute><SeatsPage /></PrivateRoute>} />
             <Route path="/CartPage" element={<PrivateRoute><CartPage /></PrivateRoute>} />
             <Route path="/PaymentPage" element={<PrivateRoute><PaymentPage /></PrivateRoute>} />

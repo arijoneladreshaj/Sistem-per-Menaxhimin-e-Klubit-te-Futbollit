@@ -4,6 +4,10 @@
   padding: 0;
 }
 
+body {
+  background: #0d0d0d;
+}
+
 .zs-page {
   background: linear-gradient(to right, #0d0d0d, #0b1e33);
   /* background: #974905; */

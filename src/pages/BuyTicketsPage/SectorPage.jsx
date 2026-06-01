@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Navbar from "../../Components/NavBar";
 import "./SectorPage.css";
 
 const SEKTORT = [
@@ -14,6 +15,11 @@ export default function ZgjidhoSektorin() {
   const { matchId } = useParams();
   const [selected, setSelected] = useState(null);
   const [hovered, setHovered] = useState(null);
+
+  if (!matchId || matchId === "undefined") {
+    navigate("/ndeshjet", { replace: true });
+    return null;
+  }
 
   const active = hovered || selected;
 
@@ -40,6 +46,7 @@ export default function ZgjidhoSektorin() {
 
   return (
     <div className="zs-page">
+      <Navbar />
       <div style={{ width: "100%", maxWidth: 680 }}>
         <button className="zs-back" onClick={() => navigate("/ndeshjet")}>
           ← Kthehu
