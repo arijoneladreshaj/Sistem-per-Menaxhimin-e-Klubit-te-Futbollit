@@ -51,14 +51,14 @@ function mapPlayer(p) {
     age,
     height:      p.gjatesia ? `${p.gjatesia} cm` : null,
     weight:      p.pesha    ? `${p.pesha} kg`    : null,
-    joined:      null,
-    contract:    null,
-    apps:        0,
-    goals:       0,
-    assists:     0,
-    saves:       0,
-    cleanSheets: 0,
-    rating:      70,
+    joined:      p.data_bashkimit  || null,
+    contract:    p.kontrata_deri   || null,
+    apps:        p.apps          ?? 0,
+    goals:       p.goals         ?? 0,
+    assists:     p.assists       ?? 0,
+    saves:       p.saves         ?? 0,
+    cleanSheets: p.clean_sheets  ?? 0,
+    rating:      p.rating        ?? 70,
     captain:     p.mbiemri === "Fernandes",
     onLoan:      p.statusi === "I transferuar",
     photo:       p.foto_url || slugPhoto(p.emri, p.mbiemri),
@@ -831,20 +831,7 @@ export default function Players() {
     api.get("/players")
       .then(r => {
         if (r.data.length) {
-          setPlayers(prev => prev.map(staticPlayer => {
-            const db = r.data.find(dp => dp.id === staticPlayer.id);
-            if (!db) return staticPlayer;
-            return {
-              ...staticPlayer,
-              photo:       db.foto_url      || staticPlayer.photo,
-              apps:        db.apps          ?? staticPlayer.apps,
-              goals:       db.goals         ?? staticPlayer.goals,
-              assists:     db.assists       ?? staticPlayer.assists,
-              saves:       db.saves         ?? staticPlayer.saves,
-              cleanSheets: db.clean_sheets  ?? staticPlayer.cleanSheets,
-              rating:      db.rating        ?? staticPlayer.rating,
-            };
-          }));
+          setPlayers(r.data.map(mapPlayer));
         }
       })
       .catch(() => {});

@@ -1,7 +1,7 @@
 const express = require("express");
 const router  = express.Router();
 const stripe  = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const { sql, poolPromise } = require("../db");
+const { sql, poolPromise } = require("../config/db");
 const { verifyToken } = require("../middleware/authMiddleware");
 
 // POST /api/payments/create-intent

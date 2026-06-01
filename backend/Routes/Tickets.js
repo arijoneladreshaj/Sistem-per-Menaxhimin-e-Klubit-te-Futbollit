@@ -1,6 +1,6 @@
 const express = require("express");
 const router  = express.Router();
-const { sql, poolPromise } = require("../db");
+const { sql, poolPromise } = require("../config/db");
 const { verifyToken, requireRole } = require("../middleware/authMiddleware");
 const { sendTicketConfirmation } = require("../emailService");
 const MENAXHER_ROLES = ["Admin", "Menaxher"];
