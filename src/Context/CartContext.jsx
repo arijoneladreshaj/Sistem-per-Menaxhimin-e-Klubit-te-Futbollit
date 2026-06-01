@@ -1,10 +1,21 @@
 // Kjo faqe osht bo per me i rujt biletat e zgjedhura nga useri te pjesa e SeatsPage kur te navigon te CartPage
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem("cart");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   // Shto ulëse të reja
   const addSeats = (seats) => {
@@ -28,7 +39,10 @@ export function CartProvider({ children }) {
   };
 
   // Pastro cart-in pas konfirmimit
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    sessionStorage.removeItem("cart");
+  };
 
   const total = cart.reduce((sum, s) => sum + s.price, 0);
 
