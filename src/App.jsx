@@ -94,11 +94,11 @@ export default function App() {
             <Route path="/Store" element={<PrivateRoute><FooterLayout><Store /></FooterLayout></PrivateRoute>} />
             <Route path="/StoreConfirmation" element={<PrivateRoute><FooterLayout><StoreConfirmation /></FooterLayout></PrivateRoute>} />
             <Route path="/StorePaymentPage" element={<PrivateRoute><FooterLayout><StorePaymentPage /></FooterLayout></PrivateRoute>} />
-            <Route path="/SectorPage/:matchId" element={<PrivateRoute><FooterLayout><SectorPage /></FooterLayout></PrivateRoute>} />
-            <Route path="/SeatsPage/:matchId/:sectorId" element={<PrivateRoute><FooterLayout><SeatsPage /></FooterLayout></PrivateRoute>} />
-            <Route path="/CartPage" element={<PrivateRoute><FooterLayout><CartPage /></FooterLayout></PrivateRoute>} />
-            <Route path="/PaymentPage" element={<PrivateRoute><FooterLayout><PaymentPage /></FooterLayout></PrivateRoute>} />
-            <Route path="/ConfirmationPage" element={<PrivateRoute><FooterLayout><ConfirmationPage /></FooterLayout></PrivateRoute>} />
+            <Route path="/SectorPage/:matchId" element={<PrivateRoute><SectorPage /></PrivateRoute>} />
+            <Route path="/SeatsPage/:matchId/:sectorId" element={<PrivateRoute><SeatsPage /></PrivateRoute>} />
+            <Route path="/CartPage" element={<PrivateRoute><CartPage /></PrivateRoute>} />
+            <Route path="/PaymentPage" element={<PrivateRoute><PaymentPage /></PrivateRoute>} />
+            <Route path="/ConfirmationPage" element={<PrivateRoute><ConfirmationPage /></PrivateRoute>} />
             <Route path="/ProfilePage" element={<PrivateRoute><FooterLayout><ProfilePage /></FooterLayout></PrivateRoute>} />
             <Route path="/sezonet" element={<PrivateRoute><FooterLayout><SeasonArchive /></FooterLayout></PrivateRoute>} />
 

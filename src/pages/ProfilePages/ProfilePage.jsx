@@ -451,9 +451,11 @@ export default function ProfilePage() {
                               {t.statusi}
                             </span>
                           </div>
-                          <div className="pp-order-footer">
-                            💵 Paguaj në hyrje të stadiumit
-                          </div>
+                          {t.payment_status === "Paguar" && (
+                            <div className="pp-order-footer">
+                              ✅ Pagesa u krye me kartë
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -520,7 +522,9 @@ export default function ProfilePage() {
                           ))}
 
                           <div className="pp-order-footer">
-                            📦 Cash on Delivery
+                            {order.stripe_payment_id
+                              ? "✅ Pagesa u krye me kartë"
+                              : "📦 Cash on Delivery"}
                           </div>
                         </div>
                       ))}
