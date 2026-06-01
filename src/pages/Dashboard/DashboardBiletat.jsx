@@ -68,7 +68,12 @@ export default function DashboardBiletat() {
   const fetchMatches = async () => {
     try {
       const res = await api.get(MATCHES_API);
-      setMatches(res.data);
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const upcoming = res.data.filter(m =>
+        new Date(m.data_ndeshjes) >= today && m.statusi !== "Luajtur"
+      );
+      setMatches(upcoming);
+      if (upcoming.length > 0) setMapMatch(String(upcoming[0].id));
     } catch (e) {
       console.error(e);
     }
@@ -294,7 +299,6 @@ export default function DashboardBiletat() {
                       onChange={e => setMapMatch(e.target.value)}
                       style={{ background: "#1a1a1a", border: "1px solid #333", color: "#fff", borderRadius: 6, padding: "4px 10px", fontSize: 12 }}
                     >
-                      <option value="">Të gjitha ndeshjet</option>
                       {matches.map(m => (
                         <option key={m.id} value={m.id}>
                           Man United vs {m.ekipi_kundershtare} — {new Date(m.data_ndeshjes.slice(0,10) + "T12:00:00").toLocaleDateString("sq-AL")}
