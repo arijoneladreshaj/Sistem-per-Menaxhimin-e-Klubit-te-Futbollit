@@ -252,6 +252,50 @@ body {
 .right-col { display: flex; flex-direction: column; gap: 16px; }
 
 
+.btn-mu {
+  background-color: #DA291C !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.btn-mu:hover { background-color: #b71c1c !important; }
+
+.btn-delete {
+  background-color: transparent !important;
+  border: 1px solid #2a2a2a !important;
+  color: #888 !important;
+}
+.btn-delete:hover {
+  background-color: #c0392b !important;
+  border-color: #c0392b !important;
+  color: #fff !important;
+}
+
+.shell .modal-content {
+  background: #141414 !important;
+  border: 1px solid #2a2a2a !important;
+  color: #f0f0f0 !important;
+}
+.shell .modal-header, .shell .modal-footer {
+  border-color: #2a2a2a !important;
+}
+.shell .modal-title { color: #fff !important; }
+
+.shell .form-control, .shell .form-select {
+  background-color: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  color: #fff !important;
+}
+.shell .form-control:focus, .shell .form-select:focus {
+  background-color: #1a1a1a !important;
+  border-color: #DA291C !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 2px rgba(218,41,28,0.2) !important;
+}
+.shell .form-control::placeholder { color: #555 !important; }
+.shell .form-label { color: #aaa !important; font-size: 13px; }
+.shell .form-select option { background: #1a1a1a; color: #fff; }
+
 ::-webkit-scrollbar       { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
